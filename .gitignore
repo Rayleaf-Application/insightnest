@@ -1,54 +1,42 @@
-# The directory Mix will write compiled artifacts to.
+# ── Mix / Elixir ──────────────────────────────────────────────────────────────
 /_build/
-
-# If you run "mix test --cover", coverage assets end up here.
 /cover/
-
-# The directory Mix downloads your dependencies sources to.
 /deps/
-
-# Where 3rd-party dependencies like ExDoc output generated docs.
 /doc/
-
-# Ignore .fetch files in case you like to edit your project deps locally.
 /.fetch
-
-# If the VM crashes, it generates a dump, let's ignore it too.
 erl_crash.dump
-
-# Also ignore archive artifacts (built via "mix archive.build").
 *.ez
-
-# Temporary files, for example, from tests.
 /tmp/
-
-# Ignore package tarball (built via "mix hex.build").
 insightnest-*.tar
 
-# Ignore assets that are produced by build tools.
+# ── Phoenix ───────────────────────────────────────────────────────────────────
 /priv/static/assets/
-
-# Ignore digested assets cache.
 /priv/static/cache_manifest.json
 
-# In case you use Node.js/npm, you want to ignore these.
-npm-debug.log
+# ── Node / Assets ─────────────────────────────────────────────────────────────
 /assets/node_modules/
+npm-debug.log
+/assets/.parcel-cache/
 
-# Nix shell local state
+# ── Nix shell local state ─────────────────────────────────────────────────────
 .nix-mix/
 .nix-hex/
+.nix-cargo/
+.nix-rustup/
 .direnv/
-.nix-rustup
 
-# Env files
+# ── Environment / Secrets ─────────────────────────────────────────────────────
+.env
 .env.dev
 .env.prod
+.env.local
 
-# Phoenix build
-/_build
-/deps
-/priv/static/assets/
-
-# Ecto
+# ── Ecto ──────────────────────────────────────────────────────────────────────
 *.dump
+
+# ── Editor ────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
