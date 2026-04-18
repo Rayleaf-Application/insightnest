@@ -52,7 +52,7 @@ defmodule InsightnestWeb.CoreComponents do
 
     ~H"""
     <div
-      :if={msg = render_slot(@inner_block) || Phoenix.Flash.get(@flash, @kind)}
+      :if={msg = render_slot(@inner_content) || Phoenix.Flash.get(@flash, @kind)}
       id={@id}
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
@@ -104,13 +104,13 @@ defmodule InsightnestWeb.CoreComponents do
     if rest[:href] || rest[:navigate] || rest[:patch] do
       ~H"""
       <.link class={@class} {@rest}>
-        {render_slot(@inner_block)}
+        {render_slot(@inner_content)}
       </.link>
       """
     else
       ~H"""
       <button class={@class} {@rest}>
-        {render_slot(@inner_block)}
+        {render_slot(@inner_content)}
       </button>
       """
     end
@@ -300,7 +300,7 @@ defmodule InsightnestWeb.CoreComponents do
     ~H"""
     <p class="mt-1.5 flex gap-2 items-center text-sm text-error">
       <.icon name="hero-exclamation-circle" class="size-5" />
-      {render_slot(@inner_block)}
+      {render_slot(@inner_content)}
     </p>
     """
   end
@@ -317,7 +317,7 @@ defmodule InsightnestWeb.CoreComponents do
     <header class={[@actions != [] && "flex items-center justify-between gap-6", "pb-4"]}>
       <div>
         <h1 class="text-lg font-semibold leading-8">
-          {render_slot(@inner_block)}
+          {render_slot(@inner_content)}
         </h1>
         <p :if={@subtitle != []} class="text-sm text-base-content/70">
           {render_slot(@subtitle)}

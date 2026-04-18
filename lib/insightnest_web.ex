@@ -50,7 +50,10 @@ defmodule InsightnestWeb do
 
   def live_view do
     quote do
-      use Phoenix.LiveView
+      use Phoenix.LiveView, layout: {InsightnestWeb.Layouts, :app}
+
+      # Load current_member into every LiveView from session
+      on_mount InsightnestWeb.Live.AuthHooks
 
       unquote(html_helpers())
     end

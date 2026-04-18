@@ -40,6 +40,7 @@ defmodule InsightnestWeb.Router do
 
   # ── Public routes ─────────────────────────────────────────────────────────────
 
+  # Public routes — soft auth via hook
   scope "/", InsightnestWeb do
     pipe_through :browser
 
