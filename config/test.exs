@@ -39,3 +39,15 @@ config :phoenix_live_view,
 # Sort query params output of verified routes for robust url comparisons
 config :phoenix,
   sort_verified_routes_query_params: true
+
+defp aliases do
+  [
+    setup: ["deps.get", "ecto.setup"],
+    "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+    "ecto.reset": ["ecto.drop", "ecto.setup"],
+    # build only esbuild — tailwind runs as system binary via watcher
+    "assets.build": ["esbuild insightnest"],
+    "assets.deploy": ["esbuild insightnest --minify", "phx.digest"],
+    test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+  ]
+end

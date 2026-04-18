@@ -35,3 +35,20 @@ insightnest-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Nix shell local state
+.nix-mix/
+.nix-hex/
+.direnv/
+.nix-rustup
+
+# Env files
+.env.dev
+.env.prod
+
+# Phoenix build
+/_build
+/deps
+/priv/static/assets/
+
+# Ecto
+*.dump

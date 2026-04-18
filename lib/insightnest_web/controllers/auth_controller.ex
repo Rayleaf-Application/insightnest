@@ -1,9 +1,9 @@
-defmodule InsightNestWeb.AuthController do
-  use InsightNestWeb, :controller
+defmodule InsightnestWeb.AuthController do
+  use InsightnestWeb, :controller
 
-  alias InsightNest.Accounts
-  alias InsightNest.Accounts.NonceStoreETS, as: NonceStore
-  alias InsightNest.Auth.Guardian
+  alias Insightnest.Accounts
+  alias Insightnest.Accounts.NonceStoreETS, as: NonceStore
+  alias Insightnest.Auth.Guardian
 
   @nonce_ttl Application.compile_env(:insightnest, :nonce_ttl_seconds, 300)
 
@@ -110,13 +110,9 @@ defmodule InsightNestWeb.AuthController do
     |> Base.encode16(case: :lower)
   end
 
-  # Parse the raw SIWE message string using ex_siwe.
-  # ExSiwe.parse/1 returns {:ok, %ExSiwe.Message{}} or {:error, reason}
+  # Parse the raw SIWE message string.
   defp parse_siwe(raw_message) do
-    case ExSiwe.parse(raw_message) do
-      {:ok, _message} = ok -> ok
-      {:error, reason} -> {:error, "Invalid SIWE message: #{reason}"}
-    end
+    Insightnest.Auth.Siwe.parse(raw_message)
   end
 
   defp verify_nonce(message_nonce, stored_nonce) do
@@ -128,19 +124,8 @@ defmodule InsightNestWeb.AuthController do
   end
 
   # Recover the signer address from the SIWE message + signature.
-  # ex_siwe handles this via ExSiwe.verify/2.
   defp verify_signature(raw_message, signature, expected_address) do
-    case ExSiwe.verify(raw_message, signature) do
-      {:ok, recovered_address} ->
-        if String.downcase(recovered_address) == String.downcase(expected_address) do
-          :ok
-        else
-          {:error, :invalid_signature}
-        end
-
-      {:error, _} ->
-        {:error, :invalid_signature}
-    end
+    Insightnest.Auth.Siwe.verify(raw_message, signature, expected_address)
   end
 
   defp auth_error(conn, message) do

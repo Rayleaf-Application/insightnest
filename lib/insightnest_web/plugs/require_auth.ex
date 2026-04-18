@@ -1,4 +1,4 @@
-defmodule InsightNestWeb.Plugs.RequireAuth do
+defmodule InsightnestWeb.Plugs.RequireAuth do
   @moduledoc """
   Plug that reads the JWT from the session and assigns current_member.
   Used in the :authenticated pipeline for all protected routes.
@@ -10,7 +10,7 @@ defmodule InsightNestWeb.Plugs.RequireAuth do
   import Plug.Conn
   import Phoenix.Controller, only: [redirect: 2, put_flash: 3]
 
-  alias InsightNest.Auth.Guardian
+  alias Insightnest.Auth.Guardian
 
   def init(opts), do: opts
 

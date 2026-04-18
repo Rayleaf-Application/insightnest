@@ -1,13 +1,12 @@
-defmodule InsightNest.Accounts do
+defmodule Insightnest.Accounts do
   @moduledoc """
   Accounts context. Handles member lookup and creation.
   Auth verification logic lives in AuthController — this context
   only deals with persistence.
   """
 
-  import Ecto.Query
-  alias InsightNest.Repo
-  alias InsightNest.Accounts.Member
+  alias Insightnest.Repo
+  alias Insightnest.Accounts.Member
 
   @doc """
   Returns the member with the given wallet address,

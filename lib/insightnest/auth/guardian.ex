@@ -1,7 +1,7 @@
-defmodule InsightNest.Auth.Guardian do
+defmodule Insightnest.Auth.Guardian do
   use Guardian, otp_app: :insightnest
 
-  alias InsightNest.Accounts
+  alias Insightnest.Accounts
 
   @doc """
   The subject embedded in the JWT token.

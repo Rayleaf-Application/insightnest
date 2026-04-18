@@ -1,4 +1,4 @@
-defmodule InsightNest.Repo.Migrations.CreateMembers do
+defmodule Insightnest.Repo.Migrations.CreateMembers do
   use Ecto.Migration
 
   def change do

@@ -1,33 +1,33 @@
-defmodule InsightNest.Application do
+defmodule Insightnest.Application do
   use Application
 
   @impl true
   def start(_type, _args) do
     children = [
       # Database
-      InsightNest.Repo,
+      Insightnest.Repo,
 
       # Telemetry
-      InsightNestWeb.Telemetry,
+      InsightnestWeb.Telemetry,
 
       # PubSub — used for real-time Spark/Contribution updates
-      {Phoenix.PubSub, name: InsightNest.PubSub},
+      {Phoenix.PubSub, name: Insightnest.PubSub},
 
       # Nonce store — ETS-backed GenServer
       # Swap for NonceStoreRedis in production by changing this line only
-      InsightNest.Accounts.NonceStoreETS,
+      Insightnest.Accounts.NonceStoreETS,
 
       # Phoenix Endpoint
-      InsightNestWeb.Endpoint
+      InsightnestWeb.Endpoint
     ]
 
-    opts = [strategy: :one_for_one, name: InsightNest.Supervisor]
+    opts = [strategy: :one_for_one, name: Insightnest.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
   @impl true
   def config_change(changed, _new, removed) do
-    InsightNestWeb.Endpoint.config_change(changed, removed)
+    InsightnestWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

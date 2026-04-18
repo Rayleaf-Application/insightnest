@@ -16,3 +16,20 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 * Docs: https://hexdocs.pm/phoenix
 * Forum: https://elixirforum.com/c/phoenix-forum
 * Source: https://github.com/phoenixframework/phoenix
+
+## Daily dev workflow
+# 1. cd into project — direnv auto-loads the nix shell
+cd ~/projects/insightnest
+# "Insightnest dev shell" message appears automatically
+
+# 2. Start everything
+make dev
+# → pulls Postgres image if missing, starts container
+# → runs mix phx.server on :4000
+
+# 3. Second terminal — IEx session
+cd ~/projects/insightnest   # direnv re-enters shell
+make shell
+
+# 4. Run tests
+make test

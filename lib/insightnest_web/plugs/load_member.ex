@@ -1,4 +1,4 @@
-defmodule InsightNestWeb.Plugs.LoadMember do
+defmodule InsightnestWeb.Plugs.LoadMember do
   @moduledoc """
   Soft auth plug — loads current_member if a valid session exists,
   but does NOT halt on failure. Used in the :browser pipeline so
@@ -7,7 +7,7 @@ defmodule InsightNestWeb.Plugs.LoadMember do
 
   import Plug.Conn
 
-  alias InsightNest.Auth.Guardian
+  alias Insightnest.Auth.Guardian
 
   def init(opts), do: opts
 

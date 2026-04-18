@@ -1,26 +1,23 @@
 import Config
 
-config :insightnest, InsightNest.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: System.get_env("DB_HOST", "localhost"),
-  database: "insightnest_dev",
+config :insightnest, Insightnest.Repo,
+  url: System.get_env(
+    "DATABASE_URL",
+    "postgres://postgres:postgres@localhost:5432/insightnest_dev"
+  ),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-config :insightnest_web, InsightNestWeb.Endpoint,
+config :insightnest, InsightnestWeb.Endpoint,
   http: [ip: {0, 0, 0, 0}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "dev_secret_key_base_at_least_64_chars_long_replace_in_prod_aaaa",
+  secret_key_base: "+/QTQNAaI436A6zvThyLME80IgnD1jf4oD1Japn6PUkE/DnGGW1r8ZA+vkgdNU7m",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:insightnest, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:insightnest, ~w(--watch)]}
-  ]
-
-config :insightnest_web, InsightNestWeb.Endpoint,
+    esbuild: {Esbuild, :install_and_run, [:insightnest, ~w(--sourcemap=inline --watch)]}
+  ],
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",

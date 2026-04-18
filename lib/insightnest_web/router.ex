@@ -1,5 +1,5 @@
-defmodule InsightNestWeb.Router do
-  use InsightNestWeb, :router
+defmodule InsightnestWeb.Router do
+  use InsightnestWeb, :router
 
   # ── Pipelines ─────────────────────────────────────────────────────────────────
 
@@ -7,10 +7,10 @@ defmodule InsightNestWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, html: {InsightNestWeb.Layouts, :root}
+    plug :put_root_layout, html: {InsightnestWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug InsightNestWeb.Plugs.LoadMember   # soft auth — sets current_member or nil
+    plug InsightnestWeb.Plugs.LoadMember   # soft auth — sets current_member or nil
   end
 
   pipeline :api do
@@ -19,12 +19,12 @@ defmodule InsightNestWeb.Router do
   end
 
   pipeline :authenticated do
-    plug InsightNestWeb.Plugs.RequireAuth  # hard auth — halts if no valid session
+    plug InsightnestWeb.Plugs.RequireAuth  # hard auth — halts if no valid session
   end
 
   # ── Auth routes (JSON, no CSRF needed for nonce/verify) ──────────────────────
 
-  scope "/auth", InsightNestWeb do
+  scope "/auth", InsightnestWeb do
     pipe_through :api
     get "/nonce", AuthController, :nonce
     post "/verify", AuthController, :verify
@@ -33,14 +33,14 @@ defmodule InsightNestWeb.Router do
 
   # ── Auth page (HTML) ──────────────────────────────────────────────────────────
 
-  scope "/auth", InsightNestWeb do
+  scope "/auth", InsightnestWeb do
     pipe_through :browser
     get "/", AuthController, :index
   end
 
   # ── Public routes ─────────────────────────────────────────────────────────────
 
-  scope "/", InsightNestWeb do
+  scope "/", InsightnestWeb do
     pipe_through :browser
 
     live "/", SparkLive.Index, :index
@@ -51,7 +51,7 @@ defmodule InsightNestWeb.Router do
 
   # ── Authenticated routes ───────────────────────────────────────────────────────
 
-  scope "/", InsightNestWeb do
+  scope "/", InsightnestWeb do
     pipe_through [:browser, :authenticated]
 
     live "/sparks/new", SparkLive.New, :new
@@ -66,7 +66,7 @@ defmodule InsightNestWeb.Router do
 
     scope "/dev" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: InsightNestWeb.Telemetry
+      live_dashboard "/dashboard", metrics: InsightnestWeb.Telemetry
     end
   end
 end

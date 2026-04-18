@@ -1,4 +1,4 @@
-defmodule InsightNest.Accounts.NonceStore do
+defmodule Insightnest.Accounts.NonceStore do
   @moduledoc """
   Behaviour for nonce storage.
   Swap ETS implementation for Redis in production by changing

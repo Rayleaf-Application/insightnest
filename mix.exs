@@ -1,4 +1,4 @@
-defmodule InsightNest.MixProject do
+defmodule Insightnest.MixProject do
   use Mix.Project
 
   def project do
@@ -9,13 +9,14 @@ defmodule InsightNest.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      listeners: [Phoenix.CodeReloader]  # ← add this
     ]
   end
 
   def application do
     [
-      mod: {InsightNest.Application, []},
+      mod: {Insightnest.Application, []},
       extra_applications: [:logger, :runtime_tools, :crypto]
     ]
   end
@@ -38,9 +39,9 @@ defmodule InsightNest.MixProject do
       {:postgrex, ">= 0.0.0"},
 
       # Auth
-      {:ex_siwe, "~> 0.3"},       # SIWE message parsing + signature verification
-      {:guardian, "~> 2.3"},       # JWT
-      {:bcrypt_elixir, "~> 3.0"},  # not used for wallet auth, but handy for email passcodes later
+      {:ex_keccak, "~> 0.7"},     # keccak-256, also a NIF but maintained and OTP-27 compatible
+      {:guardian, "~> 2.3"},      # JWT
+      {:bcrypt_elixir, "~> 3.0"}, # not used for wallet auth, but handy for email passcodes later
 
       # HTTP
       {:plug_cowboy, "~> 2.7"},
@@ -51,10 +52,14 @@ defmodule InsightNest.MixProject do
       {:slugify, "~> 1.3"},        # Slug.slugify/1
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
+      {:hackney, "~> 1.9"},
+      {:gettext, "~> 0.26"},
+      {:swoosh, "~> 1.16"},
+      {:finch, "~> 0.18"},   # swoosh needs this for HTTP delivery
+      {:bandit, "~> 1.5"},
 
       # Assets
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
-      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:heroicons, "~> 0.5"},
 
       # Test
@@ -64,16 +69,11 @@ defmodule InsightNest.MixProject do
 
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["tailwind insightnest", "esbuild insightnest"],
-      "assets.deploy": [
-        "tailwind insightnest --minify",
-        "esbuild insightnest --minify",
-        "phx.digest"
-      ],
+      "assets.build": ["esbuild insightnest"],        # ← esbuild only
+      "assets.deploy": ["esbuild insightnest --minify", "phx.digest"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
     ]
   end

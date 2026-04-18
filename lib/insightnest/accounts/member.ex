@@ -1,4 +1,4 @@
-defmodule InsightNest.Accounts.Member do
+defmodule Insightnest.Accounts.Member do
   use Ecto.Schema
   import Ecto.Changeset
 
