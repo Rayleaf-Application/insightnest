@@ -1,3 +1,70 @@
-<main>
+<header class="border-b border-stone-800/60 sticky top-0 z-50 backdrop-blur-sm bg-stone-950/80">
+  <div class="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 group">
+      <svg width="32" height="32" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="200" rx="44" fill="#0C0929"></rect>
+        <path d="M 18 120 Q 100 158 182 120" stroke="#7C3AED" stroke-width="11" fill="none" stroke-linecap="round"></path>
+        <path d="M 36 105 Q 100 138 164 105" stroke="#7C3AED" stroke-width="9.5" fill="none" stroke-linecap="round" opacity="0.7"></path>
+        <path d="M 55 93  Q 100 122 145 93" stroke="#8B5CF6" stroke-width="8.5" fill="none" stroke-linecap="round" opacity="0.5"></path>
+        <polygon points="100,35 107,50 122,56 107,62 100,77 93,62 78,56 93,50" fill="#F59E0B"></polygon>
+      </svg>
+      <span
+        class="text-sm font-medium tracking-wide text-stone-100 group-hover:text-violet-300 transition-colors"
+        style="font-family: 'DM Sans', sans-serif; letter-spacing: 0.05em;"
+      >
+        InsightNest
+      </span>
+    </a>
+
+    <nav class="flex items-center gap-1">
+      <%= if assigns[:current_member] do %>
+        <a
+          href="/library"
+          class="px-3 py-1.5 text-sm text-stone-400 hover:text-stone-100 transition-colors rounded-lg hover:bg-stone-800/60"
+        >
+          Library
+        </a>
+        <a
+          href="/garden"
+          class="px-3 py-1.5 text-sm text-stone-400 hover:text-stone-100 transition-colors rounded-lg hover:bg-stone-800/60"
+        >
+          Garden
+        </a>
+        <a
+          href="/sparks/new"
+          class="ml-2 px-3 py-1.5 text-sm font-medium bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition-colors"
+        >
+          New Spark
+        </a>
+      <% else %>
+        <a
+          href="/library"
+          class="px-3 py-1.5 text-sm text-stone-400 hover:text-stone-100 transition-colors rounded-lg hover:bg-stone-800/60"
+        >
+          Library
+        </a>
+        <a
+          href="/auth"
+          class="ml-2 px-3 py-1.5 text-sm font-medium border border-stone-700 hover:border-stone-500 text-stone-300 hover:text-stone-100 rounded-lg transition-colors"
+        >
+          Sign in
+        </a>
+      <% end %>
+    </nav>
+  </div>
+</header>
+
+<main class="min-h-[calc(100vh-3.5rem)]">
+  <div :if={Phoenix.Flash.get(@flash, :info)} class="max-w-2xl mx-auto px-4 pt-4">
+    <div class="flash-info rounded-lg px-4 py-3 text-sm">
+      {Phoenix.Flash.get(@flash, :info)}
+    </div>
+  </div>
+  <div :if={Phoenix.Flash.get(@flash, :error)} class="max-w-2xl mx-auto px-4 pt-4">
+    <div class="flash-error rounded-lg px-4 py-3 text-sm">
+      {Phoenix.Flash.get(@flash, :error)}
+    </div>
+  </div>
+
   {@inner_content}
 </main>

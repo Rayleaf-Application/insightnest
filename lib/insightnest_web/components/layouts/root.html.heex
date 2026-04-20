@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-stone-950">
+<html lang="en" class="h-full" style="background-color: #0c0a09;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,10 +7,16 @@
     <.live_title suffix=" · InsightNest">
       {assigns[:page_title] || "InsightNest"}
     </.live_title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer type="text/javascript" src={~p"/assets/app.js"}></script>
   </head>
-  <body class="h-full text-stone-100">
+  <body class="h-full antialiased" style="font-family: 'DM Sans', system-ui, sans-serif; background-color: #0c0a09; color: #f5f5f4;">
     {@inner_content}
   </body>
 </html>

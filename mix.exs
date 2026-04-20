@@ -72,9 +72,14 @@ defmodule Insightnest.MixProject do
       setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "assets.build": ["esbuild insightnest"],        # ← esbuild only
-      "assets.deploy": ["esbuild insightnest --minify", "phx.digest"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"]
+      "assets.setup": ["esbuild.install --if-missing"],
+      "assets.build": ["cmd tailwindcss --input=assets/css/app.css --output=priv/static/assets/app.css", "esbuild project"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "assets.deploy": [
+        "cmd tailwindcss --input=assets/css/app.css --output=priv/static/assets/app.css --minify",
+        "esbuild project --minify",
+        "phx.digest"
+      ],
     ]
   end
 end

@@ -35,11 +35,11 @@ in pkgs.mkShell {
     pkgs.curl
     pkgs.jq
     pkgs.tailwindcss
-    pkgs.nodePackages.postcss
+    pkgs.postcss
   ];
 
   # Environment variables for the dev shell
-  shellHook = ''    
+  shellHook = ''
     # Rust toolchain (rustler needs cargo in PATH)
     export RUSTUP_HOME="$PWD/.nix-rustup"
     export CARGO_HOME="$PWD/.nix-cargo"

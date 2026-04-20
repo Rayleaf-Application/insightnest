@@ -1,16 +1,19 @@
-// See the Tailwind configuration guide for advanced usage
-// https://tailwindcss.com/docs/configuration
-
-const plugin = require("tailwindcss/plugin")
+const path = require("path")
 
 module.exports = {
   content: [
-    "./js/**/*.js",
-    "../lib/insightnest_web.ex",
-    "../lib/insightnest_web/**/*.*ex"
+    path.join(__dirname, "../lib/**/*.ex"),
+    path.join(__dirname, "../lib/**/*.heex"),
+    path.join(__dirname, "./js/**/*.js"),
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        display: ["Playfair Display", "Georgia", "serif"],
+        sans:    ["DM Sans", "system-ui", "sans-serif"],
+        mono:    ["DM Mono", "Courier New", "monospace"],
+      },
+    },
   },
   plugins: [],
 }

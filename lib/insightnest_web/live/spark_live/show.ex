@@ -8,16 +8,11 @@ defmodule InsightnestWeb.SparkLive.Show do
   def mount(%{"id" => id}, _session, socket) do
     spark = Sparks.get_spark!(id)
 
-    # Subscribe to real-time updates for this spark's thread
     if connected?(socket) do
       Phoenix.PubSub.subscribe(Insightnest.PubSub, "spark:#{id}")
     end
 
-    {:ok,
-     assign(socket,
-       spark: spark,
-       page_title: spark.title
-     )}
+    {:ok, assign(socket, spark: spark, page_title: spark.title)}
   end
 
   @impl true
@@ -28,42 +23,73 @@ defmodule InsightnestWeb.SparkLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="max-w-2xl mx-auto px-4 py-8">
-      <div class="flex items-center gap-3 mb-8">
-        <a href="/" class="text-stone-500 hover:text-stone-300 transition-colors text-sm">← Feed</a>
-      </div>
+    <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
 
+      <%!-- Breadcrumb --%>
+      <a
+        href="/"
+        class="inline-flex items-center gap-1.5 text-sm text-stone-600
+               hover:text-stone-300 transition-colors mb-8 group"
+      >
+        <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
+        Feed
+      </a>
+
+      <%!-- Spark --%>
       <article>
-        <div class="flex items-start justify-between gap-4 mb-3">
-          <h1 class="text-xl font-semibold text-stone-100">{@spark.title}</h1>
-          <SparkComponents.closes_in_badge closes_at={@spark.closes_at} is_closed={@spark.is_closed} />
-        </div>
-
-        <div class="flex items-center gap-3 mb-4">
+        <%!-- Meta row --%>
+        <div class="flex items-center gap-2 mb-4">
           <SparkComponents.status_chip status={@spark.status} />
-          <span class="text-xs text-stone-600">
-            by {format_wallet(@spark.author.wallet_address)}
+          <SparkComponents.closes_in_badge
+            closes_at={@spark.closes_at}
+            is_closed={@spark.is_closed}
+          />
+          <span class="text-stone-700">·</span>
+          <span
+            class="text-xs text-stone-600"
+            style="font-family: 'DM Mono', monospace;"
+          >
+            {format_wallet(@spark.author.wallet_address)}
           </span>
         </div>
 
+        <%!-- Title --%>
+        <h1
+          class="text-2xl font-medium text-stone-100 leading-tight mb-5"
+          style="font-family: 'Playfair Display', serif;"
+        >
+          {@spark.title}
+        </h1>
+
+        <%!-- Concepts --%>
         <SparkComponents.concept_tag_list concepts={@spark.concepts} />
 
-        <div class="mt-5 prose prose-invert prose-sm max-w-none">
-          <p class="text-stone-300 leading-relaxed whitespace-pre-wrap">{@spark.body}</p>
+        <%!-- Body --%>
+        <div class="mt-6 spark-body">
+          <p :for={para <- paragraphs(@spark.body)} class="mb-4 last:mb-0">
+            {para}
+          </p>
         </div>
       </article>
 
-      <div class="mt-12 border-t border-stone-800 pt-8">
-        <p class="text-sm text-stone-500">
-          Contributions coming in Sprint 2.
-        </p>
+      <%!-- Contributions placeholder --%>
+      <SparkComponents.section_divider label="Contributions" />
+
+      <div class="text-center py-8 text-stone-600 text-sm">
+        Contributions coming in Sprint 2.
       </div>
+
     </div>
     """
   end
 
-  defp format_wallet(nil), do: "anonymous"
-  defp format_wallet(address) do
-    String.slice(address, 0, 6) <> "…" <> String.slice(address, -4, 4)
+  defp paragraphs(body) do
+    body
+    |> String.split("\n\n")
+    |> Enum.map(&String.trim/1)
+    |> Enum.reject(&(&1 == ""))
   end
+
+  defp format_wallet(nil), do: "anon"
+  defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)
 end
