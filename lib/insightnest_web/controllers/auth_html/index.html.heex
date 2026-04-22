@@ -1,223 +1,249 @@
 <!DOCTYPE html>
 <html lang="en" style="background-color: #0c0a09; color: #f5f5f4;">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sign in · InsightNest</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="/assets/app.css" />
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: 'DM Sans', system-ui, sans-serif;
-      background-color: #0c0a09;
-      color: #f5f5f4;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign in · InsightNest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/app.css" />
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        font-family: 'DM Sans', system-ui, sans-serif;
+        background-color: #0c0a09;
+        color: #f5f5f4;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="width: 100%; max-width: 22rem;">
+      
+<!-- Logo -->
+      <div style="display: flex; justify-content: space-around; margin-bottom: 0.5rem;">
+        <svg width="120" height="120" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="200" rx="44" fill="#0C0929"></rect>
+          <path
+            d="M 22 118 Q 100 152 178 118"
+            stroke="#6D28D9"
+            stroke-width="6.5"
+            fill="none"
+            stroke-linecap="round"
+            opacity="0.95"
+          >
+          </path>
+          <path
+            d="M 38 106 Q 100 136 162 106"
+            stroke="#7C3AED"
+            stroke-width="5.8"
+            fill="none"
+            stroke-linecap="round"
+            opacity="0.75"
+          >
+          </path>
+          <path
+            d="M 54 96 Q 100 122 146 96"
+            stroke="#8B5CF6"
+            stroke-width="5.2"
+            fill="none"
+            stroke-linecap="round"
+            opacity="0.55"
+          >
+          </path>
+          <ellipse cx="100" cy="55" rx="30" ry="28" fill="#F59E0B" opacity="0.12"></ellipse>
+          <polygon points="100,37 106,49 118,55 106,61 100,73 94,61 82,55 94,49" fill="#F59E0B">
+          </polygon>
+          <circle cx="100" cy="55" r="5" fill="#FDE68A" opacity="0.92"></circle>
+        </svg>
+      </div>
 
-  <div style="width: 100%; max-width: 22rem;">
-
-    <!-- Logo -->
-    <div style="display: flex; justify-content: space-around; margin-bottom: 0.5rem;">
-      <svg width="120" height="120" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <rect width="200" height="200" rx="44" fill="#0C0929"></rect>
-        <path d="M 22 118 Q 100 152 178 118" stroke="#6D28D9" stroke-width="6.5" fill="none" stroke-linecap="round" opacity="0.95"></path>
-        <path d="M 38 106 Q 100 136 162 106" stroke="#7C3AED" stroke-width="5.8" fill="none" stroke-linecap="round" opacity="0.75"></path>
-        <path d="M 54 96 Q 100 122 146 96" stroke="#8B5CF6" stroke-width="5.2" fill="none" stroke-linecap="round" opacity="0.55"></path>
-        <ellipse cx="100" cy="55" rx="30" ry="28" fill="#F59E0B" opacity="0.12"></ellipse>
-        <polygon points="100,37 106,49 118,55 106,61 100,73 94,61 82,55 94,49" fill="#F59E0B"></polygon>
-        <circle cx="100" cy="55" r="5" fill="#FDE68A" opacity="0.92"></circle>
-      </svg>
-    </div>
-
-    <div style="text-align: center; margin-bottom: 1.5rem;">
-      <h1 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 400; color: #f5f5f4; margin: 0 0 0.5rem;">
-        InsightNest
-      </h1>
-      <p style="font-size: 0.8125rem; color: #78716c; margin: 0;">
-        Slow knowledge, co-owned.
-      </p>
-    </div>
-
-    <!-- Error banner -->
-    <div
-      id="auth-error"
-      style="display: none; margin-bottom: 1.25rem; padding: 0.75rem 1rem;
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <h1 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 400; color: #f5f5f4; margin: 0 0 0.5rem;">
+          InsightNest
+        </h1>
+        <p style="font-size: 0.8125rem; color: #78716c; margin: 0;">
+          Slow knowledge, co-owned.
+        </p>
+      </div>
+      
+<!-- Error banner -->
+      <div
+        id="auth-error"
+        style="display: none; margin-bottom: 1.25rem; padding: 0.75rem 1rem;
              border-radius: 0.5rem; border: 1px solid #991b1b;
              background-color: #450a0a; color: #fca5a5; font-size: 0.8125rem;"
-    ></div>
-
-    <!-- Connect wallet -->
-    <button
-      id="btn-connect"
-      style="width: 100%; padding: 0.75rem 1rem; border-radius: 0.625rem;
+      >
+      </div>
+      
+<!-- Connect wallet -->
+      <button
+        id="btn-connect"
+        style="width: 100%; padding: 0.75rem 1rem; border-radius: 0.625rem;
              background-color: #7c3aed; color: white; font-size: 0.875rem;
              font-weight: 500; border: none; cursor: pointer; transition: background 0.15s;
              font-family: 'DM Sans', sans-serif;"
-      onmouseover="this.style.backgroundColor='#8b5cf6'"
-      onmouseout="this.style.backgroundColor='#7c3aed'"
-    >
-      Connect Wallet
-    </button>
-
-    <!-- Wallet state (hidden until connected) -->
-    <div id="wallet-state" style="display: none; margin-top: 1.25rem;">
-
-      <div style="padding: 0.75rem 1rem; border-radius: 0.625rem;
-                  border: 1px solid #292524; background-color: #1c1917;
-                  margin-bottom: 0.875rem;">
-        <p style="font-size: 0.6875rem; color: #57534e; text-transform: uppercase;
-                  letter-spacing: 0.1em; margin: 0 0 0.25rem;">Connected</p>
-        <p
-          id="wallet-address"
-          style="font-family: 'DM Mono', monospace; font-size: 0.8125rem;
-                 color: #d6d3d1; margin: 0; word-break: break-all;"
-        ></p>
-      </div>
-
-      <button
-        id="btn-sign"
-        style="width: 100%; padding: 0.75rem 1rem; border-radius: 0.625rem;
-               background-color: #7c3aed; color: white; font-size: 0.875rem;
-               font-weight: 500; border: none; cursor: pointer; transition: background 0.15s;
-               font-family: 'DM Sans', sans-serif;"
         onmouseover="this.style.backgroundColor='#8b5cf6'"
         onmouseout="this.style.backgroundColor='#7c3aed'"
       >
-        Sign in with Ethereum
+        Connect Wallet
       </button>
-    </div>
+      
+<!-- Wallet state (hidden until connected) -->
+      <div id="wallet-state" style="display: none; margin-top: 1.25rem;">
+        <div style="padding: 0.75rem 1rem; border-radius: 0.625rem;
+                  border: 1px solid #292524; background-color: #1c1917;
+                  margin-bottom: 0.875rem;">
+          <p style="font-size: 0.6875rem; color: #57534e; text-transform: uppercase;
+                  letter-spacing: 0.1em; margin: 0 0 0.25rem;">
+            Connected
+          </p>
+          <p
+            id="wallet-address"
+            style="font-family: 'DM Mono', monospace; font-size: 0.8125rem;
+                 color: #d6d3d1; margin: 0; word-break: break-all;"
+          >
+          </p>
+        </div>
 
-    <!-- Loading -->
-    <p
-      id="loading"
-      style="display: none; text-align: center; margin-top: 1rem;
+        <button
+          id="btn-sign"
+          style="width: 100%; padding: 0.75rem 1rem; border-radius: 0.625rem;
+               background-color: #7c3aed; color: white; font-size: 0.875rem;
+               font-weight: 500; border: none; cursor: pointer; transition: background 0.15s;
+               font-family: 'DM Sans', sans-serif;"
+          onmouseover="this.style.backgroundColor='#8b5cf6'"
+          onmouseout="this.style.backgroundColor='#7c3aed'"
+        >
+          Sign in with Ethereum
+        </button>
+      </div>
+      
+<!-- Loading -->
+      <p
+        id="loading"
+        style="display: none; text-align: center; margin-top: 1rem;
              font-size: 0.8125rem; color: #78716c;"
-    ></p>
+      >
+      </p>
+      
+<!-- Divider -->
+      <div style="display: flex; align-items: center; gap: 1rem; margin: 1.75rem 0;">
+        <div style="flex: 1; border-top: 1px solid #292524;"></div>
+        <span style="font-size: 0.75rem; color: #44403c;">or</span>
+        <div style="flex: 1; border-top: 1px solid #292524;"></div>
+      </div>
 
-    <!-- Divider -->
-    <div style="display: flex; align-items: center; gap: 1rem; margin: 1.75rem 0;">
-      <div style="flex: 1; border-top: 1px solid #292524;"></div>
-      <span style="font-size: 0.75rem; color: #44403c;">or</span>
-      <div style="flex: 1; border-top: 1px solid #292524;"></div>
+      <p style="text-align: center; font-size: 0.8125rem; color: #57534e; margin: 0;">
+        Email sign-in coming in Sprint 6
+      </p>
     </div>
 
-    <p style="text-align: center; font-size: 0.8125rem; color: #57534e; margin: 0;">
-      Email sign-in coming in Sprint 6
-    </p>
+    <script>
+      let connectedAddress = null;
 
-  </div>
+      const $ = id => document.getElementById(id);
 
-  <script>
-    let connectedAddress = null;
-
-    const $ = id => document.getElementById(id);
-
-    function showError(msg) {
-      const el = $("auth-error");
-      el.textContent = msg;
-      el.style.display = "block";
-    }
-
-    function clearError() {
-      const el = $("auth-error");
-      el.textContent = "";
-      el.style.display = "none";
-    }
-
-    function setLoading(text) {
-      const el = $("loading");
-      el.textContent = text;
-      el.style.display = text ? "block" : "none";
-    }
-
-    function buildSiweMessage(address, nonce) {
-      const domain   = window.location.host;
-      const origin   = window.location.origin;
-      const issuedAt = new Date().toISOString();
-      return [
-        `${domain} wants you to sign in with your Ethereum account:`,
-        address, ``,
-        `Sign in to InsightNest`, ``,
-        `URI: ${origin}`,
-        `Version: 1`,
-        `Chain ID: 1`,
-        `Nonce: ${nonce}`,
-        `Issued At: ${issuedAt}`,
-      ].join("\n");
-    }
-
-    $("btn-connect").addEventListener("click", async () => {
-      clearError();
-      if (!window.ethereum) {
-        showError("No Ethereum wallet detected. Install MetaMask and try again.");
-        return;
+      function showError(msg) {
+        const el = $("auth-error");
+        el.textContent = msg;
+        el.style.display = "block";
       }
-      try {
-        setLoading("Connecting wallet…");
-        $("btn-connect").disabled = true;
-        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-        connectedAddress = accounts[0];
-        $("wallet-address").textContent = connectedAddress;
-        $("wallet-state").style.display = "block";
-        $("btn-connect").style.display = "none";
-        setLoading("");
-      } catch (err) {
-        setLoading("");
-        $("btn-connect").disabled = false;
-        showError(err.message || "Failed to connect wallet.");
-      }
-    });
 
-    $("btn-sign").addEventListener("click", async () => {
-      if (!connectedAddress) return;
-      clearError();
-      $("btn-sign").disabled = true;
-      $("btn-sign").textContent = "Requesting nonce…";
-      try {
-        const nonceRes = await fetch(`/auth/nonce?address=${encodeURIComponent(connectedAddress)}`, {
-          headers: { "Accept": "application/json" }
-        });
-        const { nonce } = await nonceRes.json();
-        const message = buildSiweMessage(connectedAddress, nonce);
-        $("btn-sign").textContent = "Check your wallet…";
-        const signature = await window.ethereum.request({
-          method: "personal_sign",
-          params: [message, connectedAddress]
-        });
-        $("btn-sign").textContent = "Verifying…";
-        const verifyRes = await fetch("/auth/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify({ message, signature })
-        });
-        const data = await verifyRes.json();
-        if (!verifyRes.ok) throw new Error(data.error || "Verification failed.");
-        localStorage.setItem("insightnest_token", data.token);
-        window.location.href = "/";
-      } catch (err) {
-        $("btn-sign").disabled = false;
-        $("btn-sign").textContent = "Sign in with Ethereum";
-        if (err.code === 4001) {
-          showError("Signature rejected.");
-        } else {
-          showError(err.message || "Something went wrong.");
+      function clearError() {
+        const el = $("auth-error");
+        el.textContent = "";
+        el.style.display = "none";
+      }
+
+      function setLoading(text) {
+        const el = $("loading");
+        el.textContent = text;
+        el.style.display = text ? "block" : "none";
+      }
+
+      function buildSiweMessage(address, nonce) {
+        const domain   = window.location.host;
+        const origin   = window.location.origin;
+        const issuedAt = new Date().toISOString();
+        return [
+          `${domain} wants you to sign in with your Ethereum account:`,
+          address, ``,
+          `Sign in to InsightNest`, ``,
+          `URI: ${origin}`,
+          `Version: 1`,
+          `Chain ID: 1`,
+          `Nonce: ${nonce}`,
+          `Issued At: ${issuedAt}`,
+        ].join("\n");
+      }
+
+      $("btn-connect").addEventListener("click", async () => {
+        clearError();
+        if (!window.ethereum) {
+          showError("No Ethereum wallet detected. Install MetaMask and try again.");
+          return;
         }
-      }
-    });
-  </script>
+        try {
+          setLoading("Connecting wallet…");
+          $("btn-connect").disabled = true;
+          const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+          connectedAddress = accounts[0];
+          $("wallet-address").textContent = connectedAddress;
+          $("wallet-state").style.display = "block";
+          $("btn-connect").style.display = "none";
+          setLoading("");
+        } catch (err) {
+          setLoading("");
+          $("btn-connect").disabled = false;
+          showError(err.message || "Failed to connect wallet.");
+        }
+      });
 
-</body>
+      $("btn-sign").addEventListener("click", async () => {
+        if (!connectedAddress) return;
+        clearError();
+        $("btn-sign").disabled = true;
+        $("btn-sign").textContent = "Requesting nonce…";
+        try {
+          const nonceRes = await fetch(`/auth/nonce?address=${encodeURIComponent(connectedAddress)}`, {
+            headers: { "Accept": "application/json" }
+          });
+          const { nonce } = await nonceRes.json();
+          const message = buildSiweMessage(connectedAddress, nonce);
+          $("btn-sign").textContent = "Check your wallet…";
+          const signature = await window.ethereum.request({
+            method: "personal_sign",
+            params: [message, connectedAddress]
+          });
+          $("btn-sign").textContent = "Verifying…";
+          const verifyRes = await fetch("/auth/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({ message, signature })
+          });
+          const data = await verifyRes.json();
+          if (!verifyRes.ok) throw new Error(data.error || "Verification failed.");
+          localStorage.setItem("insightnest_token", data.token);
+          window.location.href = "/";
+        } catch (err) {
+          $("btn-sign").disabled = false;
+          $("btn-sign").textContent = "Sign in with Ethereum";
+          if (err.code === 4001) {
+            showError("Signature rejected.");
+          } else {
+            showError(err.message || "Something went wrong.");
+          }
+        }
+      });
+    </script>
+  </body>
 </html>

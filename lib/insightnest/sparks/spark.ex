@@ -8,13 +8,13 @@ defmodule Insightnest.Sparks.Spark do
   @foreign_key_type :binary_id
 
   schema "sparks" do
-    field :title,           :string
-    field :body,            :string
-    field :concepts,        {:array, :string}, default: []
-    field :status,          :string, default: "draft"
-    field :slug,            :string
-    field :content_hash,    :string
-    field :closes_at,       :utc_datetime
+    field :title, :string
+    field :body, :string
+    field :concepts, {:array, :string}, default: []
+    field :status, :string, default: "draft"
+    field :slug, :string
+    field :content_hash, :string
+    field :closes_at, :utc_datetime
     field :extension_count, :integer, default: 0
 
     # Computed at read time — not stored

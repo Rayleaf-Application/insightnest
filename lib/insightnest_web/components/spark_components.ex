@@ -100,7 +100,7 @@ defmodule InsightnestWeb.SparkComponents do
     <span class={[
       "inline-block px-2 py-0.5 text-xs rounded-md border",
       if(@status == "published",
-        do:   "bg-emerald-950 text-emerald-400 border-emerald-800/60",
+        do: "bg-emerald-950 text-emerald-400 border-emerald-800/60",
         else: "bg-stone-800 text-stone-500 border-stone-700/60"
       )
     ]}>
@@ -143,22 +143,26 @@ defmodule InsightnestWeb.SparkComponents do
   defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)
 
   defp badge_class(true, _), do: "bg-red-950 text-red-400 border-red-800/60"
+
   defp badge_class(false, closes_at) do
     hours = DateTime.diff(closes_at, DateTime.utc_now(), :hour)
+
     cond do
-      hours < 2  -> "bg-red-950 text-red-400 border-red-800/60"
+      hours < 2 -> "bg-red-950 text-red-400 border-red-800/60"
       hours < 48 -> "bg-amber-950 text-amber-400 border-amber-800/60"
-      true       -> "bg-stone-800 text-stone-500 border-stone-700/60"
+      true -> "bg-stone-800 text-stone-500 border-stone-700/60"
     end
   end
 
   defp badge_text(true, _), do: "Closed"
+
   defp badge_text(false, closes_at) do
     secs = DateTime.diff(closes_at, DateTime.utc_now(), :second)
+
     cond do
-      secs < 3600   -> "#{div(secs, 60)}m"
+      secs < 3600 -> "#{div(secs, 60)}m"
       secs < 86_400 -> "#{div(secs, 3600)}h"
-      true          -> "#{div(secs, 86_400)}d"
+      true -> "#{div(secs, 86_400)}d"
     end
   end
 end

@@ -57,15 +57,23 @@ defmodule Insightnest.Sparks do
 
   # ── Commands ─────────────────────────────────────────────────────────────────
 
+  def changeset(spark, attrs) do
+    spark
+    |> Ecto.Changeset.cast(attrs, [:title, :body, :status, :concepts])
+    |> Ecto.Changeset.validate_required([:title, :body])
+
+    # Add other validations as needed
+  end
+
   @doc """
   Creates a spark for the given author.
   Accepts: title, body, concepts, status ("draft" | "published"), timeout_days.
   """
   def create_spark(attrs, author_id) do
     timeout_days = Map.get(attrs, "timeout_days", 0) |> parse_int()
-    closes_at    = compute_closes_at(timeout_days)
+    closes_at = compute_closes_at(timeout_days)
     content_hash = compute_content_hash(attrs, author_id)
-    slug         = generate_slug(Map.get(attrs, "title", ""))
+    slug = generate_slug(Map.get(attrs, "title", ""))
 
     %Spark{}
     |> Spark.changeset(
@@ -102,6 +110,7 @@ defmodule Insightnest.Sparks do
 
   @doc "Returns true if the given member is the spark's author."
   def author?(%Spark{author_id: aid}, member_id), do: aid == member_id
+
   def author?(spark_id, member_id) when is_binary(spark_id) do
     Repo.exists?(from s in Spark, where: s.id == ^spark_id and s.author_id == ^member_id)
   end
@@ -109,6 +118,7 @@ defmodule Insightnest.Sparks do
   # ── Private ──────────────────────────────────────────────────────────────────
 
   defp compute_is_closed(%Spark{closes_at: nil} = spark), do: %{spark | is_closed: false}
+
   defp compute_is_closed(%Spark{closes_at: closes_at} = spark) do
     %{spark | is_closed: DateTime.compare(DateTime.utc_now(), closes_at) == :gt}
   end
@@ -118,15 +128,18 @@ defmodule Insightnest.Sparks do
     |> DateTime.add(days * 86_400, :second)
     |> DateTime.truncate(:second)
   end
+
   defp compute_closes_at(_), do: nil
 
   defp compute_content_hash(attrs, author_id) do
-    content = [
-      Map.get(attrs, "title", ""),
-      Map.get(attrs, "body", ""),
-      author_id,
-      DateTime.utc_now() |> DateTime.to_unix() |> to_string()
-    ] |> Enum.join("|")
+    content =
+      [
+        Map.get(attrs, "title", ""),
+        Map.get(attrs, "body", ""),
+        author_id,
+        DateTime.utc_now() |> DateTime.to_unix() |> to_string()
+      ]
+      |> Enum.join("|")
 
     :crypto.hash(:sha256, content) |> Base.encode16(case: :lower)
   end
@@ -138,11 +151,13 @@ defmodule Insightnest.Sparks do
   end
 
   defp parse_int(v) when is_integer(v), do: v
+
   defp parse_int(v) when is_binary(v) do
     case Integer.parse(v) do
       {n, _} -> n
       :error -> 0
     end
   end
+
   defp parse_int(_), do: 0
 end

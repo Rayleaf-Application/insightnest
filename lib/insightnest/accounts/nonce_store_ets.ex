@@ -15,14 +15,17 @@ defmodule Insightnest.Accounts.NonceStoreETS do
 
   def get_and_delete(address) do
     key = String.downcase(address)
+
     case :ets.lookup(@table, key) do
       [{^key, nonce, expires_at}] ->
         :ets.delete(@table, key)
+
         if System.system_time(:second) < expires_at do
           {:ok, nonce}
         else
           {:error, :expired}
         end
+
       [] ->
         {:error, :not_found}
     end

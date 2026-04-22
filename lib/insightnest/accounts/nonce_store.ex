@@ -6,5 +6,6 @@ defmodule Insightnest.Accounts.NonceStore do
   """
 
   @callback put(address :: String.t(), nonce :: String.t(), ttl_seconds :: integer()) :: :ok
-  @callback get_and_delete(address :: String.t()) :: {:ok, String.t()} | {:error, :not_found | :expired}
+  @callback get_and_delete(address :: String.t()) ::
+              {:ok, String.t()} | {:error, :not_found | :expired}
 end

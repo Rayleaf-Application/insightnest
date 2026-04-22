@@ -12,7 +12,9 @@ defmodule InsightnestWeb.SparkLive.Show do
       Phoenix.PubSub.subscribe(Insightnest.PubSub, "spark:#{id}")
     end
 
-    {:ok, assign(socket, spark: spark, page_title: spark.title)}
+    {:ok,
+     assign(socket, spark: spark, page_title: spark.title),
+     layout: {InsightnestWeb.Layouts, :app}}
   end
 
   @impl true
@@ -24,62 +26,59 @@ defmodule InsightnestWeb.SparkLive.Show do
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
-
-      <%!-- Breadcrumb --%>
-      <a
-        href="/"
-        class="inline-flex items-center gap-1.5 text-sm text-stone-600
+        <%!-- Breadcrumb --%>
+        <a
+          href="/"
+          class="inline-flex items-center gap-1.5 text-sm text-stone-600
                hover:text-stone-300 transition-colors mb-8 group"
-      >
-        <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
-        Feed
-      </a>
-
-      <%!-- Spark --%>
-      <article>
-        <%!-- Meta row --%>
-        <div class="flex items-center gap-2 mb-4">
-          <SparkComponents.status_chip status={@spark.status} />
-          <SparkComponents.closes_in_badge
-            closes_at={@spark.closes_at}
-            is_closed={@spark.is_closed}
-          />
-          <span class="text-stone-700">·</span>
-          <span
-            class="text-xs text-stone-600"
-            style="font-family: 'DM Mono', monospace;"
-          >
-            {format_wallet(@spark.author.wallet_address)}
-          </span>
-        </div>
-
-        <%!-- Title --%>
-        <h1
-          class="text-2xl font-medium text-stone-100 leading-tight mb-5"
-          style="font-family: 'Playfair Display', serif;"
         >
-          {@spark.title}
-        </h1>
+          <span class="group-hover:-translate-x-0.5 transition-transform">←</span> Feed
+        </a>
 
-        <%!-- Concepts --%>
-        <SparkComponents.concept_tag_list concepts={@spark.concepts} />
+        <%!-- Spark --%>
+        <article>
+          <%!-- Meta row --%>
+          <div class="flex items-center gap-2 mb-4">
+            <SparkComponents.status_chip status={@spark.status} />
+            <SparkComponents.closes_in_badge
+              closes_at={@spark.closes_at}
+              is_closed={@spark.is_closed}
+            />
+            <span class="text-stone-700">·</span>
+            <span
+              class="text-xs text-stone-600"
+              style="font-family: 'DM Mono', monospace;"
+            >
+              {format_wallet(@spark.author.wallet_address)}
+            </span>
+          </div>
 
-        <%!-- Body --%>
-        <div class="mt-6 spark-body">
-          <p :for={para <- paragraphs(@spark.body)} class="mb-4 last:mb-0">
-            {para}
-          </p>
+          <%!-- Title --%>
+          <h1
+            class="text-2xl font-medium text-stone-100 leading-tight mb-5"
+            style="font-family: 'Playfair Display', serif;"
+          >
+            {@spark.title}
+          </h1>
+
+          <%!-- Concepts --%>
+          <SparkComponents.concept_tag_list concepts={@spark.concepts} />
+
+          <%!-- Body --%>
+          <div class="mt-6 spark-body">
+            <p :for={para <- paragraphs(@spark.body)} class="mb-4 last:mb-0">
+              {para}
+            </p>
+          </div>
+        </article>
+
+        <%!-- Contributions placeholder --%>
+        <SparkComponents.section_divider label="Contributions" />
+
+        <div class="text-center py-8 text-stone-600 text-sm">
+          Contributions coming in Sprint 2.
         </div>
-      </article>
-
-      <%!-- Contributions placeholder --%>
-      <SparkComponents.section_divider label="Contributions" />
-
-      <div class="text-center py-8 text-stone-600 text-sm">
-        Contributions coming in Sprint 2.
       </div>
-
-    </div>
     """
   end
 

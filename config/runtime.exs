@@ -17,8 +17,7 @@ if config_env() == :prod do
     System.get_env("GUARDIAN_SECRET_KEY") ||
       raise "GUARDIAN_SECRET_KEY environment variable is missing"
 
-  config :insightnest, Insightnest.Auth.Guardian,
-    secret_key: guardian_secret
+  config :insightnest, Insightnest.Auth.Guardian, secret_key: guardian_secret
 
   config :insightnest, InsightnestWeb.Endpoint,
     url: [host: System.get_env("PHX_HOST", "example.com"), port: 443, scheme: "https"],

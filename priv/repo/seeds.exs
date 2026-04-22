@@ -25,9 +25,9 @@ else
 
   sparks = [
     %{
-      author_id:    alice.id,
-      title:        "The case for slow knowledge",
-      body:         """
+      author_id: alice.id,
+      title: "The case for slow knowledge",
+      body: """
       We live in an age of instant takes. Every platform optimises for speed — \
       the fastest response, the hottest reaction, the freshest content. \
       But what if the most valuable knowledge is the kind that takes time to form?
@@ -39,17 +39,17 @@ else
       The question is whether we can build infrastructure for slow knowledge \
       in a world that financially rewards speed.
       """,
-      concepts:     ["epistemology", "knowledge", "attention"],
-      status:       "published",
-      slug:         "the-case-for-slow-knowledge-a1b2c3",
+      concepts: ["epistemology", "knowledge", "attention"],
+      status: "published",
+      slug: "the-case-for-slow-knowledge-a1b2c3",
       content_hash: :crypto.hash(:sha256, "slow-knowledge-alice") |> Base.encode16(case: :lower),
-      inserted_at:  now,
-      updated_at:   now
+      inserted_at: now,
+      updated_at: now
     },
     %{
-      author_id:    bob.id,
-      title:        "On digital commons",
-      body:         """
+      author_id: bob.id,
+      title: "On digital commons",
+      body: """
       The tragedy of the commons assumes that shared resources are inevitably depleted. \
       But digital goods are non-rival — your reading this does not prevent me from reading it.
 
@@ -60,26 +60,26 @@ else
       Wikipedia gestures at this but falls short on ownership. \
       Blockchain gestures at ownership but falls short on knowledge.
       """,
-      concepts:     ["commons", "governance", "ownership"],
-      status:       "published",
-      slug:         "on-digital-commons-d4e5f6",
+      concepts: ["commons", "governance", "ownership"],
+      status: "published",
+      slug: "on-digital-commons-d4e5f6",
       content_hash: :crypto.hash(:sha256, "digital-commons-bob") |> Base.encode16(case: :lower),
-      inserted_at:  DateTime.add(now, -3600, :second),
-      updated_at:   DateTime.add(now, -3600, :second)
+      inserted_at: DateTime.add(now, -3600, :second),
+      updated_at: DateTime.add(now, -3600, :second)
     },
     %{
-      author_id:    carol.id,
-      title:        "Why AI writing feels flat",
-      body:         """
+      author_id: carol.id,
+      title: "Why AI writing feels flat",
+      body: """
       A draft exploring why AI-generated text lacks the texture of human writing.
       Work in progress.
       """,
-      concepts:     ["AI", "writing", "creativity"],
-      status:       "draft",
-      slug:         "why-ai-writing-feels-flat-g7h8i9",
+      concepts: ["AI", "writing", "creativity"],
+      status: "draft",
+      slug: "why-ai-writing-feels-flat-g7h8i9",
       content_hash: :crypto.hash(:sha256, "ai-writing-carol") |> Base.encode16(case: :lower),
-      inserted_at:  DateTime.add(now, -7200, :second),
-      updated_at:   DateTime.add(now, -7200, :second)
+      inserted_at: DateTime.add(now, -7200, :second),
+      updated_at: DateTime.add(now, -7200, :second)
     }
   ]
 

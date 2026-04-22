@@ -32,13 +32,13 @@ defmodule Insightnest.Auth.Secp256k1 do
   Returns `{:ok, "0x..."}` (lowercase hex) or `{:error, reason}`.
   """
   def recover_address(message_hash, r, s, recovery_id)
-      when is_binary(message_hash) and byte_size(message_hash) == 32
-      and is_binary(r) and byte_size(r) == 32
-      and is_binary(s) and byte_size(s) == 32
-      and recovery_id in [0, 1] do
+      when is_binary(message_hash) and byte_size(message_hash) == 32 and
+             is_binary(r) and byte_size(r) == 32 and
+             is_binary(s) and byte_size(s) == 32 and
+             recovery_id in [0, 1] do
     r_int = :binary.decode_unsigned(r)
     s_int = :binary.decode_unsigned(s)
-    z     = :binary.decode_unsigned(message_hash)
+    z = :binary.decode_unsigned(message_hash)
 
     with {:ok, pub_key} <- recover_public_key(z, r_int, s_int, recovery_id) do
       {:ok, public_key_to_address(pub_key)}
@@ -88,7 +88,7 @@ defmodule Insightnest.Auth.Secp256k1 do
   # y² = x³ + 7 (mod p)  [secp256k1: a=0, b=7]
   defp point_from_x(x, recovery_id) do
     y_sq = rem(mod_pow(x, 3, @p) + 7, @p)
-    y    = mod_pow(y_sq, div(@p + 1, 4), @p)
+    y = mod_pow(y_sq, div(@p + 1, 4), @p)
 
     # Check that y² ≡ y_sq (mod p) — if not, no solution exists
     if mod_pow(y, 2, @p) != y_sq do
@@ -134,10 +134,11 @@ defmodule Insightnest.Auth.Secp256k1 do
 
   defp point_double({x, y}) do
     # slope = (3 * x² + a) / (2 * y)  mod p   [a=0 for secp256k1]
-    m = rem(
-      mod_mult(3 * mod_pow(x, 2, @p), mod_inv(mod_mult(2, y, @p), @p), @p),
-      @p
-    )
+    m =
+      rem(
+        mod_mult(3 * mod_pow(x, 2, @p), mod_inv(mod_mult(2, y, @p), @p), @p),
+        @p
+      )
 
     x3 = mod_sub(mod_mult(m, m, @p), 2 * x, @p)
     y3 = mod_sub(mod_mult(m, mod_sub(x, x3, @p), @p), y, @p)
@@ -192,7 +193,7 @@ defmodule Insightnest.Auth.Secp256k1 do
     y_bytes = pad32(:binary.encode_unsigned(y))
 
     key_bytes = x_bytes <> y_bytes
-    hash      = ExKeccak.hash_256(key_bytes)
+    hash = ExKeccak.hash_256(key_bytes)
 
     <<_::binary-size(12), address::binary-size(20)>> = hash
 

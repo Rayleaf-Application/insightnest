@@ -1,10 +1,11 @@
 import Config
 
 config :insightnest, Insightnest.Repo,
-  url: System.get_env(
-    "DATABASE_URL",
-    "postgres://postgres:postgres@localhost:5432/insightnest_dev"
-  ),
+  url:
+    System.get_env(
+      "DATABASE_URL",
+      "postgres://postgres:postgres@localhost:5432/insightnest_dev"
+    ),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -17,7 +18,13 @@ config :insightnest, InsightnestWeb.Endpoint,
   secret_key_base: "+/QTQNAaI436A6zvThyLME80IgnD1jf4oD1Japn6PUkE/DnGGW1r8ZA+vkgdNU7m",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:insightnest, ~w(--sourcemap=inline --watch)]},
-    tailwind: {System, :cmd, ["tailwindcss", ["--input=assets/css/app.css", "--output=priv/static/assets/css/app.css", "--watch"], [cd: File.cwd!()]]}
+    tailwind:
+      {System, :cmd,
+       [
+         "tailwindcss",
+         ["--input=assets/css/app.css", "--output=priv/static/assets/css/app.css", "--watch"],
+         [cd: File.cwd!()]
+       ]}
   ],
   live_reload: [
     patterns: [

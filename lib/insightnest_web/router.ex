@@ -10,16 +10,19 @@ defmodule InsightnestWeb.Router do
     plug :put_root_layout, html: {InsightnestWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug InsightnestWeb.Plugs.LoadMember   # soft auth — sets current_member or nil
+    # soft auth — sets current_member or nil
+    plug InsightnestWeb.Plugs.LoadMember
   end
 
   pipeline :api do
     plug :accepts, ["json"]
-    plug :fetch_session                    # needed so auth/verify can write session
+    # needed so auth/verify can write session
+    plug :fetch_session
   end
 
   pipeline :authenticated do
-    plug InsightnestWeb.Plugs.RequireAuth  # hard auth — halts if no valid session
+    # hard auth — halts if no valid session
+    plug InsightnestWeb.Plugs.RequireAuth
   end
 
   # ── Auth routes (JSON, no CSRF needed for nonce/verify) ──────────────────────
