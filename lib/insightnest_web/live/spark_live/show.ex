@@ -110,10 +110,11 @@ defmodule InsightnestWeb.SparkLive.Show do
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
-        <%!-- Breadcrumb --%>
-        <a
-          href="/"
-          class="inline-flex items-center gap-1.5 text-sm text-stone-600
+
+      <%!-- Breadcrumb --%>
+      <a
+        href="/"
+        class="inline-flex items-center gap-1.5 text-sm text-stone-600
                hover:text-stone-300 transition-colors mb-8 group"
       >
         <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
