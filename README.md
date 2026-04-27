@@ -1,35 +1,35 @@
-# Insightnest
+<br>
+<div align="center">
+  <h1>InsightNest</h1>
+</div>
+---
 
-To start your Phoenix server:
+## 🚀 Key Features
 
-* Run `mix setup` to install and setup dependencies
-* Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+  * **Workflow Logic:** Handles the "Spark" $\rightarrow$ "Contribution" $\rightarrow$ "Weave" workflow state transitions.
+  * **Decentralized Integration:** Manages the pipeline for committing final "Insight" artifacts to **IPFS/Filecoin**.
+  * **Sovereign Identity:** Core services for non-custodial login and user profile management (built for DID integration).
+  * **Monetization Hooks:** Infrastructure for future fractional ownership tokenization.
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+---
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+## 🛠️ Getting Started (Local Development)
+### Daily dev workflow
+  1. `cd` into project — `direnv` auto-loads the nix shell.
+	  * `cd ~/projects/insightnest`
+	    → "Insightnest dev shell" message appears automatically
 
-## Learn more
+  2. Start everything
+	  * `make dev`
+	    → pulls Postgres image if missing, starts container
+	    → runs mix phx.server on :4000
 
-* Official website: https://www.phoenixframework.org/
-* Guides: https://hexdocs.pm/phoenix/overview.html
-* Docs: https://hexdocs.pm/phoenix
-* Forum: https://elixirforum.com/c/phoenix-forum
-* Source: https://github.com/phoenixframework/phoenix
+  3. Second terminal — `IEx` session
+	  * `cd ~/projects/insightnest`
+	    → `direnv` re-enters shell
+	  * `make shell`
 
-## Daily dev workflow
-# 1. cd into project — direnv auto-loads the nix shell
-cd ~/projects/insightnest
-# "Insightnest dev shell" message appears automatically
+  4. Run tests
+  * `make test`
 
-# 2. Start everything
-make dev
-# → pulls Postgres image if missing, starts container
-# → runs mix phx.server on :4000
-
-# 3. Second terminal — IEx session
-cd ~/projects/insightnest   # direnv re-enters shell
-make shell
-
-# 4. Run tests
-make test
+## 📝 WIP - Contributing

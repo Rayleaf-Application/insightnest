@@ -90,4 +90,55 @@ else
   end)
 
   IO.puts("✓ Seeded 3 members, 2 published sparks, 1 draft")
+
+  # Add contributions if not already present
+  alias Insightnest.Contributions.Contribution
+
+  slow_knowledge = Repo.get_by!(Insightnest.Sparks.Spark, slug: "the-case-for-slow-knowledge-a1b2c3")
+  digital_commons = Repo.get_by!(Insightnest.Sparks.Spark, slug: "on-digital-commons-d4e5f6")
+
+  if Repo.aggregate(Contribution, :count) == 0 do
+    contributions = [
+      %{
+        spark_id:   slow_knowledge.id,
+        author_id:  bob.id,
+        body:       "There's strong empirical grounding here. Studies on deliberative democracy show that slowing down information processing significantly improves the quality of conclusions drawn. The Kahneman System 1/2 framing applies directly — fast knowledge is System 1, pattern-matched and often wrong.",
+        stance:     "evidence",
+        inserted_at: DateTime.add(now, 3600, :second),
+        updated_at:  DateTime.add(now, 3600, :second)
+      },
+      %{
+        spark_id:   slow_knowledge.id,
+        author_id:  carol.id,
+        body:       "I'd push back on the implicit assumption that speed is purely a platform incentive problem. Sometimes urgency is epistemically valid — breaking news, emergency coordination, time-sensitive decisions. The question isn't slow vs. fast but appropriate speed for context.",
+        stance:     "challenges",
+        inserted_at: DateTime.add(now, 7200, :second),
+        updated_at:  DateTime.add(now, 7200, :second)
+      },
+      %{
+        spark_id:   digital_commons.id,
+        author_id:  alice.id,
+        body:       "This connects directly to Yochai Benkler's work on commons-based peer production. The Wealth of Networks argues that non-rival goods enable new production models that weren't economically viable before. InsightNest is essentially testing whether knowledge crystallisation is one of them.",
+        stance:     "expands",
+        inserted_at: DateTime.add(now, 1800, :second),
+        updated_at:  DateTime.add(now, 1800, :second)
+      },
+      %{
+        spark_id:   digital_commons.id,
+        author_id:  carol.id,
+        body:       "What's the governance model when contributors disagree about what counts as a valid contribution? Wikipedia's edit wars suggest this is harder than it looks at the protocol level.",
+        stance:     "question",
+        inserted_at: DateTime.add(now, 5400, :second),
+        updated_at:  DateTime.add(now, 5400, :second)
+      }
+    ]
+
+    Enum.each(contributions, fn attrs ->
+      %Contribution{}
+      |> Contribution.changeset(attrs)
+      |> Repo.insert!(on_conflict: :nothing)
+    end)
+
+    IO.puts("✓ Seeded 4 contributions")
+  end
 end

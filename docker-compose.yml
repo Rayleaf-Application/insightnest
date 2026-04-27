@@ -16,6 +16,7 @@ services:
       timeout: 3s
       retries: 10
     restart: unless-stopped
+    network_mode: slirp4netns
 
 volumes:
   insightnest_postgres:
