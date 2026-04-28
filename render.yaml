@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: insightnest-api
+    env: elixir
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "./build.sh"
+    startCommand: "bin/server"
+
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: ELIXIR_VERSION
+        value: 1.18
+      - key: PORT
+        value: 8080
+
+      - fromGroup: database
+
+      - key: SECRET_KEY_BASE
+        sync: false
+      - key: GUARDIAN_SECRET_KEY
+        sync: false
+      - key: SIWE_CHAIN_ID
+        value: "31337"
+
+      - key: LIVE_VIEW_SIGN_SALT
+        sync: false
+
+databases:
+  - type: postgres
+    name: insightnest-db
+    databaseName: insightnest_beta
+    user: insightnest_user
+    plan: starter
+    ipAllowList: []
