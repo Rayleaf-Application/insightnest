@@ -160,4 +160,48 @@ defmodule Insightnest.Sparks do
   end
 
   defp parse_int(_), do: 0
+
+  @max_extensions Application.compile_env(:insightnest, :spark_max_extensions, 2)
+  @default_timeout Application.compile_env(:insightnest, :spark_default_timeout_days, 14)
+  @max_timeout Application.compile_env(:insightnest, :spark_max_timeout_days, 90)
+
+  @doc """
+  Extends the closing time of a spark. Only the author can extend.
+  Max extensions: 2. Extends from current deadline or now, whichever is later.
+  """
+  def extend_spark(%Spark{} = spark, author_id, additional_days \\ nil) do
+    cond do
+      spark.author_id != author_id ->
+        {:error, :unauthorized}
+
+      spark.extension_count >= @max_extensions ->
+        {:error, :max_extensions_reached}
+
+      true ->
+        days = additional_days || @default_timeout
+        days = min(days, @max_timeout)
+
+        base = case spark.closes_at do
+          nil -> DateTime.utc_now()
+          closes_at ->
+            if DateTime.compare(closes_at, DateTime.utc_now()) == :gt do
+              closes_at
+            else
+              DateTime.utc_now()
+            end
+        end
+
+        new_closes_at =
+          base
+          |> DateTime.add(days * 86_400, :second)
+          |> DateTime.truncate(:second)
+
+        spark
+        |> Ecto.Changeset.change(
+          closes_at: new_closes_at,
+          extension_count: spark.extension_count + 1
+        )
+        |> Repo.update()
+    end
+  end
 end

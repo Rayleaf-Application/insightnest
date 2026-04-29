@@ -6,28 +6,38 @@ defmodule InsightnestWeb.SparkLive.Show do
   alias InsightnestWeb.SparkComponents
   alias InsightnestWeb.ContributionComponents
 
+  @max_extensions Application.compile_env(:insightnest, :spark_max_extensions, 2)
+
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     spark         = Sparks.get_spark!(id)
     contributions = Contributions.list_for_spark(id)
+    member        = socket.assigns[:current_member]
+
+    voted_set =
+      if member do
+        Contributions.voter_highlights(id, member.id)
+      else
+        MapSet.new()
+      end
 
     if connected?(socket) do
       Phoenix.PubSub.subscribe(Insightnest.PubSub, "spark:#{id}")
     end
 
-    member = socket.assigns[:current_member]
-
     {:ok,
      assign(socket,
-       spark:          spark,
-       contributions:  contributions,
-       page_title:     spark.title,
-       form:           to_form(%{"body" => ""}),
+       spark:           spark,
+       contributions:   contributions,
+       voted_set:       voted_set,
+       page_title:      spark.title,
+       form:            to_form(%{"body" => ""}),
        selected_stance: nil,
-       active_filter:  nil,
-       submitting:     false,
-       error:          nil,
-       can_contribute: can_contribute?(spark, member, contributions)
+       active_filter:   nil,
+       submitting:      false,
+       error:           nil,
+       max_extensions:  @max_extensions,
+       can_contribute:  can_contribute?(spark, member, contributions)
      )}
   end
 
@@ -36,11 +46,18 @@ defmodule InsightnestWeb.SparkLive.Show do
   @impl true
   def handle_info({:new_contribution, contribution}, socket) do
     contributions = socket.assigns.contributions ++ [contribution]
-
     {:noreply,
      socket
      |> assign(contributions: contributions)
      |> update_can_contribute()}
+  end
+
+  def handle_info({:contribution_updated, updated}, socket) do
+    contributions =
+      Enum.map(socket.assigns.contributions, fn c ->
+        if c.id == updated.id, do: updated, else: c
+      end)
+    {:noreply, assign(socket, contributions: contributions)}
   end
 
   def handle_info({:spark_updated, spark}, socket) do
@@ -51,13 +68,62 @@ defmodule InsightnestWeb.SparkLive.Show do
 
   @impl true
   def handle_event("select_stance", %{"stance" => stance}, socket) do
-    selected = if stance == "", do: nil, else: stance
-    {:noreply, assign(socket, selected_stance: selected)}
+    {:noreply, assign(socket, selected_stance: if(stance == "", do: nil, else: stance))}
   end
 
   def handle_event("filter_stance", %{"stance" => stance}, socket) do
-    filter = if stance == "", do: nil, else: stance
-    {:noreply, assign(socket, active_filter: filter)}
+    {:noreply, assign(socket, active_filter: if(stance == "", do: nil, else: stance))}
+  end
+
+  def handle_event("toggle_highlight", %{"contribution_id" => cid}, socket) do
+    member = socket.assigns.current_member
+
+    if is_nil(member) do
+      {:noreply, assign(socket, error: "Sign in to highlight contributions.")}
+    else
+      case Contributions.toggle_highlight(cid, member.id) do
+        {:ok, _} ->
+          # Update local voted_set optimistically
+          voted_set =
+            if MapSet.member?(socket.assigns.voted_set, cid) do
+              MapSet.delete(socket.assigns.voted_set, cid)
+            else
+              MapSet.put(socket.assigns.voted_set, cid)
+            end
+          {:noreply, assign(socket, voted_set: voted_set)}
+
+        {:error, _} ->
+          {:noreply, assign(socket, error: "Could not update highlight.")}
+      end
+    end
+  end
+
+  def handle_event("author_override", params, socket) do
+    member     = socket.assigns.current_member
+    cid        = params["contribution_id"]
+    highlighted = params["highlighted"] == "true"
+
+    case Contributions.author_override(cid, member.id, highlighted) do
+      {:ok, _}             -> {:noreply, socket}
+      {:error, :unauthorized} -> {:noreply, assign(socket, error: "Not authorized.")}
+      {:error, _}          -> {:noreply, assign(socket, error: "Could not update.")}
+    end
+  end
+
+  def handle_event("extend_spark", %{"days" => days_str}, socket) do
+    member = socket.assigns.current_member
+    days   = String.to_integer(days_str)
+
+    case Sparks.extend_spark(socket.assigns.spark, member.id, days) do
+      {:ok, spark} ->
+        {:noreply, assign(socket, spark: spark)}
+
+      {:error, :max_extensions_reached} ->
+        {:noreply, assign(socket, error: "Maximum extensions reached.")}
+
+      {:error, :unauthorized} ->
+        {:noreply, assign(socket, error: "Not authorized.")}
+    end
   end
 
   def handle_event("submit_contribution", %{"contribution" => params}, socket) do
@@ -67,17 +133,14 @@ defmodule InsightnestWeb.SparkLive.Show do
       {:noreply, assign(socket, error: "You must be signed in to contribute.")}
     else
       socket = assign(socket, submitting: true, error: nil)
-
-      attrs = Map.put(params, "stance", socket.assigns.selected_stance)
+      attrs  = Map.put(params, "stance", socket.assigns.selected_stance)
 
       case Contributions.create_contribution(attrs, socket.assigns.spark.id, member.id) do
-        {:ok, _contribution} ->
-          # PubSub will add it to the list via handle_info
+        {:ok, _} ->
           {:noreply,
-           socket
-           |> assign(
-             submitting: false,
-             form: to_form(%{"body" => ""}),
+           assign(socket,
+             submitting:      false,
+             form:            to_form(%{"body" => ""}),
              selected_stance: nil
            )}
 
@@ -97,8 +160,8 @@ defmodule InsightnestWeb.SparkLive.Show do
           {:noreply,
            assign(socket,
              submitting: false,
-             form: to_form(changeset),
-             error: "Please check your contribution."
+             form:       to_form(changeset),
+             error:      "Please check your contribution."
            )}
       end
     end
@@ -111,7 +174,6 @@ defmodule InsightnestWeb.SparkLive.Show do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
 
-      <%!-- Breadcrumb --%>
       <a
         href="/"
         class="inline-flex items-center gap-1.5 text-sm text-stone-600
@@ -123,7 +185,7 @@ defmodule InsightnestWeb.SparkLive.Show do
 
       <%!-- Spark --%>
       <article class="mb-12">
-        <div class="flex items-center gap-2 mb-4">
+        <div class="flex items-center gap-2 mb-4 flex-wrap">
           <SparkComponents.status_chip status={@spark.status} />
           <SparkComponents.closes_in_badge
             closes_at={@spark.closes_at}
@@ -136,6 +198,13 @@ defmodule InsightnestWeb.SparkLive.Show do
           >
             {format_wallet(@spark.author.wallet_address)}
           </span>
+
+          <%!-- Extend button — spark author only --%>
+          <ContributionComponents.extend_button
+            :if={@current_member && @current_member.id == @spark.author_id}
+            spark={@spark}
+            max_extensions={@max_extensions}
+          />
         </div>
 
         <h1
@@ -154,13 +223,34 @@ defmodule InsightnestWeb.SparkLive.Show do
         </div>
       </article>
 
-      <%!-- Contributions section --%>
+      <%!-- Contributions --%>
       <section>
         <SparkComponents.section_divider
           label={"#{length(@contributions)} #{if length(@contributions) == 1, do: "contribution", else: "contributions"}"}
         />
 
-        <%!-- Stance filter (only when ≥2 stances present) --%>
+        <%!-- Highlighted first --%>
+        <div
+          :if={Enum.any?(@contributions, & &1.highlighted)}
+          class="mb-6"
+        >
+          <p class="text-xs text-violet-400 uppercase tracking-widest mb-3">
+            ✦ Highlighted
+          </p>
+          <div class="space-y-3">
+            <ContributionComponents.contribution_card
+              :for={c <- Enum.filter(@contributions, & &1.highlighted)}
+              contribution={c}
+              is_author={@current_member && @current_member.id == c.author_id}
+              is_spark_author={@current_member && @current_member.id == @spark.author_id}
+              voted={MapSet.member?(@voted_set, c.id)}
+              can_vote={not is_nil(@current_member)}
+            />
+          </div>
+          <SparkComponents.section_divider label="all contributions" />
+        </div>
+
+        <%!-- Stance filter --%>
         <ContributionComponents.stance_filter
           contributions={@contributions}
           active_filter={@active_filter}
@@ -172,6 +262,9 @@ defmodule InsightnestWeb.SparkLive.Show do
             :for={c <- filtered_contributions(@contributions, @active_filter)}
             contribution={c}
             is_author={@current_member && @current_member.id == c.author_id}
+            is_spark_author={@current_member && @current_member.id == @spark.author_id}
+            voted={MapSet.member?(@voted_set, c.id)}
+            can_vote={not is_nil(@current_member)}
           />
 
           <div
@@ -182,7 +275,7 @@ defmodule InsightnestWeb.SparkLive.Show do
           </div>
         </div>
 
-        <%!-- Contribution form / closed notice / sign-in prompt --%>
+        <%!-- Form / closed / sign-in --%>
         <div class="border-t border-stone-800 pt-6">
           <%= cond do %>
             <% @spark.is_closed -> %>
@@ -190,10 +283,7 @@ defmodule InsightnestWeb.SparkLive.Show do
 
             <% is_nil(@current_member) -> %>
               <div class="text-center py-4">
-                <a
-                  href="/auth"
-                  class="text-sm text-violet-400 hover:text-violet-300 transition-colors"
-                >
+                <a href="/auth" class="text-sm text-violet-400 hover:text-violet-300 transition-colors">
                   Sign in to contribute →
                 </a>
               </div>
@@ -220,7 +310,7 @@ defmodule InsightnestWeb.SparkLive.Show do
 
   # ── Private ───────────────────────────────────────────────────────────────────
 
-  defp can_contribute?(spark, nil, _contributions), do: false
+  defp can_contribute?(spark, nil, _), do: false
   defp can_contribute?(spark, member, contributions) do
     not spark.is_closed and
     spark.status == "published" and
@@ -244,10 +334,7 @@ defmodule InsightnestWeb.SparkLive.Show do
   end
 
   defp paragraphs(body) do
-    body
-    |> String.split("\n\n")
-    |> Enum.map(&String.trim/1)
-    |> Enum.reject(&(&1 == ""))
+    body |> String.split("\n\n") |> Enum.map(&String.trim/1) |> Enum.reject(&(&1 == ""))
   end
 
   defp format_wallet(nil), do: "anon"

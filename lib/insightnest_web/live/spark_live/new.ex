@@ -16,6 +16,7 @@ defmodule InsightnestWeb.SparkLive.New do
        form: to_form(changeset),
        concepts: [],
        concept_input: "",
+       timeout_days: 14,
        error: nil
      ), layout: {InsightnestWeb.Layouts, :app}}
   end
@@ -45,12 +46,15 @@ defmodule InsightnestWeb.SparkLive.New do
     {:noreply, assign(socket, concept_input: value)}
   end
 
-  def handle_event("save", %{"spark" => params}, socket) do
-    IO.inspect(params, label: "======================SAVE PARAMS")
-    IO.inspect(socket.assigns.current_member, label: "======================MEMBER")
+  def handle_event("set_timeout", %{"days" => days}, socket) do
+    {:noreply, assign(socket, timeout_days: String.to_integer(days))}
+  end
 
-    # Add concepts to params
-    attrs = Map.put(params, "concepts", socket.assigns.concepts)
+  def handle_event("save", %{"spark" => params}, socket) do
+    attrs =
+      params
+      |> Map.put("concepts", socket.assigns.concepts)
+      |> Map.put("timeout_days", socket.assigns.timeout_days)
 
     # Create changeset with the attributes
     changeset = Sparks.changeset(%Spark{}, attrs)
@@ -198,7 +202,29 @@ defmodule InsightnestWeb.SparkLive.New do
               </label>
             </div>
           </div>
-
+          <%!-- Timeout --%>
+          <div>
+            <label class="block text-xs text-stone-500 uppercase tracking-widest mb-3">
+              Open for
+            </label>
+            <div class="flex gap-2 flex-wrap">
+              <button
+                :for={{label, days} <- [{"7 days", 7}, {"14 days", 14}, {"30 days", 30}, {"No limit", 0}]}
+                type="button"
+                phx-click="set_timeout"
+                phx-value-days={days}
+                class={[
+                  "px-3 py-1.5 text-sm rounded-lg border transition-colors",
+                  if(@timeout_days == days,
+                    do: "bg-violet-950 text-violet-300 border-violet-700/60",
+                    else: "bg-stone-900 text-stone-500 border-stone-700 hover:border-stone-500"
+                  )
+                ]}
+              >
+                {label}
+              </button>
+            </div>
+          </div>
           <%!-- Submit --%>
           <button
             type="submit"

@@ -109,8 +109,11 @@ defmodule InsightnestWeb.ContributionComponents do
   # ── Contribution card ─────────────────────────────────────────────────────────
 
   @doc "A single contribution card."
-  attr :contribution, :map, required: true
-  attr :is_author,    :boolean, default: false
+  attr :contribution,  :map, required: true
+  attr :is_author,     :boolean, default: false
+  attr :is_spark_author, :boolean, default: false
+  attr :voted,         :boolean, default: false
+  attr :can_vote,      :boolean, default: false
 
   def contribution_card(assigns) do
     ~H"""
@@ -123,17 +126,25 @@ defmodule InsightnestWeb.ContributionComponents do
     ]}>
       <%!-- Header row --%>
       <div class="flex items-center justify-between gap-3 mb-3">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
           <span
             class="text-xs text-stone-600"
             style="font-family: 'DM Mono', monospace;"
           >
             {format_wallet(@contribution.author.wallet_address)}
           </span>
-          <span :if={@contribution.highlighted} class="text-violet-400 text-xs">✦</span>
-        </div>
-        <div class="flex items-center gap-2">
           <.stance_chip stance={@contribution.stance} />
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <.highlight_button
+            contribution={@contribution}
+            voted={@voted}
+            can_vote={@can_vote}
+          />
+          <.author_override_controls
+            :if={@is_spark_author}
+            contribution={@contribution}
+          />
           <span class="text-xs text-stone-700">
             {format_time(@contribution.inserted_at)}
           </span>
@@ -203,6 +214,121 @@ defmodule InsightnestWeb.ContributionComponents do
     </div>
     """
   end
+
+  # ── Highlight button ──────────────────────────────────────────────────────────
+
+    @doc "Highlight vote button shown on each contribution card."
+    attr :contribution, :map, required: true
+    attr :voted,        :boolean, default: false
+    attr :can_vote,     :boolean, default: false
+
+    def highlight_button(assigns) do
+      ~H"""
+      <button
+        :if={@can_vote}
+        type="button"
+        phx-click="toggle_highlight"
+        phx-value-contribution_id={@contribution.id}
+        class={[
+          "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs border transition-colors",
+          if(@voted,
+            do: "bg-violet-950 text-violet-300 border-violet-700/60",
+            else: "bg-stone-900 text-stone-600 border-stone-700 hover:border-stone-500 hover:text-stone-400"
+          )
+        ]}
+        title={if @voted, do: "Remove highlight", else: "Highlight this contribution"}
+      >
+        <span>{if @voted, do: "✦", else: "✧"}</span>
+        <span>{@contribution.highlight_count}</span>
+      </button>
+
+      <span
+        :if={not @can_vote and @contribution.highlight_count > 0}
+        class="inline-flex items-center gap-1 px-2 py-0.5 text-xs text-stone-600"
+      >
+        <span>✦</span>
+        <span>{@contribution.highlight_count}</span>
+      </span>
+      """
+    end
+
+    # ── Author override controls ──────────────────────────────────────────────────
+
+    @doc "Force highlight / remove highlight — only shown to spark author."
+    attr :contribution, :map, required: true
+
+    def author_override_controls(assigns) do
+      ~H"""
+      <div class="flex items-center gap-1">
+        <button
+          :if={not @contribution.highlighted}
+          type="button"
+          phx-click="author_override"
+          phx-value-contribution_id={@contribution.id}
+          phx-value-highlighted="true"
+          class="px-2 py-0.5 text-xs border border-violet-800/60 text-violet-400
+                 hover:bg-violet-950 rounded-md transition-colors"
+          title="Force highlight"
+        >
+          ↑ Highlight
+        </button>
+        <button
+          :if={@contribution.highlighted}
+          type="button"
+          phx-click="author_override"
+          phx-value-contribution_id={@contribution.id}
+          phx-value-highlighted="false"
+          class="px-2 py-0.5 text-xs border border-stone-700 text-stone-500
+                 hover:bg-stone-800 rounded-md transition-colors"
+          title="Remove highlight"
+        >
+          ↓ Remove
+        </button>
+      </div>
+      """
+    end
+
+    # ── Extend button ─────────────────────────────────────────────────────────────
+
+    @doc "Extend spark deadline — only shown to spark author."
+    attr :spark,        :map, required: true
+    attr :max_extensions, :integer, default: 2
+
+    def extend_button(assigns) do
+      ~H"""
+      <div :if={@spark.closes_at} class="flex items-center gap-2">
+        <span class="text-xs text-stone-600">
+          Extensions: {@spark.extension_count}/{@max_extensions}
+        </span>
+        <div :if={@spark.extension_count < @max_extensions} class="flex items-center gap-1">
+          <button
+            type="button"
+            phx-click="extend_spark"
+            phx-value-days="7"
+            class="px-2 py-0.5 text-xs border border-stone-700 text-stone-400
+                   hover:border-stone-500 hover:text-stone-200 rounded-md transition-colors"
+          >
+            +7d
+          </button>
+          <button
+            type="button"
+            phx-click="extend_spark"
+            phx-value-days="14"
+            class="px-2 py-0.5 text-xs border border-stone-700 text-stone-400
+                   hover:border-stone-500 hover:text-stone-200 rounded-md transition-colors"
+          >
+            +14d
+          </button>
+        </div>
+        <span
+          :if={@spark.extension_count >= @max_extensions}
+          class="text-xs text-stone-700"
+        >
+          Max extensions reached
+        </span>
+      </div>
+      """
+    end
 
   # ── Private helpers ───────────────────────────────────────────────────────────
 
