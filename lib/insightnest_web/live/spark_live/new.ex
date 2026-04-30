@@ -56,19 +56,24 @@ defmodule InsightnestWeb.SparkLive.New do
       |> Map.put("concepts", socket.assigns.concepts)
       |> Map.put("timeout_days", socket.assigns.timeout_days)
 
-    # Create changeset with the attributes
-    changeset = Sparks.changeset(%Spark{}, attrs)
-
     case Sparks.create_spark(attrs, socket.assigns.current_member.id) do
       {:ok, spark} ->
         {:noreply, push_navigate(socket, to: "/sparks/#{spark.id}")}
 
+      {:error, {:no_engagement, last_spark}} ->
+        error = if last_spark do
+          "Your spark \"#{last_spark.title}\" hasn't received any contributions yet. " <>
+          "Let your idea breathe before starting another."
+        else
+          "Your previous spark hasn't received any contributions yet."
+        end
+        {:noreply, assign(socket, error: error)}
+
       {:error, changeset} ->
         {:noreply,
-         socket
-         |> assign(form: to_form(changeset))
-         # Remove custom error, let changeset errors display
-         |> assign(error: nil)}
+          socket
+          |> assign(form: to_form(changeset))
+          |> assign(error: "Please fix the errors below.")}
     end
   end
 

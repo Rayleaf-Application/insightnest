@@ -67,23 +67,68 @@ defmodule Insightnest.Sparks do
 
   @doc """
   Creates a spark for the given author.
-  Accepts: title, body, concepts, status ("draft" | "published"), timeout_days.
+
+  Enforces: if the author has any existing published sparks,
+  at least one of them must have received a contribution before
+  they can create another. First spark is always allowed.
   """
   def create_spark(attrs, author_id) do
-    timeout_days = Map.get(attrs, "timeout_days", 0) |> parse_int()
-    closes_at = compute_closes_at(timeout_days)
-    content_hash = compute_content_hash(attrs, author_id)
-    slug = generate_slug(Map.get(attrs, "title", ""))
+    with :ok <- check_previous_spark_engaged(author_id) do
+      timeout_days = Map.get(attrs, "timeout_days", 0) |> parse_int()
+      closes_at    = compute_closes_at(timeout_days)
+      content_hash = compute_content_hash(attrs, author_id)
+      slug         = generate_slug(Map.get(attrs, "title", ""))
 
-    %Spark{}
-    |> Spark.changeset(
-      attrs
-      |> Map.put("author_id", author_id)
-      |> Map.put("content_hash", content_hash)
-      |> Map.put("slug", slug)
-      |> Map.put("closes_at", closes_at)
-    )
-    |> Repo.insert()
+      %Spark{}
+      |> Spark.changeset(
+        attrs
+        |> Map.put("author_id", author_id)
+        |> Map.put("content_hash", content_hash)
+        |> Map.put("slug", slug)
+        |> Map.put("closes_at", closes_at)
+      )
+      |> Repo.insert()
+    end
+  end
+
+  defp check_previous_spark_engaged(author_id) do
+    # Count published sparks by this author
+    published_count =
+      Repo.aggregate(
+        from(s in Spark,
+          where: s.author_id == ^author_id and s.status == "published"
+        ),
+        :count
+      )
+
+    # First spark — always allowed
+    if published_count == 0 do
+      :ok
+    else
+      # Check if any published spark has at least one contribution
+      has_engagement =
+        Repo.exists?(
+          from s in Spark,
+            join: c in Insightnest.Contributions.Contribution,
+              on: c.spark_id == s.id and c.status == "active",
+            where: s.author_id == ^author_id and s.status == "published"
+        )
+
+      if has_engagement do
+        :ok
+      else
+        # Find the most recent published spark for the error message
+        last_spark =
+          Repo.one(
+            from s in Spark,
+              where: s.author_id == ^author_id and s.status == "published",
+              order_by: [desc: s.inserted_at],
+              limit: 1
+          )
+
+        {:error, {:no_engagement, last_spark}}
+      end
+    end
   end
 
   @doc "Publishes a draft spark. Only the author can publish."

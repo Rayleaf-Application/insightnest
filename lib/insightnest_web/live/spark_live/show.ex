@@ -41,6 +41,10 @@ defmodule InsightnestWeb.SparkLive.Show do
      )}
   end
 
+  defp word_count(body) do
+    body |> String.split(~r/\s+/, trim: true) |> length()
+  end
+
   # ── PubSub handlers ───────────────────────────────────────────────────────────
 
   @impl true
@@ -229,26 +233,14 @@ defmodule InsightnestWeb.SparkLive.Show do
           label={"#{length(@contributions)} #{if length(@contributions) == 1, do: "contribution", else: "contributions"}"}
         />
 
-        <%!-- Highlighted first --%>
+        <%!-- Read timer hook target — invisible, wraps the spark body --%>
         <div
-          :if={Enum.any?(@contributions, & &1.highlighted)}
-          class="mb-6"
-        >
-          <p class="text-xs text-violet-400 uppercase tracking-widest mb-3">
-            ✦ Highlighted
-          </p>
-          <div class="space-y-3">
-            <ContributionComponents.contribution_card
-              :for={c <- Enum.filter(@contributions, & &1.highlighted)}
-              contribution={c}
-              is_author={@current_member && @current_member.id == c.author_id}
-              is_spark_author={@current_member && @current_member.id == @spark.author_id}
-              voted={MapSet.member?(@voted_set, c.id)}
-              can_vote={not is_nil(@current_member)}
-            />
-          </div>
-          <SparkComponents.section_divider label="all contributions" />
-        </div>
+          :if={@can_contribute}
+          id="read-timer"
+          phx-hook="ReadTimer"
+          data-word-count={word_count(@spark.body)}
+          data-min-seconds="30"
+        />
 
         <%!-- Stance filter --%>
         <ContributionComponents.stance_filter
@@ -275,7 +267,7 @@ defmodule InsightnestWeb.SparkLive.Show do
           </div>
         </div>
 
-        <%!-- Form / closed / sign-in --%>
+        <%!-- Form area --%>
         <div class="border-t border-stone-800 pt-6">
           <%= cond do %>
             <% @spark.is_closed -> %>
@@ -294,12 +286,31 @@ defmodule InsightnestWeb.SparkLive.Show do
               </p>
 
             <% true -> %>
-              <ContributionComponents.contribution_form
-                form={@form}
-                selected_stance={@selected_stance}
-                submitting={@submitting}
-                error={@error}
-              />
+              <%!-- Read lock overlay --%>
+              <div id="contribution-lock" class="text-center py-6">
+                <div class="inline-flex items-center gap-3 px-5 py-3 rounded-xl
+                            border border-stone-800 bg-stone-900/60">
+                  <span class="text-stone-600 text-sm">Read time</span>
+                  <span
+                    id="read-timer-count"
+                    class="font-mono text-sm text-violet-400"
+                    style="font-family: 'DM Mono', monospace; min-width: 2.5rem;"
+                  >
+                    …
+                  </span>
+                  <span class="text-stone-700 text-xs">before contributing</span>
+                </div>
+              </div>
+
+              <%!-- Form — hidden until timer unlocks it --%>
+              <div id="contribution-form-wrapper" style="display: none;">
+                <ContributionComponents.contribution_form
+                  form={@form}
+                  selected_stance={@selected_stance}
+                  submitting={@submitting}
+                  error={@error}
+                />
+              </div>
           <% end %>
         </div>
       </section>
