@@ -36,6 +36,19 @@ defmodule Insightnest.Accounts.Member do
     |> unique_constraint(:email)
   end
 
+  @doc "Changeset for setting/updating a username."
+  def username_changeset(member, attrs) do
+    member
+    |> cast(attrs, [:username])
+    |> validate_required([:username])
+    |> validate_length(:username, min: 3, max: 20)
+    |> validate_format(:username, ~r/^[a-zA-Z0-9_]+$/,
+        message: "can only contain letters, numbers, and underscores"
+      )
+    |> update_change(:username, &String.downcase/1)
+    |> unique_constraint(:username, message: "is already taken")
+  end
+
   # Normalize to EIP-55 checksum format via downcase first, then let
   # the SIWE library handle checksum validation upstream.
   defp normalize_address(address) do

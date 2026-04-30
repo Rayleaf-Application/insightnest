@@ -232,8 +232,11 @@
           });
           const data = await verifyRes.json();
           if (!verifyRes.ok) throw new Error(data.error || "Verification failed.");
+
           localStorage.setItem("insightnest_token", data.token);
-          window.location.href = "/";
+
+          // Use server-provided redirect — goes to /onboarding on first login
+          window.location.href = data.redirect_to || "/";
         } catch (err) {
           $("btn-sign").disabled = false;
           $("btn-sign").textContent = "Sign in with Ethereum";

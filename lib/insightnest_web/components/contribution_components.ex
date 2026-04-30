@@ -124,35 +124,32 @@ defmodule InsightnestWeb.ContributionComponents do
         else: "border-stone-800 bg-stone-900/40"
       )
     ]}>
-      <%!-- Header row --%>
-      <div class="flex items-center justify-between gap-3 mb-3">
-        <div class="flex items-center gap-2 flex-wrap">
-          <span
-            class="text-xs text-stone-600"
-            style="font-family: 'DM Mono', monospace;"
-          >
-            {format_wallet(@contribution.author.wallet_address)}
-          </span>
-          <.stance_chip stance={@contribution.stance} />
-        </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <.highlight_button
-            contribution={@contribution}
-            voted={@voted}
-            can_vote={@can_vote}
-          />
-          <.author_override_controls
-            :if={@is_spark_author}
-            contribution={@contribution}
-          />
-          <span class="text-xs text-stone-700">
-            {format_time(@contribution.inserted_at)}
-          </span>
+      <div class="flex items-start gap-3 mb-3">
+
+        <%!-- Avatar --%>
+        <InsightnestWeb.CoreComponents.avatar
+          wallet={@contribution.author.wallet_address}
+          username={@contribution.author.username}
+          size={:sm}
+          class="mt-0.5"
+        />
+
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span class="text-xs text-stone-400 font-medium truncate">
+              {@contribution.author.username || format_wallet(@contribution.author.wallet_address)}
+            </span>
+            <div class="flex items-center gap-2 shrink-0">
+              <.stance_chip stance={@contribution.stance} />
+              <.highlight_button ... />
+              <.author_override_controls :if={@is_spark_author} ... />
+              <span class="text-xs text-stone-700">{format_time(@contribution.inserted_at)}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <%!-- Body --%>
-      <p class="text-sm text-stone-300 leading-relaxed whitespace-pre-wrap">
+      <p class="text-sm text-stone-300 leading-relaxed whitespace-pre-wrap pl-11">
         {@contribution.body}
       </p>
     </div>

@@ -34,6 +34,12 @@ defmodule InsightnestWeb.Router do
     delete "/logout", AuthController, :logout
   end
 
+  # Onboarding — auth required, no username required
+  scope "/", InsightnestWeb do
+    pipe_through :browser
+    live "/onboarding", OnboardingLive, :index
+  end
+
   # ── Auth page (HTML) ──────────────────────────────────────────────────────────
 
   scope "/auth", InsightnestWeb do
@@ -42,11 +48,8 @@ defmodule InsightnestWeb.Router do
   end
 
   # ── Authenticated routes ───────────────────────────────────────────────────────
-
   scope "/", InsightnestWeb do
-    pipe_through [:browser, :authenticated]
-
-    live "/sparks/new", SparkLive.New, :new
+    pipe_through :browser
     live "/weave/:spark_id", WeaveLive.Editor, :edit
     live "/garden", GardenLive.Index, :index
   end
@@ -56,8 +59,8 @@ defmodule InsightnestWeb.Router do
   # Public routes — soft auth via hook
   scope "/", InsightnestWeb do
     pipe_through :browser
-
     live "/", SparkLive.Index, :index
+    live "/sparks/new", SparkLive.New, :new
     live "/sparks/:id", SparkLive.Show, :show
     live "/library", LibraryLive.Index, :index
     live "/insights/:slug", LibraryLive.Show, :show

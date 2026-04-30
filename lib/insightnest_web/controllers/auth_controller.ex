@@ -55,37 +55,33 @@ defmodule InsightnestWeb.AuthController do
   """
   def verify(conn, %{"message" => raw_message, "signature" => signature}) do
     with {:ok, siwe_message} <- parse_siwe(raw_message),
-         address = siwe_message.address,
-         {:ok, stored_nonce} <- NonceStore.get_and_delete(address),
-         :ok <- verify_nonce(siwe_message.nonce, stored_nonce),
-         :ok <- verify_signature(raw_message, signature, address),
-         {:ok, member} <- Accounts.find_or_create_by_wallet(address),
-         {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
+          address = siwe_message.address,
+          {:ok, stored_nonce} <- NonceStore.get_and_delete(address),
+          :ok <- verify_nonce(siwe_message.nonce, stored_nonce),
+          :ok <- verify_signature(raw_message, signature, address),
+          {:ok, member} <- Accounts.find_or_create_by_wallet(address),
+          {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
+
+      # Redirect to onboarding if username not set yet
+      redirect_to = if Accounts.onboarded?(member), do: "/", else: "/onboarding"
+
       conn
       |> put_session(:guardian_token, token)
       |> json(%{
-        token: token,
+        token:       token,
+        redirect_to: redirect_to,
         member: %{
-          id: member.id,
+          id:             member.id,
           wallet_address: member.wallet_address,
-          username: member.username
+          username:       member.username
         }
       })
     else
-      {:error, :not_found} ->
-        auth_error(conn, "Nonce not found — request a new one")
-
-      {:error, :expired} ->
-        auth_error(conn, "Nonce expired — request a new one")
-
-      {:error, :nonce_mismatch} ->
-        auth_error(conn, "Nonce mismatch")
-
-      {:error, :invalid_signature} ->
-        auth_error(conn, "Invalid signature")
-
-      {:error, reason} ->
-        auth_error(conn, "Authentication failed: #{inspect(reason)}")
+      {:error, :not_found}  -> auth_error(conn, "Nonce not found — request a new one")
+      {:error, :expired}    -> auth_error(conn, "Nonce expired — request a new one")
+      {:error, :nonce_mismatch}    -> auth_error(conn, "Nonce mismatch")
+      {:error, :invalid_signature} -> auth_error(conn, "Invalid signature")
+      {:error, reason}      -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
     end
   end
 

@@ -5,6 +5,8 @@ defmodule Insightnest.Accounts do
   only deals with persistence.
   """
 
+  import Ecto.Query
+
   alias Insightnest.Repo
   alias Insightnest.Accounts.Member
 
@@ -41,4 +43,25 @@ defmodule Insightnest.Accounts do
   def get_member_by_wallet(address) do
     Repo.get_by(Member, wallet_address: String.downcase(address))
   end
+
+  @doc "Returns true if the username is already taken (case-insensitive)."
+  def username_taken?(username) do
+    Repo.exists?(
+      from m in Member,
+        where: fragment("lower(?)", m.username) == ^String.downcase(username)
+    )
+  end
+
+  @doc "Sets the username for a member. Returns {:ok, member} or {:error, changeset}."
+  def set_username(%Member{} = member, username) do
+    member
+    |> Member.username_changeset(%{username: username})
+    |> Repo.update()
+  end
+
+  @doc "Returns true if the member has completed onboarding (has a username)."
+  def onboarded?(%Member{username: nil}), do: false
+  def onboarded?(%Member{username: ""}),  do: false
+  def onboarded?(%Member{}),              do: true
+  def onboarded?(nil),                    do: false
 end

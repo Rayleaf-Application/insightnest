@@ -495,4 +495,41 @@ defmodule InsightnestWeb.CoreComponents do
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
+
+  @doc """
+  Renders a member's identicon avatar.
+
+  ## Examples
+      <.avatar wallet={@member.wallet_address} size={:sm} />
+      <.avatar wallet={@member.wallet_address} size={:md} />
+  """
+  attr :wallet,   :string, required: true
+  attr :size,     :atom,   default: :sm    # :xs | :sm | :md | :lg
+  attr :username, :string, default: nil
+  attr :class,    :string, default: ""
+
+  def avatar(assigns) do
+    assigns = assign(assigns, :svg, Insightnest.Accounts.Avatar.generate(assigns.wallet))
+
+    ~H"""
+    <div
+      class={[
+        "rounded-lg overflow-hidden border border-stone-700/60 shrink-0",
+        avatar_size_class(@size),
+        @class
+      ]}
+      title={@username || format_wallet(@wallet)}
+    >
+      {Phoenix.HTML.raw(@svg)}
+    </div>
+    """
+  end
+
+  defp avatar_size_class(:xs), do: "w-6 h-6"
+  defp avatar_size_class(:sm), do: "w-8 h-8"
+  defp avatar_size_class(:md), do: "w-12 h-12"
+  defp avatar_size_class(:lg), do: "w-20 h-20"
+
+  defp format_wallet(nil), do: "anon"
+  defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)
 end

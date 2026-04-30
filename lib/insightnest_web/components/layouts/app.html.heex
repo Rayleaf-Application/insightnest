@@ -42,17 +42,21 @@
 
     <nav class="flex items-center gap-1">
       <%= if assigns[:current_member] do %>
+        <a href="/garden" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-stone-800/60 transition-colors">
+          <InsightnestWeb.CoreComponents.avatar
+            wallet={@current_member.wallet_address}
+            username={@current_member.username}
+            size={:xs}
+          />
+          <span class="text-sm text-stone-400 hover:text-stone-200 transition-colors">
+            <%= @current_member.username || "..." %>
+          </span>
+        </a>
         <a
           href="/library"
           class="px-3 py-1.5 text-sm text-stone-400 hover:text-stone-100 transition-colors rounded-lg hover:bg-stone-800/60"
         >
           Library
-        </a>
-        <a
-          href="/garden"
-          class="px-3 py-1.5 text-sm text-stone-400 hover:text-stone-100 transition-colors rounded-lg hover:bg-stone-800/60"
-        >
-          Garden
         </a>
         <a
           href="/sparks/new"
