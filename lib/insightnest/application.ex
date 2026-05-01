@@ -30,4 +30,9 @@ defmodule Insightnest.Application do
     InsightnestWeb.Endpoint.config_change(changed, removed)
     :ok
   end
+
+  def publisher do
+    # Swap to Insightnest.Publisher.CodexPublisher in Phase 2
+    Insightnest.Publisher.NoopPublisher
+  end
 end

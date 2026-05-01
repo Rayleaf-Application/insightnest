@@ -3,6 +3,7 @@ defmodule InsightnestWeb.SparkLive.Show do
 
   alias Insightnest.Sparks
   alias Insightnest.Contributions
+  alias Insightnest.Weaves
   alias InsightnestWeb.SparkComponents
   alias InsightnestWeb.ContributionComponents
 
@@ -37,7 +38,8 @@ defmodule InsightnestWeb.SparkLive.Show do
        submitting:      false,
        error:           nil,
        max_extensions:  @max_extensions,
-       can_contribute:  can_contribute?(spark, member, contributions)
+       can_contribute:  can_contribute?(spark, member, contributions),
+       can_weave: member && Weaves.eligible_to_weave?(id, member.id),
      )}
   end
 
@@ -216,13 +218,28 @@ defmodule InsightnestWeb.SparkLive.Show do
           style="font-family: 'Playfair Display', serif;"
         >
           <span class="group-hover:-translate-x-0.5 transition-transform">←</span> Feed
-        </a>
+        </h1>
 
         <SparkComponents.concept_tag_list concepts={@spark.concepts} />
 
         <div class="mt-6 spark-body">
           <p :for={para <- paragraphs(@spark.body)} class="mb-4 last:mb-0">
             {para}
+          </p>
+        </div>
+        <%!-- Weave trigger link — eligible members only --%>
+        <div :if={@current_member && @can_weave} class="mt-6 pt-6 border-t border-stone-800">
+          <a
+            href={"/weave/#{@spark.id}"}
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-xl
+                   border border-violet-700/50 text-violet-300 text-sm
+                   hover:bg-violet-950/40 transition-colors"
+          >
+            <span>⟡</span>
+            <span>Trigger Weave</span>
+          </a>
+          <p class="text-xs text-stone-600 mt-2">
+            Weave highlighted contributions into a lasting Insight.
           </p>
         </div>
       </article>
