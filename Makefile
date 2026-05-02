@@ -86,3 +86,9 @@ clean:                            ## Remove build artefacts
 
 setup: deps db-wait migrate seed  ## First-time project setup
 	@echo "✓ Ready — run: make dev"
+
+assets-build:
+	tailwindcss \
+		--config=assets/tailwind.config.js \
+		--input=assets/css/app.css \
+		--output=priv/static/assets/app.css
