@@ -141,4 +141,10 @@ else
 
     IO.puts("✓ Seeded 4 contributions")
   end
+  
+  # Seeds are contributed sparks/contributions only in Phase 0.
+  # Published Insights are created through the Weave flow, not seeded directly.
+  # Run the demo flow manually to populate the Library:
+  #   1. Log in → open a spark → highlight contributions → /weave/:id → Publish
+  IO.puts("✓ To populate the Library, complete a Weave via the UI.")
 end

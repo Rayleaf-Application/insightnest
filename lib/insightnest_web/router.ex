@@ -50,8 +50,15 @@ defmodule InsightnestWeb.Router do
   # ── Authenticated routes ───────────────────────────────────────────────────────
   scope "/", InsightnestWeb do
     pipe_through :browser
-    live "/weave/:spark_id", WeaveLive.Editor, :edit
+
+    live "/", SparkLive.Index, :index
     live "/garden", GardenLive.Index, :index
+    live "/sparks/new", SparkLive.New, :new
+    live "/sparks/:id", SparkLive.Show, :show
+    live "/weave/:spark_id", WeaveLive.Editor, :edit
+    live "/library", LibraryLive.Index, :index
+    live "/insights/:slug", LibraryLive.Show, :show
+    live "/onboarding", OnboardingLive, :index
   end
 
   # ── Public routes ─────────────────────────────────────────────────────────────

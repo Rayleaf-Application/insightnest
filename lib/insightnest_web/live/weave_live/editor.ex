@@ -98,6 +98,25 @@ defmodule InsightnestWeb.WeaveLive.Editor do
     end
   end
 
+  def handle_event("publish", _, socket) do
+    member = socket.assigns.current_member
+    weave  = socket.assigns.weave
+
+    case Weaves.publish_insight(weave.id, member.id) do
+      {:ok, insight} ->
+        {:noreply, push_navigate(socket, to: "/insights/#{insight.slug}")}
+
+      {:error, :unauthorized} ->
+        {:noreply, assign(socket, error: "Only the Weave curator can publish.")}
+
+      {:error, :already_published} ->
+        {:noreply, assign(socket, error: "This Insight has already been published.")}
+
+      {:error, reason} ->
+        {:noreply, assign(socket, error: "Publish failed: #{inspect(reason)}")}
+    end
+  end
+
   # ── Render ────────────────────────────────────────────────────────────────────
 
   @impl true
@@ -218,15 +237,16 @@ defmodule InsightnestWeb.WeaveLive.Editor do
           </div>
         </div>
 
-        <%!-- Publish button → Sprint 5 --%>
+        <%!-- Publish --%>
         <div class="pt-4 border-t border-stone-800">
-          <a
-            href={"/insights/publish/#{@weave.id}"}
-            class="inline-block px-6 py-3 bg-emerald-700 hover:bg-emerald-600
+          <button
+            type="button"
+            phx-click="publish"
+            class="px-6 py-3 bg-emerald-700 hover:bg-emerald-600
                    text-white font-medium rounded-xl transition-colors"
           >
             Publish Insight →
-          </a>
+          </button>
           <p class="text-xs text-stone-600 mt-2">
             Publishing is permanent. The Insight will appear in the Knowledge Library.
           </p>

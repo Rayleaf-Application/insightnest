@@ -134,6 +134,80 @@ defmodule Insightnest.Weaves do
     )
   end
 
+  # ── Publishing ────────────────────────────────────────────────────────────────
+
+  @doc """
+  Publishes a draft Insight. Curator only.
+
+  Steps:
+    1. Validate caller is curator
+    2. Validate weave is in_progress
+    3. Recompute content_hash on final body
+    4. Set insight.status = published, weave.status = published
+    5. Call Publisher.publish/1 → store CID
+    6. Broadcast to library PubSub topic
+  """
+  def publish_insight(weave_id, curator_id) do
+    weave   = get_weave!(weave_id)
+    insight = get_draft!(weave_id)
+
+    cond do
+      weave.curator_id != curator_id ->
+        {:error, :unauthorized}
+
+      weave.status != "in_progress" ->
+        {:error, :already_published}
+
+      true ->
+        do_publish(weave, insight)
+    end
+  end
+
+  defp do_publish(weave, insight) do
+    Repo.transaction(fn ->
+      # Recompute hash on final content
+      content_hash = compute_hash(insight.title, insight.body, insight.spark_id, weave.id)
+
+      # Generate final slug from title
+      slug = generate_slug(insight.title)
+
+      # Call publisher (NoopPublisher in Phase 0)
+      {:ok, cid} = Insightnest.Application.publisher().publish(%{
+        id:           insight.id,
+        title:        insight.title,
+        summary:      insight.summary,
+        body:         insight.body,
+        contributors: insight.contributors,
+        content_hash: content_hash
+      })
+
+      # Update insight
+      {:ok, published_insight} =
+        insight
+        |> Insight.changeset(%{
+          status:       "published",
+          content_hash: content_hash,
+          slug:         slug,
+          codex_cid:    cid
+        })
+        |> Repo.update()
+
+      # Update weave
+      weave
+      |> Ecto.Changeset.change(status: "published")
+      |> Repo.update!()
+
+      # Broadcast to library
+      Phoenix.PubSub.broadcast(
+        Insightnest.PubSub,
+        "library",
+        {:insight_published, published_insight}
+      )
+
+      published_insight
+    end)
+  end
+
   # ── Private helpers ───────────────────────────────────────────────────────────
 
   # Lock highlights: set a flag by checking if a weave is in_progress
