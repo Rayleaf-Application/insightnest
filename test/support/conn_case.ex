@@ -27,12 +27,23 @@ defmodule InsightnestWeb.ConnCase do
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
+      import Phoenix.LiveViewTest
       import InsightnestWeb.ConnCase
+
+      @endpoint InsightnestWeb.Endpoint
     end
   end
 
   setup tags do
     Insightnest.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
+  end
+
+  @doc "Logs in a member by setting the guardian session token."
+  def log_in(conn, member) do
+    {:ok, token, _claims} = Insightnest.Auth.Guardian.encode_and_sign(member)
+    conn
+    |> Phoenix.ConnTest.init_test_session(%{})
+    |> Plug.Conn.put_session(:guardian_token, token)
   end
 end

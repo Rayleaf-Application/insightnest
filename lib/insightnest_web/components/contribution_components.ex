@@ -141,8 +141,19 @@ defmodule InsightnestWeb.ContributionComponents do
             </span>
             <div class="flex items-center gap-2 shrink-0">
               <.stance_chip stance={@contribution.stance} />
-              <.highlight_button ... />
-              <.author_override_controls :if={@is_spark_author} ... />
+
+              <!-- Explicitly pass the contribution map and other flags -->
+              <.highlight_button
+                contribution={@contribution}
+                voted={@voted}
+                can_vote={@can_vote}
+              />
+
+              <.author_override_controls
+                :if={@is_spark_author}
+                contribution={@contribution}
+              />
+
               <span class="text-xs text-stone-700">{format_time(@contribution.inserted_at)}</span>
             </div>
           </div>

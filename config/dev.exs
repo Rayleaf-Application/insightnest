@@ -37,3 +37,4 @@ config :insightnest, InsightnestWeb.Endpoint,
 config :logger, level: :debug
 config :phoenix, :plug_init_mode, :runtime
 config :phoenix_live_view, debug_heex_annotations: true, profile_events: true
+config :insightnest, dev_routes: true

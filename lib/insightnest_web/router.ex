@@ -80,7 +80,9 @@ defmodule InsightnestWeb.Router do
 
     scope "/dev" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: InsightnestWeb.Telemetry
+      live_dashboard "/dashboard",
+        metrics: InsightnestWeb.Telemetry,
+        additional_pages: []
     end
   end
 end

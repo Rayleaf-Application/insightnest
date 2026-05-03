@@ -11,35 +11,40 @@ defmodule InsightnestWeb.SparkLive.Show do
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
-    spark         = Sparks.get_spark!(id)
-    contributions = Contributions.list_for_spark(id)
-    member        = socket.assigns[:current_member]
+    # FIX 1: Cast the string ID to a UUID binary to prevent Postgrex EncodeError
+    spark_id = Ecto.UUID.cast!(id)
+
+    spark = Sparks.get_spark!(spark_id)
+    contributions = Contributions.list_for_spark(spark_id)
+    member = socket.assigns[:current_member]
 
     voted_set =
       if member do
-        Contributions.voter_highlights(id, member.id)
+        # Ensure member.id is also cast if it's a string coming from session
+        Contributions.voter_highlights(spark_id, Ecto.UUID.cast!(member.id))
       else
         MapSet.new()
       end
 
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(Insightnest.PubSub, "spark:#{id}")
+      Phoenix.PubSub.subscribe(Insightnest.PubSub, "spark:#{spark_id}")
     end
 
     {:ok,
      assign(socket,
-       spark:           spark,
-       contributions:   contributions,
-       voted_set:       voted_set,
-       page_title:      spark.title,
-       form:            to_form(%{"body" => ""}),
+       spark: spark,
+       contributions: contributions,
+       voted_set: voted_set,
+       page_title: spark.title,
+       form: to_form(%{"body" => ""}),
        selected_stance: nil,
-       active_filter:   nil,
-       submitting:      false,
-       error:           nil,
-       max_extensions:  @max_extensions,
-       can_contribute:  can_contribute?(spark, member, contributions),
-       can_weave: member && Weaves.eligible_to_weave?(id, member.id),
+       active_filter: nil,
+       submitting: false,
+       error: nil,
+       max_extensions: @max_extensions,
+       can_contribute: can_contribute?(spark, member, contributions),
+       can_weave: member && Weaves.eligible_to_weave?(spark_id, Ecto.UUID.cast!(member.id)),
+       spark_id: spark_id # Store the binary ID for later use if needed
      )}
   end
 
@@ -87,7 +92,11 @@ defmodule InsightnestWeb.SparkLive.Show do
     if is_nil(member) do
       {:noreply, assign(socket, error: "Sign in to highlight contributions.")}
     else
-      case Contributions.toggle_highlight(cid, member.id) do
+      # Cast IDs for DB operations
+      contribution_uuid = Ecto.UUID.cast!(cid)
+      member_uuid = Ecto.UUID.cast!(member.id)
+
+      case Contributions.toggle_highlight(contribution_uuid, member_uuid) do
         {:ok, _} ->
           # Update local voted_set optimistically
           voted_set =
@@ -105,22 +114,30 @@ defmodule InsightnestWeb.SparkLive.Show do
   end
 
   def handle_event("author_override", params, socket) do
-    member     = socket.assigns.current_member
-    cid        = params["contribution_id"]
+    member = socket.assigns.current_member
+    cid = params["contribution_id"]
     highlighted = params["highlighted"] == "true"
 
-    case Contributions.author_override(cid, member.id, highlighted) do
-      {:ok, _}             -> {:noreply, socket}
+    # Cast IDs
+    contribution_uuid = Ecto.UUID.cast!(cid)
+    member_uuid = Ecto.UUID.cast!(member.id)
+
+    case Contributions.author_override(contribution_uuid, member_uuid, highlighted) do
+      {:ok, _} -> {:noreply, socket}
       {:error, :unauthorized} -> {:noreply, assign(socket, error: "Not authorized.")}
-      {:error, _}          -> {:noreply, assign(socket, error: "Could not update.")}
+      {:error, _} -> {:noreply, assign(socket, error: "Could not update.")}
     end
   end
 
   def handle_event("extend_spark", %{"days" => days_str}, socket) do
     member = socket.assigns.current_member
-    days   = String.to_integer(days_str)
+    days = String.to_integer(days_str)
 
-    case Sparks.extend_spark(socket.assigns.spark, member.id, days) do
+    # Cast spark ID if needed in the context function, assuming get_spark! handles it or we pass binary
+    spark_id = socket.assigns.spark_id || Ecto.UUID.cast!(socket.assigns.spark.id)
+    member_uuid = Ecto.UUID.cast!(member.id)
+
+    case Sparks.extend_spark(socket.assigns.spark, member_uuid, days) do
       {:ok, spark} ->
         {:noreply, assign(socket, spark: spark)}
 
@@ -139,14 +156,18 @@ defmodule InsightnestWeb.SparkLive.Show do
       {:noreply, assign(socket, error: "You must be signed in to contribute.")}
     else
       socket = assign(socket, submitting: true, error: nil)
-      attrs  = Map.put(params, "stance", socket.assigns.selected_stance)
+      attrs = Map.put(params, "stance", socket.assigns.selected_stance)
 
-      case Contributions.create_contribution(attrs, socket.assigns.spark.id, member.id) do
+      # Cast IDs for context
+      spark_id = socket.assigns.spark_id || Ecto.UUID.cast!(socket.assigns.spark.id)
+      member_uuid = Ecto.UUID.cast!(member.id)
+
+      case Contributions.create_contribution(attrs, spark_id, member_uuid) do
         {:ok, _} ->
           {:noreply,
            assign(socket,
-             submitting:      false,
-             form:            to_form(%{"body" => ""}),
+             submitting: false,
+             form: to_form(%{"body" => ""}),
              selected_stance: nil
            )}
 
@@ -166,8 +187,8 @@ defmodule InsightnestWeb.SparkLive.Show do
           {:noreply,
            assign(socket,
              submitting: false,
-             form:       to_form(changeset),
-             error:      "Please check your contribution."
+             form: to_form(changeset),
+             error: "Please check your contribution."
            )}
       end
     end
@@ -185,8 +206,7 @@ defmodule InsightnestWeb.SparkLive.Show do
         class="inline-flex items-center gap-1.5 text-sm text-stone-600
                hover:text-stone-300 transition-colors mb-8 group"
       >
-        <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
-        Feed
+        <span class="group-hover:-translate-x-0.5 transition-transform">←</span> Feed
       </a>
 
       <%!-- Spark --%>
