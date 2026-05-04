@@ -9,7 +9,7 @@ let
 in pkgs.mkShell {
   name = "insightnest-dev";
 
-  buildInputs = [
+buildInputs = [
     # BEAM
     erlang
     elixir
@@ -25,12 +25,15 @@ in pkgs.mkShell {
     pkgs.gnumake
     pkgs.git
 
-    # Postgres client (for psql CLI, migrations debugging)
+    # Postgres client
     pkgs.postgresql_16
 
-    # File watching (Phoenix live reload)
-    pkgs.inotify-tools
+    # Container orchestration (override system podman-compose 1.0.6)
+    pkgs.podman-compose
 
+    # File watching
+    pkgs.inotify-tools
+    
     # Utilities
     pkgs.curl
     pkgs.jq
