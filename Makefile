@@ -1,5 +1,5 @@
 # insightnest/Makefile
-DC      := podman compose
+DC      := podman-compose
 COMPOSE := $(DC) -f docker-compose.yml
 
 .DEFAULT_GOAL := help

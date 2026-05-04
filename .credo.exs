@@ -9,9 +9,7 @@
       strict: true,
       checks: %{
         disabled: [
-          {Credo.Check.Refactor.ModuleDependencies},
-          # LiveView handle_* callbacks are necessarily long
-          {Credo.Check.Refactor.FunctionArity},
+          {Credo.Check.Refactor.FunctionArity, []},
         ]
       }
     }
