@@ -21,16 +21,30 @@ defmodule InsightnestWeb.SparkLive.New do
      ), layout: {InsightnestWeb.Layouts, :app}}
   end
 
-  @impl true
-  def handle_event("add_concept", %{"key" => key, "value" => value}, socket)
-      when key in ["Enter", ","] do
-    concept = String.trim(value)
+  def handle_event("update_concept_input", %{"value" => value}, socket) do
+    # If value ends with a comma, treat it as "add concept"
+    if String.ends_with?(value, ",") do
+      concept = value |> String.trim_trailing(",") |> String.trim()
+      if concept != "" and concept not in socket.assigns.concepts do
+        {:noreply,
+        socket
+        |> assign(concepts: socket.assigns.concepts ++ [concept])
+        |> assign(concept_input: "")}
+      else
+        {:noreply, assign(socket, concept_input: "")}
+      end
+    else
+      {:noreply, assign(socket, concept_input: value)}
+    end
+  end
 
+  def handle_event("add_concept", %{"key" => "Enter", "value" => value}, socket) do
+    concept = String.trim(value)
     if concept != "" and concept not in socket.assigns.concepts do
       {:noreply,
-       socket
-       |> assign(concepts: socket.assigns.concepts ++ [concept])
-       |> assign(concept_input: "")}
+      socket
+      |> assign(concepts: socket.assigns.concepts ++ [concept])
+      |> assign(concept_input: "")}
     else
       {:noreply, assign(socket, concept_input: "")}
     end
@@ -168,10 +182,11 @@ defmodule InsightnestWeb.SparkLive.New do
               phx-keyup="add_concept"
               phx-value-value={@concept_input}
               phx-change="update_concept_input"
+              phx-debounce="0"
               class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-2.5
-                   text-stone-300 placeholder-stone-700 text-sm
-                   focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/30
-                   transition-colors"
+                    text-stone-300 placeholder-stone-700 text-sm
+                    focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20
+                    transition-colors"
             />
           </div>
 
