@@ -6,9 +6,10 @@ defmodule Insightnest.Accounts.Member do
   @foreign_key_type :binary_id
 
   schema "members" do
-    field :wallet_address, :string
-    field :email, :string
-    field :username, :string
+    field :wallet_address,  :string
+    field :email,           :string
+    field :username,        :string
+    field :email_verified,  :boolean, default: false  # ← add this
 
     timestamps(type: :utc_datetime)
   end

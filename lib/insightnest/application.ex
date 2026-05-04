@@ -29,6 +29,9 @@ defmodule Insightnest.Application do
       # Swap for NonceStoreRedis in production by changing this line only
       Insightnest.Accounts.NonceStoreETS,
 
+      Insightnest.Accounts.PasscodeStore,
+      {Finch, name: Insightnest.Finch},
+
       # Phoenix Endpoint
       InsightnestWeb.Endpoint
     ]

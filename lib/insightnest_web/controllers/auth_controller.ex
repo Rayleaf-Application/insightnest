@@ -2,8 +2,10 @@ defmodule InsightnestWeb.AuthController do
   use InsightnestWeb, :controller
 
   alias Insightnest.Accounts
+  alias Insightnest.Accounts.PasscodeStore
   alias Insightnest.Accounts.NonceStoreETS, as: NonceStore
   alias Insightnest.Auth.Guardian
+  alias InsightnestWeb.UserEmail
 
   @nonce_ttl Application.compile_env(:insightnest, :nonce_ttl_seconds, 300)
 
@@ -122,6 +124,55 @@ defmodule InsightnestWeb.AuthController do
   # Recover the signer address from the SIWE message + signature.
   defp verify_signature(raw_message, signature, expected_address) do
     Insightnest.Auth.Siwe.verify(raw_message, signature, expected_address)
+  end
+
+  # POST /auth/email/request
+  def request_passcode(conn, %{"email" => email}) when byte_size(email) > 0 do
+    email = String.downcase(String.trim(email))
+    code  = Accounts.generate_passcode()
+    :ok   = PasscodeStore.put(email, code)
+
+    email
+    |> UserEmail.passcode_email(code)
+    |> Insightnest.Mailer.deliver()
+
+    # Always return ok — don't leak whether email exists
+    json(conn, %{ok: true})
+  end
+
+  def request_passcode(conn, _) do
+    conn |> put_status(:bad_request) |> json(%{error: "email is required"})
+  end
+
+  # POST /auth/email/verify
+  def verify_passcode(conn, %{"email" => email, "code" => code}) do
+    email = String.downcase(String.trim(email))
+
+    with {:ok, stored} <- PasscodeStore.get_and_delete(email),
+         true          <- code == stored,
+         {:ok, member} <- Accounts.find_or_create_by_email(email),
+         {:ok, member} <- Accounts.verify_email(member),
+         {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
+
+      redirect_to = if Accounts.onboarded?(member), do: "/", else: "/onboarding"
+
+      conn
+      |> put_session(:guardian_token, token)
+      |> json(%{
+        token:       token,
+        redirect_to: redirect_to,
+        member:      %{id: member.id, email: member.email, username: member.username}
+      })
+    else
+      {:error, :not_found} -> auth_error(conn, "Code not found — request a new one")
+      {:error, :expired}   -> auth_error(conn, "Code expired — request a new one")
+      false                -> auth_error(conn, "Incorrect code")
+      {:error, reason}     -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
+    end
+  end
+
+  def verify_passcode(conn, _) do
+    conn |> put_status(:bad_request) |> json(%{error: "email and code are required"})
   end
 
   defp auth_error(conn, message) do

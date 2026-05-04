@@ -59,6 +59,33 @@ defmodule Insightnest.Accounts do
     |> Repo.update()
   end
 
+  @doc "Finds or creates a member by email."
+  def find_or_create_by_email(email) do
+    email = String.downcase(String.trim(email))
+
+    case Repo.get_by(Member, email: email) do
+      %Member{} = member -> {:ok, member}
+      nil ->
+        %Member{}
+        |> Member.email_changeset(%{email: email})
+        |> Repo.insert()
+    end
+  end
+
+  @doc "Marks the member's email as verified."
+  def verify_email(%Member{} = member) do
+    member
+    |> Ecto.Changeset.change(email_verified: true)
+    |> Repo.update()
+  end
+
+  @doc "Generates a 6-digit passcode string."
+  def generate_passcode do
+    :rand.uniform(999_999)
+    |> Integer.to_string()
+    |> String.pad_leading(6, "0")
+  end
+
   @doc "Returns true if the member has completed onboarding (has a username)."
   def onboarded?(%Member{username: nil}), do: false
   def onboarded?(%Member{username: ""}),  do: false

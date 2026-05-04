@@ -43,4 +43,8 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
+config :insightnest, Insightnest.Mailer,
+  adapter: Swoosh.Adapters.Local
+config :swoosh, :api_client, false
+
 import_config "#{config_env()}.exs"
