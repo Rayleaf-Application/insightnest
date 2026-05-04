@@ -1,4 +1,6 @@
 defmodule Insightnest.Contributions do
+  @moduledoc false
+
   import Ecto.Query
 
   alias Insightnest.Repo

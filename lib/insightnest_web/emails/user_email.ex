@@ -1,4 +1,6 @@
 defmodule InsightnestWeb.UserEmail do
+  @moduledoc false
+
   import Swoosh.Email
 
   def passcode_email(email, code) do

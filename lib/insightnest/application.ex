@@ -11,6 +11,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE
 
 defmodule Insightnest.Application do
+  @moduledoc false
+
   use Application
 
   @impl true

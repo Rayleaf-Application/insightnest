@@ -1,4 +1,6 @@
 defmodule Insightnest.Contributions.Contribution do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

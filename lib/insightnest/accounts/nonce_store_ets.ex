@@ -1,4 +1,6 @@
 defmodule Insightnest.Accounts.NonceStoreETS do
+  @moduledoc false
+
   use GenServer
 
   @table :insightnest_nonce_store

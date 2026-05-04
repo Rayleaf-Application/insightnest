@@ -1,4 +1,6 @@
 defmodule Insightnest.Auth.Guardian do
+  @moduledoc false
+
   use Guardian, otp_app: :insightnest
 
   alias Insightnest.Accounts

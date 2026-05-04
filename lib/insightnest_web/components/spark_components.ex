@@ -1,4 +1,6 @@
 defmodule InsightnestWeb.SparkComponents do
+  @moduledoc false
+
   use Phoenix.Component
 
   @doc "A card for a single spark in the feed."

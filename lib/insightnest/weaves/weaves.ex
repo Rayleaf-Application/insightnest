@@ -1,4 +1,6 @@
 defmodule Insightnest.Weaves do
+  @moduledoc false
+
   import Ecto.Query
 
   alias Insightnest.Repo

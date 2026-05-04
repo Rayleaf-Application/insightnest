@@ -1,4 +1,5 @@
 defmodule Insightnest.Publisher.NoopPublisher do
+  @moduledoc false
   @behaviour Insightnest.Publisher
 
   require Logger

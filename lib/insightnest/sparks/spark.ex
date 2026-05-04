@@ -1,4 +1,6 @@
 defmodule Insightnest.Sparks.Spark do
+  @moduledoc false
+
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,4 +1,6 @@
 defmodule InsightnestWeb.InsightComponents do
+  @moduledoc false
+
   use Phoenix.Component
 
   @doc "Card for an Insight in the Library feed."

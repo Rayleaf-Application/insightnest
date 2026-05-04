@@ -1,4 +1,6 @@
 defmodule Insightnest.SparksFixtures do
+  @moduledoc false
+
   alias Insightnest.Sparks
   alias Insightnest.AccountsFixtures
 

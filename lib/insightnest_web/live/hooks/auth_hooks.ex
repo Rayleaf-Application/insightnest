@@ -1,4 +1,6 @@
 defmodule InsightnestWeb.Live.AuthHooks do
+  @moduledoc false
+
   import Phoenix.LiveView
   import Phoenix.Component
 

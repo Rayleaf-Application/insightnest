@@ -1,4 +1,6 @@
 defmodule Insightnest.AccountsFixtures do
+  @moduledoc false
+
   alias Insightnest.Accounts
   alias Insightnest.Repo
   alias Insightnest.Accounts.Member

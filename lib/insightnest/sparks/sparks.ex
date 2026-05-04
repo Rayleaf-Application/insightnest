@@ -1,4 +1,6 @@
 defmodule Insightnest.Sparks do
+  @moduledoc false
+
   import Ecto.Query
 
   alias Insightnest.Repo
