@@ -1,8 +1,8 @@
 defmodule Insightnest.Weaves.Weave do
   use Ecto.Schema
 
-  alias Insightnest.Sparks.Spark
   alias Insightnest.Accounts.Member
+  alias Insightnest.Sparks.Spark
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

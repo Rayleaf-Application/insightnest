@@ -7,8 +7,8 @@ defmodule Insightnest.Accounts do
 
   import Ecto.Query
 
-  alias Insightnest.Repo
   alias Insightnest.Accounts.Member
+  alias Insightnest.Repo
 
   @doc """
   Returns the member with the given wallet address,

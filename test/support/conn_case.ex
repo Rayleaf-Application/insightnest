@@ -15,6 +15,9 @@ defmodule InsightnestWeb.ConnCase do
   this option is not recommended for other databases.
   """
 
+  alias Insightnest.Auth.Guardian
+  alias Insightnest.DataCase
+
   use ExUnit.CaseTemplate
 
   using do
@@ -35,13 +38,14 @@ defmodule InsightnestWeb.ConnCase do
   end
 
   setup tags do
-    Insightnest.DataCase.setup_sandbox(tags)
+    DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 
   @doc "Logs in a member by setting the guardian session token."
   def log_in(conn, member) do
-    {:ok, token, _claims} = Insightnest.Auth.Guardian.encode_and_sign(member)
+    {:ok, token, _claims} = Guardian.encode_and_sign(member)
+
     conn
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:guardian_token, token)

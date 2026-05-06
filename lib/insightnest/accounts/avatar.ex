@@ -27,14 +27,13 @@ defmodule Insightnest.Accounts.Avatar do
       cells
       |> Enum.with_index()
       |> Enum.filter(fn {filled, _} -> filled end)
-      |> Enum.map(fn {_, idx} ->
+      |> Enum.map_join("\n    ", fn {_, idx} ->
         row = div(idx, @grid_size)
         col = rem(idx, @grid_size)
         x   = col * @cell_px + @padding
         y   = row * @cell_px + @padding
         ~s(<rect x="#{x}" y="#{y}" width="#{@cell_px}" height="#{@cell_px}" fill="#{color}" rx="2"/>)
       end)
-      |> Enum.join("\n    ")
 
     """
     <svg xmlns="http://www.w3.org/2000/svg"

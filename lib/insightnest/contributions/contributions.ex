@@ -3,11 +3,10 @@ defmodule Insightnest.Contributions do
 
   import Ecto.Query
 
-  alias Insightnest.Repo
   alias Insightnest.Contributions.Contribution
   alias Insightnest.Contributions.HighlightVote
+  alias Insightnest.Repo
   alias Insightnest.Sparks
-  alias Insightnest.Sparks.Spark
 
   # ── Queries ──────────────────────────────────────────────────────────────────
 

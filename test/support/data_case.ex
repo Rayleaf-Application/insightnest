@@ -14,6 +14,9 @@ defmodule Insightnest.DataCase do
   this option is not recommended for other databases.
   """
 
+  alias Ecto.Adapters.SQL.Sandbox
+  alias Insightnest.DataCase
+
   use ExUnit.CaseTemplate
 
   using do
@@ -28,7 +31,7 @@ defmodule Insightnest.DataCase do
   end
 
   setup tags do
-    Insightnest.DataCase.setup_sandbox(tags)
+    DataCase.setup_sandbox(tags)
     :ok
   end
 
@@ -36,8 +39,8 @@ defmodule Insightnest.DataCase do
   Sets up the sandbox based on the test tags.
   """
   def setup_sandbox(tags) do
-    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Insightnest.Repo, shared: not tags[:async])
-    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
+    pid = Sandbox.start_owner!(Insightnest.Repo, shared: not tags[:async])
+    on_exit(fn -> Sandbox.stop_owner(pid) end)
   end
 
   @doc """

@@ -2,8 +2,8 @@ defmodule Insightnest.Weaves.Insight do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Insightnest.Weaves.Weave
   alias Insightnest.Sparks.Spark
+  alias Insightnest.Weaves.Weave
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

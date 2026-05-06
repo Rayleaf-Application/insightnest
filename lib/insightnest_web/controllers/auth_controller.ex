@@ -2,9 +2,10 @@ defmodule InsightnestWeb.AuthController do
   use InsightnestWeb, :controller
 
   alias Insightnest.Accounts
-  alias Insightnest.Accounts.PasscodeStore
   alias Insightnest.Accounts.NonceStoreETS, as: NonceStore
+  alias Insightnest.Accounts.PasscodeStore
   alias Insightnest.Auth.Guardian
+  alias Insightnest.Auth.Siwe
   alias InsightnestWeb.UserEmail
 
   @nonce_ttl Application.compile_env(:insightnest, :nonce_ttl_seconds, 300)
@@ -57,33 +58,32 @@ defmodule InsightnestWeb.AuthController do
   """
   def verify(conn, %{"message" => raw_message, "signature" => signature}) do
     with {:ok, siwe_message} <- parse_siwe(raw_message),
-          address = siwe_message.address,
-          {:ok, stored_nonce} <- NonceStore.get_and_delete(address),
-          :ok <- verify_nonce(siwe_message.nonce, stored_nonce),
-          :ok <- verify_signature(raw_message, signature, address),
-          {:ok, member} <- Accounts.find_or_create_by_wallet(address),
-          {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
-
+         address = siwe_message.address,
+         {:ok, stored_nonce} <- NonceStore.get_and_delete(address),
+         :ok <- verify_nonce(siwe_message.nonce, stored_nonce),
+         :ok <- verify_signature(raw_message, signature, address),
+         {:ok, member} <- Accounts.find_or_create_by_wallet(address),
+         {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
       # Redirect to onboarding if username not set yet
       redirect_to = if Accounts.onboarded?(member), do: "/", else: "/onboarding"
 
       conn
       |> put_session(:guardian_token, token)
       |> json(%{
-        token:       token,
+        token: token,
         redirect_to: redirect_to,
         member: %{
-          id:             member.id,
+          id: member.id,
           wallet_address: member.wallet_address,
-          username:       member.username
+          username: member.username
         }
       })
     else
-      {:error, :not_found}  -> auth_error(conn, "Nonce not found — request a new one")
-      {:error, :expired}    -> auth_error(conn, "Nonce expired — request a new one")
-      {:error, :nonce_mismatch}    -> auth_error(conn, "Nonce mismatch")
+      {:error, :not_found} -> auth_error(conn, "Nonce not found — request a new one")
+      {:error, :expired} -> auth_error(conn, "Nonce expired — request a new one")
+      {:error, :nonce_mismatch} -> auth_error(conn, "Nonce mismatch")
       {:error, :invalid_signature} -> auth_error(conn, "Invalid signature")
-      {:error, reason}      -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
+      {:error, reason} -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
     end
   end
 
@@ -110,7 +110,7 @@ defmodule InsightnestWeb.AuthController do
 
   # Parse the raw SIWE message string.
   defp parse_siwe(raw_message) do
-    Insightnest.Auth.Siwe.parse(raw_message)
+    Siwe.parse(raw_message)
   end
 
   defp verify_nonce(message_nonce, stored_nonce) do
@@ -123,14 +123,14 @@ defmodule InsightnestWeb.AuthController do
 
   # Recover the signer address from the SIWE message + signature.
   defp verify_signature(raw_message, signature, expected_address) do
-    Insightnest.Auth.Siwe.verify(raw_message, signature, expected_address)
+    Siwe.verify(raw_message, signature, expected_address)
   end
 
   # POST /auth/email/request
   def request_passcode(conn, %{"email" => email}) when byte_size(email) > 0 do
     email = String.downcase(String.trim(email))
-    code  = Accounts.generate_passcode()
-    :ok   = PasscodeStore.put(email, code)
+    code = Accounts.generate_passcode()
+    :ok = PasscodeStore.put(email, code)
 
     email
     |> UserEmail.passcode_email(code)
@@ -149,25 +149,24 @@ defmodule InsightnestWeb.AuthController do
     email = String.downcase(String.trim(email))
 
     with {:ok, stored} <- PasscodeStore.get_and_delete(email),
-         true          <- code == stored,
+         true <- code == stored,
          {:ok, member} <- Accounts.find_or_create_by_email(email),
          {:ok, member} <- Accounts.verify_email(member),
          {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
-
       redirect_to = if Accounts.onboarded?(member), do: "/", else: "/onboarding"
 
       conn
       |> put_session(:guardian_token, token)
       |> json(%{
-        token:       token,
+        token: token,
         redirect_to: redirect_to,
-        member:      %{id: member.id, email: member.email, username: member.username}
+        member: %{id: member.id, email: member.email, username: member.username}
       })
     else
       {:error, :not_found} -> auth_error(conn, "Code not found — request a new one")
-      {:error, :expired}   -> auth_error(conn, "Code expired — request a new one")
-      false                -> auth_error(conn, "Incorrect code")
-      {:error, reason}     -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
+      {:error, :expired} -> auth_error(conn, "Code expired — request a new one")
+      false -> auth_error(conn, "Incorrect code")
+      {:error, reason} -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
     end
   end
 

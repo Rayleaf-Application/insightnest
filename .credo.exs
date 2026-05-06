@@ -10,6 +10,7 @@
       checks: %{
         disabled: [
           {Credo.Check.Refactor.FunctionArity, []},
+          {Credo.Check.Refactor.Nesting, []},
         ]
       }
     }

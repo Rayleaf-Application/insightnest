@@ -21,6 +21,7 @@ defmodule InsightnestWeb.SparkLive.New do
      ), layout: {InsightnestWeb.Layouts, :app}}
   end
 
+  @impl true
   def handle_event("update_concept_input", %{"value" => value}, socket) do
     # If value ends with a comma, treat it as "add concept"
     if String.ends_with?(value, ",") do

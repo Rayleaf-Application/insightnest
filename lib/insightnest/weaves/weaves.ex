@@ -3,10 +3,10 @@ defmodule Insightnest.Weaves do
 
   import Ecto.Query
 
-  alias Insightnest.Repo
-  alias Insightnest.Weaves.{Weave, Insight, Weight}
-  alias Insightnest.Sparks
   alias Insightnest.Contributions
+  alias Insightnest.Repo
+  alias Insightnest.Sparks
+  alias Insightnest.Weaves.{Insight, Weave, Weight}
 
   # ── Eligibility ──────────────────────────────────────────────────────────────
 

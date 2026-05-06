@@ -4,8 +4,8 @@ defmodule InsightnestWeb.Live.AuthHooks do
   import Phoenix.LiveView
   import Phoenix.Component
 
-  alias Insightnest.Auth.Guardian
   alias Insightnest.Accounts
+  alias Insightnest.Auth.Guardian
 
   def on_mount(:default, _params, session, socket) do
     {:cont, assign_member(socket, session)}

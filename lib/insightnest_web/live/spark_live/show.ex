@@ -1,11 +1,11 @@
 defmodule InsightnestWeb.SparkLive.Show do
   use InsightnestWeb, :live_view
 
-  alias Insightnest.Sparks
   alias Insightnest.Contributions
+  alias Insightnest.Sparks
   alias Insightnest.Weaves
-  alias InsightnestWeb.SparkComponents
   alias InsightnestWeb.ContributionComponents
+  alias InsightnestWeb.SparkComponents
 
   @max_extensions Application.compile_env(:insightnest, :spark_max_extensions, 2)
 
@@ -134,7 +134,7 @@ defmodule InsightnestWeb.SparkLive.Show do
     days = String.to_integer(days_str)
 
     # Cast spark ID if needed in the context function, assuming get_spark! handles it or we pass binary
-    spark_id = socket.assigns.spark_id || Ecto.UUID.cast!(socket.assigns.spark.id)
+    _spark_id = socket.assigns.spark_id || Ecto.UUID.cast!(socket.assigns.spark.id)
     member_uuid = Ecto.UUID.cast!(member.id)
 
     case Sparks.extend_spark(socket.assigns.spark, member_uuid, days) do
@@ -358,7 +358,6 @@ defmodule InsightnestWeb.SparkLive.Show do
 
   # ── Private ───────────────────────────────────────────────────────────────────
 
-  defp can_contribute?(spark, nil, _), do: false
   defp can_contribute?(spark, member, contributions) do
     not spark.is_closed and
     spark.status == "published" and

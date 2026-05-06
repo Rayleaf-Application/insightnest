@@ -6,11 +6,9 @@ defmodule Insightnest.Error do
   """
 
   def message(%Ecto.Changeset{} = cs) do
-    cs.errors
-    |> Enum.map(fn {field, {msg, _}} ->
+    Enum.map_join(cs.errors, ", ", fn {field, {msg, _}} ->
       "#{Phoenix.Naming.humanize(field)} #{msg}"
     end)
-    |> Enum.join(", ")
   end
 
   def message(:not_eligible),                 do: "You are not eligible to perform this action."

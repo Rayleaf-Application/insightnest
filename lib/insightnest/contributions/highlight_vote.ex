@@ -1,8 +1,8 @@
 defmodule Insightnest.Contributions.HighlightVote do
   use Ecto.Schema
 
-  alias Insightnest.Contributions.Contribution
   alias Insightnest.Accounts.Member
+  alias Insightnest.Contributions.Contribution
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id

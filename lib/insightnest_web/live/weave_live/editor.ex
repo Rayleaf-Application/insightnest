@@ -1,8 +1,8 @@
 defmodule InsightnestWeb.WeaveLive.Editor do
   use InsightnestWeb, :live_view
 
-  alias Insightnest.Weaves
   alias Insightnest.Sparks
+  alias Insightnest.Weaves
 
   on_mount {InsightnestWeb.Live.AuthHooks, :require_onboarded}
 

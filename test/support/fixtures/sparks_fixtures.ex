@@ -1,8 +1,8 @@
 defmodule Insightnest.SparksFixtures do
   @moduledoc false
 
-  alias Insightnest.Sparks
   alias Insightnest.AccountsFixtures
+  alias Insightnest.Sparks
 
   def spark(attrs \\ %{}) do
     author = attrs[:author] || AccountsFixtures.onboarded_member()

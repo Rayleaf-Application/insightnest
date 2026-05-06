@@ -24,8 +24,8 @@ defmodule InsightnestWeb do
       use Phoenix.Router, helpers: false
 
       # Import common connection and controller functions to use in pipelines
-      import Plug.Conn
       import Phoenix.Controller
+      import Plug.Conn
       import Phoenix.LiveView.Router
     end
   end
@@ -91,8 +91,8 @@ defmodule InsightnestWeb do
       import InsightnestWeb.CoreComponents
 
       # Common modules used in templates
-      alias Phoenix.LiveView.JS
       alias InsightnestWeb.Layouts
+      alias Phoenix.LiveView.JS
 
       # Routes generation with the ~p sigil
       unquote(verified_routes())
