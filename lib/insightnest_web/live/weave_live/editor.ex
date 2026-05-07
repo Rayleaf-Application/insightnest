@@ -145,10 +145,11 @@ defmodule InsightnestWeb.WeaveLive.Editor do
           type="button"
           phx-click="trigger_weave"
           disabled={@triggering}
+          phx-disable-with="Weaving…"
           class="px-6 py-3 bg-violet-600 hover:bg-violet-500 disabled:opacity-50
                  text-white font-medium rounded-xl transition-colors"
         >
-          {if @triggering, do: "Weaving…", else: "Trigger Weave"}
+          Trigger Weave
         </button>
       </div>
 

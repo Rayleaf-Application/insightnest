@@ -242,6 +242,7 @@ defmodule InsightnestWeb.SparkLive.New do
         <%!-- Submit --%>
         <button
           type="submit"
+          phx-disable-with="Creating…"
           class="w-full py-3 bg-violet-600 hover:bg-violet-500 active:bg-violet-700
                  text-white text-sm font-medium rounded-lg transition-colors
                  focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2
