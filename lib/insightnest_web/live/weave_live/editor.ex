@@ -1,6 +1,7 @@
 defmodule InsightnestWeb.WeaveLive.Editor do
   use InsightnestWeb, :live_view
 
+  alias Insightnest.Error
   alias Insightnest.Sparks
   alias Insightnest.Weaves
 
@@ -9,8 +10,10 @@ defmodule InsightnestWeb.WeaveLive.Editor do
   @impl true
   def mount(%{"spark_id" => spark_id}, _session, socket) do
     member = socket.assigns.current_member
-    spark  = Sparks.get_spark!(spark_id)
-             |> Insightnest.Repo.preload(:author)
+
+    spark =
+      Sparks.get_spark!(spark_id)
+      |> Insightnest.Repo.preload(:author)
 
     eligible = Weaves.eligible_to_weave?(spark_id, member.id)
 
@@ -27,14 +30,14 @@ defmodule InsightnestWeb.WeaveLive.Editor do
 
     {:ok,
      assign(socket,
-       spark:      spark,
-       weave:      weave,
-       insight:    insight,
-       eligible:   eligible,
-       triggered:  triggered,
+       spark: spark,
+       weave: weave,
+       insight: insight,
+       eligible: eligible,
+       triggered: triggered,
        triggering: false,
-       saving:     false,
-       error:      nil,
+       saving: false,
+       error: nil,
        page_title: "Weave — #{spark.title}"
      )}
   end
@@ -44,7 +47,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
   @impl true
   def handle_event("trigger_weave", _, socket) do
     member = socket.assigns.current_member
-    spark  = socket.assigns.spark
+    spark = socket.assigns.spark
 
     socket = assign(socket, triggering: true, error: nil)
 
@@ -52,68 +55,41 @@ defmodule InsightnestWeb.WeaveLive.Editor do
       {:ok, %{weave: weave, insight: insight}} ->
         {:noreply,
          assign(socket,
-           weave:      weave,
-           insight:    insight,
-           triggered:  true,
+           weave: weave,
+           insight: insight,
+           triggered: true,
            triggering: false
          )}
 
-      {:error, :no_highlighted_contributions} ->
-        {:noreply,
-         assign(socket,
-           triggering: false,
-           error: "No highlighted contributions to weave. Highlight some contributions first."
-         )}
-
-      {:error, :weave_in_progress} ->
-        {:noreply,
-         assign(socket,
-           triggering: false,
-           error: "A Weave is already in progress for this Spark."
-         )}
-
-      {:error, :not_eligible} ->
-        {:noreply,
-         assign(socket,
-           triggering: false,
-           error: "You are not eligible to trigger a Weave on this Spark."
-         )}
-
       {:error, reason} ->
-        {:noreply, assign(socket, triggering: false, error: "Error: #{inspect(reason)}")}
+        {:noreply, assign(socket, triggering: false, error: Error.message(reason))}
     end
   end
 
   def handle_event("update_draft", %{"insight" => params}, socket) do
     insight = socket.assigns.insight
-    weave   = socket.assigns.weave
-    member  = socket.assigns.current_member
+    weave = socket.assigns.weave
+    member = socket.assigns.current_member
 
     case Weaves.update_draft(insight, weave, params, member.id) do
       {:ok, updated} ->
         {:noreply, assign(socket, insight: updated, saving: false)}
 
-      {:error, _} ->
-        {:noreply, assign(socket, saving: false, error: "Failed to save draft.")}
+      {:error, reason} ->
+        {:noreply, assign(socket, triggering: false, error: Error.message(reason))}
     end
   end
 
   def handle_event("publish", _, socket) do
     member = socket.assigns.current_member
-    weave  = socket.assigns.weave
+    weave = socket.assigns.weave
 
     case Weaves.publish_insight(weave.id, member.id) do
       {:ok, insight} ->
         {:noreply, push_navigate(socket, to: "/insights/#{insight.slug}")}
 
-      {:error, :unauthorized} ->
-        {:noreply, assign(socket, error: "Only the Weave curator can publish.")}
-
-      {:error, :already_published} ->
-        {:noreply, assign(socket, error: "This Insight has already been published.")}
-
       {:error, reason} ->
-        {:noreply, assign(socket, error: "Publish failed: #{inspect(reason)}")}
+        {:noreply, assign(socket, error: Error.message(reason))}
     end
   end
 
@@ -123,14 +99,12 @@ defmodule InsightnestWeb.WeaveLive.Editor do
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
-
       <a
         href={"/sparks/#{@spark.id}"}
         class="inline-flex items-center gap-1.5 text-sm text-stone-600
                hover:text-stone-300 transition-colors mb-8 group"
       >
-        <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
-        Back to Spark
+        <span class="group-hover:-translate-x-0.5 transition-transform">←</span> Back to Spark
       </a>
 
       <div class="mb-8">
@@ -146,7 +120,10 @@ defmodule InsightnestWeb.WeaveLive.Editor do
       </div>
 
       <%!-- Error --%>
-      <div :if={@error} class="mb-6 px-4 py-3 rounded-lg border border-red-800/60 bg-red-950/50 text-red-300 text-sm">
+      <div
+        :if={@error}
+        class="mb-6 px-4 py-3 rounded-lg border border-red-800/60 bg-red-950/50 text-red-300 text-sm"
+      >
         {@error}
       </div>
 
@@ -177,7 +154,6 @@ defmodule InsightnestWeb.WeaveLive.Editor do
 
       <%!-- Draft editor --%>
       <div :if={@triggered and @insight} class="space-y-6">
-
         <div class="flex items-center justify-between mb-2">
           <span class="text-xs text-stone-600 uppercase tracking-widest">Draft Insight</span>
           <span :if={@saving} class="text-xs text-stone-600">Saving…</span>
@@ -251,9 +227,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
             Publishing is permanent. The Insight will appear in the Knowledge Library.
           </p>
         </div>
-
       </div>
-
     </div>
     """
   end
@@ -269,7 +243,6 @@ defmodule InsightnestWeb.WeaveLive.Editor do
             {@block["content"]}
           </span>
         </div>
-
       <% "quote" -> %>
         <div class={[
           "rounded-xl border p-4",
@@ -285,7 +258,6 @@ defmodule InsightnestWeb.WeaveLive.Editor do
             {format_wallet(@block["author"])}
           </span>
         </div>
-
       <% _ -> %>
         <p class="text-sm text-stone-400">{@block["content"]}</p>
     <% end %>
@@ -329,18 +301,20 @@ defmodule InsightnestWeb.WeaveLive.Editor do
   defp format_bps(bps) when is_integer(bps) do
     :erlang.float_to_binary(bps / 100, decimals: 1)
   end
+
   defp format_bps(bps) when is_binary(bps) do
     {n, _} = Integer.parse(bps)
     format_bps(n)
   end
+
   defp format_bps(_), do: "0.0"
 
   defp format_wallet(nil), do: "anon"
   defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)
 
-  defp stance_border("evidence"),   do: "border-emerald-800/50 bg-emerald-950/20"
-  defp stance_border("expands"),    do: "border-blue-800/50 bg-blue-950/20"
+  defp stance_border("evidence"), do: "border-emerald-800/50 bg-emerald-950/20"
+  defp stance_border("expands"), do: "border-blue-800/50 bg-blue-950/20"
   defp stance_border("challenges"), do: "border-orange-800/50 bg-orange-950/20"
-  defp stance_border("question"),   do: "border-purple-800/50 bg-purple-950/20"
-  defp stance_border(_),            do: "border-stone-800 bg-stone-900/40"
+  defp stance_border("question"), do: "border-purple-800/50 bg-purple-950/20"
+  defp stance_border(_), do: "border-stone-800 bg-stone-900/40"
 end
