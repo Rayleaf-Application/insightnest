@@ -2,8 +2,6 @@ defmodule Insightnest.AccountsFixtures do
   @moduledoc false
 
   alias Insightnest.Accounts
-  alias Insightnest.Accounts.Member
-  alias Insightnest.Repo
 
   def member(attrs \\ %{}) do
     wallet = attrs[:wallet_address] || unique_wallet()

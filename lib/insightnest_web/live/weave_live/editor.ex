@@ -129,10 +129,16 @@ defmodule InsightnestWeb.WeaveLive.Editor do
 
       <%!-- Not eligible --%>
       <div :if={not @eligible and not @triggered} class="text-center py-16">
-        <p class="text-stone-500 mb-2">You are not eligible to trigger a Weave.</p>
-        <p class="text-stone-600 text-sm">
-          Only the Spark author or authors of highlighted contributions can start a Weave.
+        <p class="text-stone-500 mb-2">You're not eligible to trigger a Weave.</p>
+        <p class="text-stone-600 text-sm mb-6">
+          Only the Spark author or contributors with highlighted entries can start one.
         </p>
+        <a
+          href={"/sparks/#{@spark.id}"}
+          class="text-sm text-violet-400 hover:text-violet-300 transition-colors"
+        >
+          ← Back to Spark
+        </a>
       </div>
 
       <%!-- Trigger button --%>
@@ -191,7 +197,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
             class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
                    text-stone-300 text-sm leading-relaxed focus:outline-none
                    focus:border-violet-500 transition-colors resize-none"
-          ><%= @insight.summary %></textarea>
+          >{@insight.summary}</textarea>
         </div>
 
         <%!-- Body blocks (read-only preview — curator edits prose around them) --%>
@@ -201,6 +207,12 @@ defmodule InsightnestWeb.WeaveLive.Editor do
           </label>
           <div class="space-y-3">
             <.body_block :for={block <- get_blocks(@insight)} block={block} />
+            <p
+              :if={get_blocks(@insight) == []}
+              class="text-sm text-stone-600 py-4 text-center"
+            >
+              No highlighted contributions yet.
+            </p>
           </div>
         </div>
 
@@ -211,6 +223,12 @@ defmodule InsightnestWeb.WeaveLive.Editor do
           </label>
           <div class="space-y-2">
             <.contributor_row :for={share <- get_shares(@insight)} share={share} />
+            <p
+              :if={get_shares(@insight) == []}
+              class="text-sm text-stone-600 py-2 text-center"
+            >
+              No contributors yet.
+            </p>
           </div>
         </div>
 
@@ -219,6 +237,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
           <button
             type="button"
             phx-click="publish"
+            phx-disable-with="Publishing…"
             class="px-6 py-3 bg-emerald-700 hover:bg-emerald-600
                    text-white font-medium rounded-xl transition-colors"
           >

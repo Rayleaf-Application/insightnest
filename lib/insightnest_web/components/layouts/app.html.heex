@@ -49,7 +49,8 @@
             size={:xs}
           />
           <span class="text-sm text-stone-400 hover:text-stone-200 transition-colors">
-            <%= @current_member.username || "..." %>
+            <%= @current_member.username ||
+                  (if w = @current_member.wallet_address, do: String.slice(w, 0, 6) <> "…", else: "anon") %>
           </span>
         </a>
         <a

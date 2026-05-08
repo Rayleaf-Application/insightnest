@@ -1,6 +1,4 @@
 defmodule Insightnest.Weaves.Weight do
-  @moduledoc false
-
   @moduledoc """
   Computes fractional contributor shares at Weave time.
 
@@ -84,7 +82,7 @@ defmodule Insightnest.Weaves.Weight do
     end)
   end
 
-  defp put_curator(shares, weave, curator_id, spark_author_id, bps)
+  defp put_curator(shares, _weave, curator_id, spark_author_id, bps)
        when curator_id == spark_author_id do
     update_in(shares[spark_author_id], fn entry ->
       %{entry | roles: entry.roles ++ ["weave"], bps: entry.bps + bps}

@@ -27,7 +27,7 @@ defmodule InsightnestWeb.SparkLiveTest do
 
   describe "SparkLive.New" do
     test "redirects unauthenticated to /auth", %{conn: conn} do
-      {:error, {:redirect, %{to: "/auth"}}} = live(conn, "/sparks/new")
+      assert {:error, {:live_redirect, %{to: "/auth"}}} = live(conn, "/sparks/new")
     end
 
     test "authenticated member can create a spark", %{conn: conn} do
@@ -42,7 +42,8 @@ defmodule InsightnestWeb.SparkLiveTest do
       })
       |> render_submit()
 
-      assert_redirected(view, ~r|/sparks/|)
+      {path, _flash} = assert_redirect(view)
+      assert path =~ "/sparks/"
     end
   end
 end

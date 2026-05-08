@@ -13,6 +13,7 @@ defmodule Insightnest.MixProject do
       listeners: [Phoenix.CodeReloader],
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
+        test: :test,
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.html": :test
@@ -77,6 +78,7 @@ defmodule Insightnest.MixProject do
 
       # Test
       {:floki, ">= 0.30.0", only: :test},
+      {:lazy_html, "~> 0.1.11", only: :test},
 
       # CI/CD
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},

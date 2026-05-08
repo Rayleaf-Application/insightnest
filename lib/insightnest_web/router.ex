@@ -52,7 +52,7 @@ defmodule InsightnestWeb.Router do
     get "/", AuthController, :index
   end
 
-  # ── Authenticated routes ───────────────────────────────────────────────────────
+  # ── App routes — soft auth via on_mount hooks ─────────────────────────────────
   scope "/", InsightnestWeb do
     pipe_through :browser
 
@@ -61,19 +61,6 @@ defmodule InsightnestWeb.Router do
     live "/sparks/new", SparkLive.New, :new
     live "/sparks/:id", SparkLive.Show, :show
     live "/weave/:spark_id", WeaveLive.Editor, :edit
-    live "/library", LibraryLive.Index, :index
-    live "/insights/:slug", LibraryLive.Show, :show
-    live "/onboarding", OnboardingLive, :index
-  end
-
-  # ── Public routes ─────────────────────────────────────────────────────────────
-
-  # Public routes — soft auth via hook
-  scope "/", InsightnestWeb do
-    pipe_through :browser
-    live "/", SparkLive.Index, :index
-    live "/sparks/new", SparkLive.New, :new
-    live "/sparks/:id", SparkLive.Show, :show
     live "/library", LibraryLive.Index, :index
     live "/insights/:slug", LibraryLive.Show, :show
   end

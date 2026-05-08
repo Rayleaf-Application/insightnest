@@ -17,51 +17,46 @@ defmodule InsightnestWeb.SparkLive.New do
        form: to_form(changeset),
        concepts: [],
        concept_input: "",
+       concept_error: nil,
        timeout_days: 14,
        error: nil
      ), layout: {InsightnestWeb.Layouts, :app}}
   end
 
   @impl true
-  def handle_event("update_concept_input", %{"value" => value}, socket) do
-    # If value ends with a comma, treat it as "add concept"
-    if String.ends_with?(value, ",") do
+  def handle_event("add_concept", %{"key" => key, "value" => value}, socket) do
+    # Enter or comma both confirm the current input as a new concept.
+    # The comma may or may not be present in `value` depending on timing;
+    # we check both the key and a trailing comma in the value.
+    if key in ["Enter", ","] or String.ends_with?(value, ",") do
       concept = value |> String.trim_trailing(",") |> String.trim()
 
-      if concept != "" and concept not in socket.assigns.concepts do
-        {:noreply,
-         socket
-         |> assign(concepts: socket.assigns.concepts ++ [concept])
-         |> assign(concept_input: "")}
-      else
-        {:noreply, assign(socket, concept_input: "")}
+      cond do
+        concept != "" and concept not in socket.assigns.concepts ->
+          {:noreply,
+           socket
+           |> assign(concepts: socket.assigns.concepts ++ [concept])
+           |> assign(concept_input: "")
+           |> assign(concept_error: nil)}
+
+        concept in socket.assigns.concepts ->
+          {:noreply, assign(socket, concept_input: "", concept_error: "\"#{concept}\" already added")}
+
+        true ->
+          {:noreply, assign(socket, concept_input: "", concept_error: nil)}
       end
     else
-      {:noreply, assign(socket, concept_input: value)}
+      {:noreply, assign(socket, concept_input: value, concept_error: nil)}
     end
   end
-
-  def handle_event("add_concept", %{"key" => "Enter", "value" => value}, socket) do
-    concept = String.trim(value)
-
-    if concept != "" and concept not in socket.assigns.concepts do
-      {:noreply,
-       socket
-       |> assign(concepts: socket.assigns.concepts ++ [concept])
-       |> assign(concept_input: "")}
-    else
-      {:noreply, assign(socket, concept_input: "")}
-    end
-  end
-
-  def handle_event("add_concept", _, socket), do: {:noreply, socket}
 
   def handle_event("remove_concept", %{"concept" => concept}, socket) do
     {:noreply, assign(socket, concepts: List.delete(socket.assigns.concepts, concept))}
   end
 
-  def handle_event("update_concept_input", %{"value" => value}, socket) do
-    {:noreply, assign(socket, concept_input: value)}
+  def handle_event("validate", %{"spark" => params}, socket) do
+    changeset = Sparks.changeset(%Spark{}, params)
+    {:noreply, assign(socket, form: to_form(changeset))}
   end
 
   def handle_event("set_timeout", %{"days" => days}, socket) do
@@ -107,7 +102,7 @@ defmodule InsightnestWeb.SparkLive.New do
         {@error}
       </div>
 
-      <.form for={@form} id="spark-form" phx-submit="save" class="space-y-6">
+      <.form for={@form} id="spark-form" phx-submit="save" phx-change="validate" class="space-y-6">
         <%!-- Title --%>
         <div>
           <label class="block text-xs text-stone-500 uppercase tracking-widest mb-2">
@@ -140,13 +135,13 @@ defmodule InsightnestWeb.SparkLive.New do
                    text-stone-300 placeholder-stone-700 text-sm leading-relaxed
                    focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/30
                    transition-colors resize-none"
-          ><%= @form[:body].value %></textarea>
+          >{@form[:body].value}</textarea>
         </div>
 
         <%!-- Concepts --%>
         <div>
           <label class="block text-xs text-stone-500 uppercase tracking-widest mb-2">
-            Concepts <span class="normal-case ml-1 text-stone-700">(press Enter to add)</span>
+            Concepts <span class="normal-case ml-1 text-stone-700">(Enter or comma to add)</span>
           </label>
 
           <div class="flex flex-wrap gap-2 mb-2 min-h-[1.5rem]">
@@ -172,14 +167,15 @@ defmodule InsightnestWeb.SparkLive.New do
             value={@concept_input}
             placeholder="e.g. epistemology"
             phx-keyup="add_concept"
-            phx-value-value={@concept_input}
-            phx-change="update_concept_input"
-            phx-debounce="0"
+            onkeydown="if(event.key==='Enter'||event.key===',') event.preventDefault()"
             class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-2.5
                     text-stone-300 placeholder-stone-700 text-sm
                     focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20
                     transition-colors"
           />
+          <p :if={@concept_error} class="text-xs text-amber-500/80 mt-1.5">
+            {@concept_error}
+          </p>
         </div>
 
         <%!-- Publish toggle --%>

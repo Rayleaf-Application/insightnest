@@ -197,7 +197,7 @@ defmodule InsightnestWeb.ContributionComponents do
                  text-stone-200 placeholder-stone-700 text-sm leading-relaxed
                  focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20
                  transition-colors resize-none"
-        ><%= @form[:body].value %></textarea>
+        >{@form[:body].value}</textarea>
 
         <div class="flex items-center justify-between gap-3 flex-wrap">
           <.stance_selector selected={@selected_stance} />
@@ -244,6 +244,7 @@ defmodule InsightnestWeb.ContributionComponents do
       type="button"
       phx-click="toggle_highlight"
       phx-value-contribution_id={@contribution.id}
+      aria-label={if @voted, do: "Remove highlight", else: "Highlight this contribution"}
       class={[
         "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs border transition-colors",
         if(@voted,
@@ -252,7 +253,6 @@ defmodule InsightnestWeb.ContributionComponents do
             "bg-stone-900 text-stone-600 border-stone-700 hover:border-stone-500 hover:text-stone-400"
         )
       ]}
-      title={if @voted, do: "Remove highlight", else: "Highlight this contribution"}
     >
       <span>{if @voted, do: "✦", else: "✧"}</span>
       <span>{@contribution.highlight_count}</span>

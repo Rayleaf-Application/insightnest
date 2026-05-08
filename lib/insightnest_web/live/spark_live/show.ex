@@ -227,7 +227,7 @@ defmodule InsightnestWeb.SparkLive.Show do
           class="text-2xl font-medium text-stone-100 leading-tight mb-5"
           style="font-family: 'Playfair Display', serif;"
         >
-          <span class="group-hover:-translate-x-0.5 transition-transform">←</span> Feed
+          {@spark.title}
         </h1>
 
         <SparkComponents.concept_tag_list concepts={@spark.concepts} />
@@ -315,7 +315,7 @@ defmodule InsightnestWeb.SparkLive.Show do
               <div id="contribution-lock" class="text-center py-6">
                 <div class="inline-flex items-center gap-3 px-5 py-3 rounded-xl
                             border border-stone-800 bg-stone-900/60">
-                  <span class="text-stone-600 text-sm">Read time</span>
+                  <span class="text-stone-600 text-sm">Finish reading</span>
                   <span
                     id="read-timer-count"
                     class="font-mono text-sm text-violet-400"
@@ -323,7 +323,7 @@ defmodule InsightnestWeb.SparkLive.Show do
                   >
                     …
                   </span>
-                  <span class="text-stone-700 text-xs">before contributing</span>
+                  <span class="text-stone-700 text-xs">to unlock</span>
                 </div>
               </div>
 
@@ -344,6 +344,8 @@ defmodule InsightnestWeb.SparkLive.Show do
   end
 
   # ── Private ───────────────────────────────────────────────────────────────────
+
+  defp can_contribute?(_spark, nil, _contributions), do: false
 
   defp can_contribute?(spark, member, contributions) do
     not spark.is_closed and
