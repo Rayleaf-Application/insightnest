@@ -63,6 +63,7 @@ defmodule InsightnestWeb.Router do
     live "/weave/:spark_id", WeaveLive.Editor, :edit
     live "/library", LibraryLive.Index, :index
     live "/insights/:slug", LibraryLive.Show, :show
+    live "/roadmap", RoadmapLive, :index
   end
 
   # ── Dev routes ────────────────────────────────────────────────────────────────
