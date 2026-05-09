@@ -98,7 +98,7 @@ defmodule InsightnestWeb.EmailAuthTest do
       PasscodeStore.put(email, "654321")
 
       conn = post(conn, "/auth/email/verify", %{email: email, code: "654321"})
-      assert json_response(conn, 200)["redirect_to"] == "/"
+      assert json_response(conn, 200)["redirect_to"] == "/feed"
     end
 
     test "is idempotent — repeated logins for the same email work fine", %{conn: conn} do

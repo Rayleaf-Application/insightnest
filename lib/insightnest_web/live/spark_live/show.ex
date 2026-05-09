@@ -213,7 +213,7 @@ defmodule InsightnestWeb.SparkLive.Show do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
       <a
-        href="/"
+        href="/feed"
         class="inline-flex items-center gap-1.5 text-sm text-stone-600
                hover:text-stone-300 transition-colors mb-8 group"
       >

@@ -83,7 +83,8 @@ defmodule InsightnestWeb.Router do
   scope "/", InsightnestWeb do
     pipe_through :browser
 
-    live "/", SparkLive.Index, :index
+    live "/", LandingLive, :index
+    live "/feed", SparkLive.Index, :index
     live "/garden", GardenLive.Index, :index
     live "/sparks/new", SparkLive.New, :new
     live "/sparks/:id", SparkLive.Show, :show

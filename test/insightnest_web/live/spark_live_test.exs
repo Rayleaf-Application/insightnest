@@ -7,20 +7,20 @@ defmodule InsightnestWeb.SparkLiveTest do
 
   describe "SparkLive.Index" do
     test "renders empty feed for guest", %{conn: conn} do
-      {:ok, _view, html} = live(conn, "/")
+      {:ok, _view, html} = live(conn, "/feed")
       assert html =~ "InsightNest"
     end
 
     test "renders sparks in feed", %{conn: conn} do
       spark = SparksFixtures.published_spark()
-      {:ok, _view, html} = live(conn, "/")
+      {:ok, _view, html} = live(conn, "/feed")
       assert html =~ spark.title
     end
 
     test "shows New Spark button for authenticated member", %{conn: conn} do
       member = AccountsFixtures.member()
       conn = log_in(conn, member)
-      {:ok, _view, html} = live(conn, "/")
+      {:ok, _view, html} = live(conn, "/feed")
       assert html =~ "New Spark"
     end
   end
