@@ -19,10 +19,12 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Standalone tailwindcss binary — project calls the binary directly, no npm needed
+# --fail: exit non-zero on HTTP 4xx/5xx (prevents silently saving a 404 HTML page)
 ARG TAILWIND_VERSION=3.4.17
-RUN curl -sLo /usr/local/bin/tailwindcss \
+RUN curl -fSLo /usr/local/bin/tailwindcss \
     "https://github.com/tailwindlabs/tailwindcss/releases/download/v${TAILWIND_VERSION}/tailwindcss-linux-x64" \
-    && chmod +x /usr/local/bin/tailwindcss
+    && chmod +x /usr/local/bin/tailwindcss \
+    && /usr/local/bin/tailwindcss --version
 
 ENV MIX_ENV=prod \
     HEX_HOME=/root/.hex \
