@@ -1,6 +1,8 @@
 defmodule InsightnestWeb.AuthController do
   use InsightnestWeb, :controller
 
+  require Logger
+
   alias Insightnest.Accounts
   alias Insightnest.Accounts.NonceStoreETS, as: NonceStore
   alias Insightnest.Accounts.PasscodeStore
@@ -132,9 +134,10 @@ defmodule InsightnestWeb.AuthController do
     code = Accounts.generate_passcode()
     :ok = PasscodeStore.put(email, code)
 
-    email
-    |> UserEmail.passcode_email(code)
-    |> Insightnest.Mailer.deliver()
+    case email |> UserEmail.passcode_email(code) |> Insightnest.Mailer.deliver() do
+      {:ok, _} -> :ok
+      {:error, reason} -> Logger.error("[Mailer] Failed to deliver passcode to #{email}: #{inspect(reason)}")
+    end
 
     # Always return ok — don't leak whether email exists
     json(conn, %{ok: true})

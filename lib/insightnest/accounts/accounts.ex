@@ -81,9 +81,15 @@ defmodule Insightnest.Accounts do
     |> Repo.update()
   end
 
-  @doc "Generates a 6-digit passcode string."
+  @doc "Returns a member by email, or nil."
+  def get_member_by_email(email) do
+    Repo.get_by(Member, email: String.downcase(String.trim(email)))
+  end
+
+  @doc "Generates a cryptographically secure 6-digit passcode string."
   def generate_passcode do
-    :rand.uniform(999_999)
+    <<n::32>> = :crypto.strong_rand_bytes(4)
+    rem(n, 1_000_000)
     |> Integer.to_string()
     |> String.pad_leading(6, "0")
   end
