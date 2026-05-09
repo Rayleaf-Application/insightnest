@@ -8,7 +8,8 @@ defmodule Insightnest.Accounts.PasscodeStore do
   use GenServer
 
   @table :insightnest_passcode_store
-  @ttl   600  # 10 minutes in seconds
+  # 10 minutes in seconds
+  @ttl 600
 
   def start_link(opts \\ []) do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)

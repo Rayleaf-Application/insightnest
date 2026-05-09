@@ -9,7 +9,7 @@ defmodule Insightnest.Accounts.PasscodeStoreTest do
   describe "put/2 and get_and_delete/1" do
     test "stored code is returned on first lookup" do
       email = unique_email()
-      :ok   = PasscodeStore.put(email, "123456")
+      :ok = PasscodeStore.put(email, "123456")
       assert {:ok, "123456"} = PasscodeStore.get_and_delete(email)
     end
 

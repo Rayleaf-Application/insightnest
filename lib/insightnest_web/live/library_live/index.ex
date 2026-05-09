@@ -14,9 +14,9 @@ defmodule InsightnestWeb.LibraryLive.Index do
 
     {:ok,
      assign(socket,
-       insights:    insights,
-       query:       "",
-       page_title:  "Knowledge Library"
+       insights: insights,
+       query: "",
+       page_title: "Knowledge Library"
      )}
   end
 
@@ -37,7 +37,6 @@ defmodule InsightnestWeb.LibraryLive.Index do
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
-
       <%!-- Header --%>
       <div class="mb-8">
         <h1
@@ -90,7 +89,6 @@ defmodule InsightnestWeb.LibraryLive.Index do
           index={i}
         />
       </div>
-
     </div>
     """
   end

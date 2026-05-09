@@ -105,7 +105,6 @@ defmodule InsightnestWeb.RoadmapLive do
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
-
       <div class="mb-10">
         <h1
           class="text-2xl font-medium text-stone-100 mb-2"
@@ -148,7 +147,6 @@ defmodule InsightnestWeb.RoadmapLive do
         Each Logos component plugs into a pre-built seam in the codebase.
         No phase requires a rewrite — only a behaviour implementation swap.
       </p>
-
     </div>
     """
   end
@@ -212,7 +210,10 @@ defmodule InsightnestWeb.RoadmapLive do
               Phase {@phase.number} — {@phase.name}
             </h2>
           </div>
-          <span class={["text-xs px-2.5 py-1 rounded-md border shrink-0", estimate_class(@phase.status)]}>
+          <span class={[
+            "text-xs px-2.5 py-1 rounded-md border shrink-0",
+            estimate_class(@phase.status)
+          ]}>
             {@phase.estimate}
           </span>
         </div>
@@ -226,7 +227,10 @@ defmodule InsightnestWeb.RoadmapLive do
             :for={item <- @phase.deliverables}
             class="flex items-start gap-2 text-sm text-stone-400"
           >
-            <span class={["mt-[0.35rem] shrink-0 w-1 h-1 rounded-full", deliverable_dot_class(@phase.status)]} />
+            <span class={[
+              "mt-[0.35rem] shrink-0 w-1 h-1 rounded-full",
+              deliverable_dot_class(@phase.status)
+            ]} />
             {item}
           </li>
         </ul>
@@ -243,7 +247,10 @@ defmodule InsightnestWeb.RoadmapLive do
 
   defp status_chip(assigns) do
     ~H"""
-    <span class={["inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border", status_chip_class(@status)]}>
+    <span class={[
+      "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border",
+      status_chip_class(@status)
+    ]}>
       {status_label(@status)}
     </span>
     """

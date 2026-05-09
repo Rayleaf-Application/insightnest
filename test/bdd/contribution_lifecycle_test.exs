@@ -11,21 +11,25 @@ defmodule Insightnest.BDD.ContributionLifecycleTest do
   @body String.duplicate("thoughtful analysis and synthesis of ideas ", 60)
 
   defp contribute(spark, author) do
-    Contributions.create_contribution(%{"body" => @body, "stance" => "expands"}, spark.id, author.id)
+    Contributions.create_contribution(
+      %{"body" => @body, "stance" => "expands"},
+      spark.id,
+      author.id
+    )
   end
 
   # ── Happy path ────────────────────────────────────────────────────────────────
 
   scenario "member contributes to a published spark" do
     setup do
-      spark  = SparksFixtures.published_spark()
+      spark = SparksFixtures.published_spark()
       author = AccountsFixtures.onboarded_member()
       {:ok, spark: spark, author: author}
     end
 
     step "create_contribution returns {:ok, contribution}", %{spark: s, author: a} do
       assert {:ok, contribution} = contribute(s, a)
-      assert contribution.spark_id  == s.id
+      assert contribution.spark_id == s.id
       assert contribution.author_id == a.id
     end
 
@@ -55,7 +59,7 @@ defmodule Insightnest.BDD.ContributionLifecycleTest do
 
   scenario "author cannot contribute to their own spark" do
     step "given the spark author tries to contribute, it is rejected" do
-      spark  = SparksFixtures.published_spark()
+      spark = SparksFixtures.published_spark()
       author = Repo.preload(spark, :author).author
       assert {:error, :own_spark} = contribute(spark, author)
     end
@@ -65,7 +69,7 @@ defmodule Insightnest.BDD.ContributionLifecycleTest do
 
   scenario "each member may only contribute once per spark" do
     setup do
-      spark  = SparksFixtures.published_spark()
+      spark = SparksFixtures.published_spark()
       author = AccountsFixtures.onboarded_member()
       {:ok, _} = contribute(spark, author)
       {:ok, spark: spark, author: author}
@@ -85,15 +89,20 @@ defmodule Insightnest.BDD.ContributionLifecycleTest do
   scenario "contributions to a closed spark are blocked" do
     setup do
       spark = SparksFixtures.published_spark()
-      past  = DateTime.add(DateTime.utc_now(), -3_600, :second) |> DateTime.truncate(:second)
+      past = DateTime.add(DateTime.utc_now(), -3_600, :second) |> DateTime.truncate(:second)
       Repo.update!(Ecto.Changeset.change(spark, closes_at: past))
       {:ok, spark_id: spark.id}
     end
 
     step "create_contribution returns {:error, :spark_closed}", %{spark_id: sid} do
       author = AccountsFixtures.onboarded_member()
+
       assert {:error, :spark_closed} =
-               Contributions.create_contribution(%{"body" => @body, "stance" => "expands"}, sid, author.id)
+               Contributions.create_contribution(
+                 %{"body" => @body, "stance" => "expands"},
+                 sid,
+                 author.id
+               )
     end
   end
 
@@ -102,13 +111,24 @@ defmodule Insightnest.BDD.ContributionLifecycleTest do
   scenario "contributions to a draft spark are blocked" do
     step "create_contribution on a draft spark returns {:error, :spark_not_published}" do
       author = AccountsFixtures.onboarded_member()
-      {:ok, draft} = Sparks.create_spark(
-        %{"title" => "Draft spark #{System.unique_integer()}", "body" => String.duplicate("word ", 10)},
-        author.id
-      )
+
+      {:ok, draft} =
+        Sparks.create_spark(
+          %{
+            "title" => "Draft spark #{System.unique_integer()}",
+            "body" => String.duplicate("word ", 10)
+          },
+          author.id
+        )
+
       contributor = AccountsFixtures.onboarded_member()
+
       assert {:error, :spark_not_published} =
-               Contributions.create_contribution(%{"body" => @body, "stance" => "expands"}, draft.id, contributor.id)
+               Contributions.create_contribution(
+                 %{"body" => @body, "stance" => "expands"},
+                 draft.id,
+                 contributor.id
+               )
     end
   end
 
@@ -116,7 +136,7 @@ defmodule Insightnest.BDD.ContributionLifecycleTest do
 
   scenario "author soft-deletes their contribution" do
     setup do
-      spark  = SparksFixtures.published_spark()
+      spark = SparksFixtures.published_spark()
       author = AccountsFixtures.onboarded_member()
       {:ok, c} = contribute(spark, author)
       {:ok, contribution: c, author: author}
@@ -137,9 +157,9 @@ defmodule Insightnest.BDD.ContributionLifecycleTest do
 
   scenario "highlight votes accumulate and auto-highlight at threshold" do
     setup do
-      spark        = SparksFixtures.published_spark()
-      contributor  = AccountsFixtures.onboarded_member()
-      {:ok, c}     = contribute(spark, contributor)
+      spark = SparksFixtures.published_spark()
+      contributor = AccountsFixtures.onboarded_member()
+      {:ok, c} = contribute(spark, contributor)
       {:ok, contribution: c, spark: spark}
     end
 
@@ -151,7 +171,7 @@ defmodule Insightnest.BDD.ContributionLifecycleTest do
 
     step "toggling again removes the vote", %{contribution: c} do
       voter = AccountsFixtures.onboarded_member()
-      {:ok, _}       = Contributions.toggle_highlight(c.id, voter.id)
+      {:ok, _} = Contributions.toggle_highlight(c.id, voter.id)
       {:ok, reverted} = Contributions.toggle_highlight(c.id, voter.id)
       assert reverted.highlight_count == 0
     end

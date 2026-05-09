@@ -9,15 +9,15 @@ defmodule Insightnest.Weaves.Insight do
   @foreign_key_type :binary_id
 
   schema "insights" do
-    field :version,      :integer, default: 1
-    field :title,        :string
-    field :summary,      :string, default: ""
-    field :body,         :map
+    field :version, :integer, default: 1
+    field :title, :string
+    field :summary, :string, default: ""
+    field :body, :map
     field :contributors, :map
     field :content_hash, :string
-    field :slug,         :string
-    field :status,       :string, default: "draft"
-    field :codex_cid,    :string
+    field :slug, :string
+    field :status, :string, default: "draft"
+    field :codex_cid, :string
 
     belongs_to :weave, Weave
     belongs_to :spark, Spark
@@ -27,8 +27,19 @@ defmodule Insightnest.Weaves.Insight do
 
   def changeset(insight, attrs) do
     insight
-    |> cast(attrs, [:title, :summary, :body, :contributors, :content_hash,
-                    :slug, :status, :codex_cid, :weave_id, :spark_id, :version])
+    |> cast(attrs, [
+      :title,
+      :summary,
+      :body,
+      :contributors,
+      :content_hash,
+      :slug,
+      :status,
+      :codex_cid,
+      :weave_id,
+      :spark_id,
+      :version
+    ])
     |> validate_required([:title, :body, :content_hash, :weave_id, :spark_id])
     |> validate_inclusion(:status, ["draft", "published"])
     |> unique_constraint(:slug)

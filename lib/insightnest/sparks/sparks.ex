@@ -77,9 +77,9 @@ defmodule Insightnest.Sparks do
   def create_spark(attrs, author_id) do
     with :ok <- check_previous_spark_engaged(author_id) do
       timeout_days = Map.get(attrs, "timeout_days", 0) |> parse_int()
-      closes_at    = compute_closes_at(timeout_days)
+      closes_at = compute_closes_at(timeout_days)
       content_hash = compute_content_hash(attrs, author_id)
-      slug         = generate_slug(Map.get(attrs, "title", ""))
+      slug = generate_slug(Map.get(attrs, "title", ""))
 
       %Spark{}
       |> Spark.changeset(
@@ -112,7 +112,7 @@ defmodule Insightnest.Sparks do
         Repo.exists?(
           from s in Spark,
             join: c in Insightnest.Contributions.Contribution,
-              on: c.spark_id == s.id and c.status == "active",
+            on: c.spark_id == s.id and c.status == "active",
             where: s.author_id == ^author_id and s.status == "published"
         )
 
@@ -228,15 +228,18 @@ defmodule Insightnest.Sparks do
         days = additional_days || @default_timeout
         days = min(days, @max_timeout)
 
-        base = case spark.closes_at do
-          nil -> DateTime.utc_now()
-          closes_at ->
-            if DateTime.compare(closes_at, DateTime.utc_now()) == :gt do
-              closes_at
-            else
+        base =
+          case spark.closes_at do
+            nil ->
               DateTime.utc_now()
-            end
-        end
+
+            closes_at ->
+              if DateTime.compare(closes_at, DateTime.utc_now()) == :gt do
+                closes_at
+              else
+                DateTime.utc_now()
+              end
+          end
 
         new_closes_at =
           base

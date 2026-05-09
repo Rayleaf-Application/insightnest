@@ -19,7 +19,7 @@ defmodule InsightnestWeb.SparkLiveTest do
 
     test "shows New Spark button for authenticated member", %{conn: conn} do
       member = AccountsFixtures.member()
-      conn   = log_in(conn, member)
+      conn = log_in(conn, member)
       {:ok, _view, html} = live(conn, "/")
       assert html =~ "New Spark"
     end
@@ -32,14 +32,17 @@ defmodule InsightnestWeb.SparkLiveTest do
 
     test "authenticated member can create a spark", %{conn: conn} do
       member = AccountsFixtures.onboarded_member()
-      conn   = log_in(conn, member)
+      conn = log_in(conn, member)
       {:ok, view, _html} = live(conn, "/sparks/new")
 
       view
-      |> form("#spark-form", spark: %{
-        title: "Test spark about epistemology",
-        body:  String.duplicate("word ", 20)  # 20 words — enough for validation
-      })
+      |> form("#spark-form",
+        spark: %{
+          title: "Test spark about epistemology",
+          # 20 words — enough for validation
+          body: String.duplicate("word ", 20)
+        }
+      )
       |> render_submit()
 
       {path, _flash} = assert_redirect(view)

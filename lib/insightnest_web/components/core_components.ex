@@ -503,10 +503,11 @@ defmodule InsightnestWeb.CoreComponents do
       <.avatar wallet={@member.wallet_address} size={:sm} />
       <.avatar wallet={@member.wallet_address} size={:md} />
   """
-  attr :wallet,   :string, required: true
-  attr :size,     :atom,   default: :sm    # :xs | :sm | :md | :lg
+  attr :wallet, :string, required: true
+  # :xs | :sm | :md | :lg
+  attr :size, :atom, default: :sm
   attr :username, :string, default: nil
-  attr :class,    :string, default: ""
+  attr :class, :string, default: ""
 
   def avatar(assigns) do
     assigns = assign(assigns, :svg, Insightnest.Accounts.Avatar.generate(assigns.wallet))

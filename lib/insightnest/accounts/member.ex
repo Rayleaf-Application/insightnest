@@ -6,10 +6,11 @@ defmodule Insightnest.Accounts.Member do
   @foreign_key_type :binary_id
 
   schema "members" do
-    field :wallet_address,  :string
-    field :email,           :string
-    field :username,        :string
-    field :email_verified,  :boolean, default: false  # ← add this
+    field :wallet_address, :string
+    field :email, :string
+    field :username, :string
+    # ← add this
+    field :email_verified, :boolean, default: false
 
     timestamps(type: :utc_datetime)
   end
@@ -44,8 +45,8 @@ defmodule Insightnest.Accounts.Member do
     |> validate_required([:username])
     |> validate_length(:username, min: 3, max: 20)
     |> validate_format(:username, ~r/^[a-zA-Z0-9_]+$/,
-        message: "can only contain letters, numbers, and underscores"
-      )
+      message: "can only contain letters, numbers, and underscores"
+    )
     |> update_change(:username, &String.downcase/1)
     |> unique_constraint(:username, message: "is already taken")
   end

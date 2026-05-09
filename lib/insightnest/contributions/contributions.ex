@@ -40,9 +40,10 @@ defmodule Insightnest.Contributions do
   def highlighted_author?(spark_id, member_id) do
     Repo.exists?(
       from c in Contribution,
-        where: c.spark_id == ^spark_id
-          and c.author_id == ^member_id
-          and c.highlighted == true
+        where:
+          c.spark_id == ^spark_id and
+            c.author_id == ^member_id and
+            c.highlighted == true
     )
   end
 
@@ -88,6 +89,7 @@ defmodule Insightnest.Contributions do
               "spark:#{spark_id}",
               {:new_contribution, contribution}
             )
+
             {:ok, contribution}
 
           {:error, _} = error ->
@@ -120,10 +122,11 @@ defmodule Insightnest.Contributions do
   def toggle_highlight(contribution_id, voter_id) do
     contribution = Repo.get!(Contribution, contribution_id)
 
-    existing = Repo.get_by(HighlightVote,
-      contribution_id: contribution_id,
-      voter_id: voter_id
-    )
+    existing =
+      Repo.get_by(HighlightVote,
+        contribution_id: contribution_id,
+        voter_id: voter_id
+      )
 
     if existing do
       remove_highlight_vote(contribution, existing)
@@ -156,6 +159,7 @@ defmodule Insightnest.Contributions do
       )
 
       new_count = contribution.highlight_count + 1
+
       highlighted =
         if is_nil(contribution.author_override) do
           new_count >= @highlight_threshold
@@ -170,7 +174,9 @@ defmodule Insightnest.Contributions do
     |> case do
       {:ok, contribution} ->
         broadcast_highlight_update({:ok, contribution})
-      {:error, _} = err -> err
+
+      {:error, _} = err ->
+        err
     end
   end
 
@@ -179,6 +185,7 @@ defmodule Insightnest.Contributions do
       Repo.delete!(vote)
 
       new_count = max(0, contribution.highlight_count - 1)
+
       highlighted =
         if is_nil(contribution.author_override) do
           new_count >= @highlight_threshold
@@ -193,17 +200,21 @@ defmodule Insightnest.Contributions do
     |> case do
       {:ok, contribution} ->
         broadcast_highlight_update({:ok, contribution})
-      {:error, _} = err -> err
+
+      {:error, _} = err ->
+        err
     end
   end
 
   defp broadcast_highlight_update({:ok, contribution} = result) do
     contribution = Repo.preload(contribution, :author)
+
     Phoenix.PubSub.broadcast(
       Insightnest.PubSub,
       "spark:#{contribution.spark_id}",
       {:contribution_updated, contribution}
     )
+
     result
   end
 
@@ -221,7 +232,7 @@ defmodule Insightnest.Contributions do
   def voter_highlights(spark_id, voter_id) do
     from(v in HighlightVote,
       join: c in Contribution,
-        on: c.id == v.contribution_id,
+      on: c.id == v.contribution_id,
       where: c.spark_id == ^spark_id and v.voter_id == ^voter_id,
       select: v.contribution_id
     )

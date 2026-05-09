@@ -10,7 +10,7 @@ defmodule Insightnest.Weaves.Weave do
   schema "weaves" do
     field :status, :string, default: "in_progress"
 
-    belongs_to :spark,   Spark
+    belongs_to :spark, Spark
     belongs_to :curator, Member
 
     timestamps(type: :utc_datetime)

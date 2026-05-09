@@ -1,247 +1,282 @@
 <!DOCTYPE html>
 <html lang="en" style="background:#0c0a09;color:#f5f5f4;">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Sign in · InsightNest</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="/assets/app.css"/>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'DM Sans',system-ui,sans-serif;background:#0c0a09;color:#f5f5f4;
-         min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
-    input{width:100%;background:#1c1917;border:1px solid #292524;border-radius:.625rem;
-          padding:.75rem 1rem;color:#f5f5f4;font-size:.875rem;font-family:inherit;
-          outline:none;transition:border-color .15s;}
-    input:focus{border-color:#7c3aed;}
-    input::placeholder{color:#44403c;}
-    .btn{width:100%;padding:.75rem 1rem;border-radius:.625rem;background:#7c3aed;
-         color:#fff;font-size:.875rem;font-weight:500;border:none;cursor:pointer;
-         font-family:inherit;transition:background .15s;}
-    .btn:hover{background:#8b5cf6;}
-    .btn:disabled{opacity:.5;cursor:not-allowed;}
-    .btn-ghost{background:transparent;border:1px solid #44403c;color:#a8a29e;}
-    .btn-ghost:hover{border-color:#78716c;color:#f5f5f4;background:transparent;}
-    .tab{flex:1;padding:.625rem;background:transparent;border:none;
-         border-bottom:2px solid transparent;color:#78716c;font-size:.875rem;
-         font-family:inherit;cursor:pointer;transition:all .15s;}
-    .tab.active{color:#f5f5f4;border-bottom-color:#7c3aed;}
-    .error-box{padding:.75rem 1rem;border-radius:.5rem;border:1px solid #991b1b;
-               background:#450a0a;color:#fca5a5;font-size:.8125rem;display:none;
-               margin-bottom:1rem;}
-    .panel{display:none;}.panel.active{display:block;}
-    .hint{font-size:.75rem;color:#57534e;text-align:center;margin-top:.75rem;}
-    .space{margin-bottom:1rem;}
-    .wallet-box{padding:.75rem 1rem;border-radius:.625rem;border:1px solid #292524;
-                background:#1c1917;margin-bottom:.875rem;}
-    .label{font-size:.6875rem;color:#57534e;text-transform:uppercase;
-           letter-spacing:.1em;margin-bottom:.25rem;}
-    .mono{font-family:'DM Mono',monospace;font-size:.8125rem;color:#d6d3d1;word-break:break-all;}
-    .code-input{font-family:'DM Mono',monospace;letter-spacing:.5rem;
-                font-size:1.25rem;text-align:center;}
-  </style>
-</head>
-<body>
-<div style="width:100%;max-width:22rem;">
-
-  <!-- Logo -->
-  <div style="text-align:center;margin-bottom:2rem;">
-    <div style="font-size:1.75rem;color:#8b5cf6;margin-bottom:.75rem;">⬡</div>
-    <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;margin-bottom:.375rem;">
-      InsightNest
-    </h1>
-    <p style="font-size:.8125rem;color:#78716c;">Slow knowledge, co-owned.</p>
-  </div>
-
-  <!-- Tabs -->
-  <div style="display:flex;border-bottom:1px solid #292524;margin-bottom:1.5rem;" role="tablist">
-    <button class="tab active" id="tab-wallet" role="tab" aria-selected="true"
-            aria-controls="panel-wallet" onclick="switchTab('wallet')">Wallet</button>
-    <button class="tab" id="tab-email" role="tab" aria-selected="false"
-            aria-controls="panel-email" onclick="switchTab('email')">Email</button>
-  </div>
-
-  <!-- Error -->
-  <div id="auth-error" class="error-box"></div>
-
-  <!-- Wallet panel -->
-  <div id="panel-wallet" class="panel active" role="tabpanel" aria-labelledby="tab-wallet">
-    <button id="btn-connect" class="btn" onclick="connectWallet()">Connect Wallet</button>
-
-    <div id="wallet-state" style="display:none;margin-top:1rem;">
-      <div class="wallet-box">
-        <p class="label">Connected</p>
-        <p id="wallet-address" class="mono"></p>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign in · InsightNest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/app.css" />
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0;}
+      body{font-family:'DM Sans',system-ui,sans-serif;background:#0c0a09;color:#f5f5f4;
+           min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
+      input{width:100%;background:#1c1917;border:1px solid #292524;border-radius:.625rem;
+            padding:.75rem 1rem;color:#f5f5f4;font-size:.875rem;font-family:inherit;
+            outline:none;transition:border-color .15s;}
+      input:focus{border-color:#7c3aed;}
+      input::placeholder{color:#44403c;}
+      .btn{width:100%;padding:.75rem 1rem;border-radius:.625rem;background:#7c3aed;
+           color:#fff;font-size:.875rem;font-weight:500;border:none;cursor:pointer;
+           font-family:inherit;transition:background .15s;}
+      .btn:hover{background:#8b5cf6;}
+      .btn:disabled{opacity:.5;cursor:not-allowed;}
+      .btn-ghost{background:transparent;border:1px solid #44403c;color:#a8a29e;}
+      .btn-ghost:hover{border-color:#78716c;color:#f5f5f4;background:transparent;}
+      .tab{flex:1;padding:.625rem;background:transparent;border:none;
+           border-bottom:2px solid transparent;color:#78716c;font-size:.875rem;
+           font-family:inherit;cursor:pointer;transition:all .15s;}
+      .tab.active{color:#f5f5f4;border-bottom-color:#7c3aed;}
+      .error-box{padding:.75rem 1rem;border-radius:.5rem;border:1px solid #991b1b;
+                 background:#450a0a;color:#fca5a5;font-size:.8125rem;display:none;
+                 margin-bottom:1rem;}
+      .panel{display:none;}.panel.active{display:block;}
+      .hint{font-size:.75rem;color:#57534e;text-align:center;margin-top:.75rem;}
+      .space{margin-bottom:1rem;}
+      .wallet-box{padding:.75rem 1rem;border-radius:.625rem;border:1px solid #292524;
+                  background:#1c1917;margin-bottom:.875rem;}
+      .label{font-size:.6875rem;color:#57534e;text-transform:uppercase;
+             letter-spacing:.1em;margin-bottom:.25rem;}
+      .mono{font-family:'DM Mono',monospace;font-size:.8125rem;color:#d6d3d1;word-break:break-all;}
+      .code-input{font-family:'DM Mono',monospace;letter-spacing:.5rem;
+                  font-size:1.25rem;text-align:center;}
+    </style>
+  </head>
+  <body>
+    <div style="width:100%;max-width:22rem;">
+      
+<!-- Logo -->
+      <div style="text-align:center;margin-bottom:2rem;">
+        <div style="font-size:1.75rem;color:#8b5cf6;margin-bottom:.75rem;">⬡</div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;margin-bottom:.375rem;">
+          InsightNest
+        </h1>
+        <p style="font-size:.8125rem;color:#78716c;">Slow knowledge, co-owned.</p>
       </div>
-      <button id="btn-sign" class="btn" onclick="signIn()">Sign in with Ethereum</button>
-    </div>
-  </div>
-
-  <!-- Email panel -->
-  <div id="panel-email" class="panel" role="tabpanel" aria-labelledby="tab-email">
-
-    <!-- Step 1 -->
-    <div id="email-step-1">
-      <div class="space">
-        <input type="email" id="email-input" placeholder="you@example.com" autocomplete="email"/>
+      
+<!-- Tabs -->
+      <div
+        style="display:flex;border-bottom:1px solid #292524;margin-bottom:1.5rem;"
+        role="tablist"
+      >
+        <button
+          class="tab active"
+          id="tab-wallet"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-wallet"
+          onclick="switchTab('wallet')"
+        >
+          Wallet
+        </button>
+        <button
+          class="tab"
+          id="tab-email"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-email"
+          onclick="switchTab('email')"
+        >
+          Email
+        </button>
       </div>
-      <button class="btn" onclick="requestCode()">Send code</button>
-      <p class="hint">We'll send a 6-digit code to your inbox.</p>
-    </div>
+      
+<!-- Error -->
+      <div id="auth-error" class="error-box"></div>
+      
+<!-- Wallet panel -->
+      <div id="panel-wallet" class="panel active" role="tabpanel" aria-labelledby="tab-wallet">
+        <button id="btn-connect" class="btn" onclick="connectWallet()">Connect Wallet</button>
 
-    <!-- Step 2 -->
-    <div id="email-step-2" style="display:none;">
-      <p style="font-size:.875rem;color:#a8a29e;margin-bottom:1rem;">
-        Code sent to <span id="email-sent-to" style="color:#f5f5f4;"></span>
+        <div id="wallet-state" style="display:none;margin-top:1rem;">
+          <div class="wallet-box">
+            <p class="label">Connected</p>
+            <p id="wallet-address" class="mono"></p>
+          </div>
+          <button id="btn-sign" class="btn" onclick="signIn()">Sign in with Ethereum</button>
+        </div>
+      </div>
+      
+<!-- Email panel -->
+      <div id="panel-email" class="panel" role="tabpanel" aria-labelledby="tab-email">
+        
+<!-- Step 1 -->
+        <div id="email-step-1">
+          <div class="space">
+            <input
+              type="email"
+              id="email-input"
+              placeholder="you@example.com"
+              autocomplete="email"
+            />
+          </div>
+          <button class="btn" onclick="requestCode()">Send code</button>
+          <p class="hint">We'll send a 6-digit code to your inbox.</p>
+        </div>
+        
+<!-- Step 2 -->
+        <div id="email-step-2" style="display:none;">
+          <p style="font-size:.875rem;color:#a8a29e;margin-bottom:1rem;">
+            Code sent to <span id="email-sent-to" style="color:#f5f5f4;"></span>
+          </p>
+          <div class="space">
+            <input
+              type="text"
+              id="code-input"
+              class="code-input"
+              placeholder="000000"
+              maxlength="6"
+              autocomplete="one-time-code"
+              inputmode="numeric"
+            />
+          </div>
+          <button class="btn" onclick="verifyCode()" style="margin-bottom:.75rem;">
+            Verify code
+          </button>
+          <button class="btn btn-ghost" onclick="resetEmail()">Use a different email</button>
+        </div>
+      </div>
+      
+<!-- Loading -->
+      <p
+        id="loading"
+        style="display:none;text-align:center;margin-top:1rem;font-size:.8125rem;color:#78716c;"
+      >
       </p>
-      <div class="space">
-        <input type="text" id="code-input" class="code-input"
-               placeholder="000000" maxlength="6"
-               autocomplete="one-time-code" inputmode="numeric"/>
-      </div>
-      <button class="btn" onclick="verifyCode()" style="margin-bottom:.75rem;">
-        Verify code
-      </button>
-      <button class="btn btn-ghost" onclick="resetEmail()">Use a different email</button>
     </div>
+    <script>
+      let address = null, emailAddr = null;
 
-  </div>
+      function switchTab(t) {
+        ['wallet','email'].forEach(id => {
+          const tab = document.getElementById('tab-' + id);
+          tab.classList.toggle('active', id === t);
+          tab.setAttribute('aria-selected', id === t ? 'true' : 'false');
+          document.getElementById('panel-' + id).classList.toggle('active', id === t);
+        });
+        clearError();
+      }
 
-  <!-- Loading -->
-  <p id="loading" style="display:none;text-align:center;margin-top:1rem;font-size:.8125rem;color:#78716c;"></p>
+      function showError(m) {
+        const el = document.getElementById('auth-error');
+        el.textContent = m; el.style.display = 'block';
+      }
+      function clearError() {
+        const el = document.getElementById('auth-error');
+        el.textContent = ''; el.style.display = 'none';
+      }
+      function setLoading(m) {
+        const el = document.getElementById('loading');
+        el.textContent = m; el.style.display = m ? 'block' : 'none';
+      }
 
-</div>
-<script>
-  let address = null, emailAddr = null;
+      function buildSiwe(addr, nonce) {
+        const d = window.location.host, o = window.location.origin, t = new Date().toISOString();
+        return [`${d} wants you to sign in with your Ethereum account:`,addr,'',
+          'Sign in to InsightNest','',`URI: ${o}`,'Version: 1','Chain ID: 1',
+          `Nonce: ${nonce}`,`Issued At: ${t}`].join('\n');
+      }
 
-  function switchTab(t) {
-    ['wallet','email'].forEach(id => {
-      const tab = document.getElementById('tab-' + id);
-      tab.classList.toggle('active', id === t);
-      tab.setAttribute('aria-selected', id === t ? 'true' : 'false');
-      document.getElementById('panel-' + id).classList.toggle('active', id === t);
-    });
-    clearError();
-  }
+      async function connectWallet() {
+        clearError();
+        if (!window.ethereum) { showError('No Ethereum wallet detected. Install MetaMask.'); return; }
+        try {
+          setLoading('Connecting…');
+          document.getElementById('btn-connect').disabled = true;
+          const [a] = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          address = a;
+          document.getElementById('wallet-address').textContent = a;
+          document.getElementById('wallet-state').style.display = 'block';
+          document.getElementById('btn-connect').style.display = 'none';
+          setLoading('');
+        } catch(e) {
+          setLoading(''); document.getElementById('btn-connect').disabled = false;
+          showError(e.message || 'Failed to connect.');
+        }
+      }
 
-  function showError(m) {
-    const el = document.getElementById('auth-error');
-    el.textContent = m; el.style.display = 'block';
-  }
-  function clearError() {
-    const el = document.getElementById('auth-error');
-    el.textContent = ''; el.style.display = 'none';
-  }
-  function setLoading(m) {
-    const el = document.getElementById('loading');
-    el.textContent = m; el.style.display = m ? 'block' : 'none';
-  }
+      async function signIn() {
+        if (!address) return;
+        clearError();
+        const btn = document.getElementById('btn-sign');
+        btn.disabled = true; btn.textContent = 'Requesting nonce…';
+        try {
+          const {nonce} = await (await fetch(`/auth/nonce?address=${encodeURIComponent(address)}`,
+            {headers:{'Accept':'application/json'}})).json();
+          const msg = buildSiwe(address, nonce);
+          btn.textContent = 'Check your wallet…';
+          const sig = await window.ethereum.request({method:'personal_sign',params:[msg,address]});
+          btn.textContent = 'Verifying…';
+          const res = await fetch('/auth/verify',{method:'POST',
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
+            body:JSON.stringify({message:msg,signature:sig})});
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Verification failed.');
+          localStorage.setItem('insightnest_token', data.token);
+          window.location.href = data.redirect_to || '/';
+        } catch(e) {
+          btn.disabled = false; btn.textContent = 'Sign in with Ethereum';
+          showError(e.code === 4001 ? 'Signature rejected.' : (e.message || 'Something went wrong.'));
+        }
+      }
 
-  function buildSiwe(addr, nonce) {
-    const d = window.location.host, o = window.location.origin, t = new Date().toISOString();
-    return [`${d} wants you to sign in with your Ethereum account:`,addr,'',
-      'Sign in to InsightNest','',`URI: ${o}`,'Version: 1','Chain ID: 1',
-      `Nonce: ${nonce}`,`Issued At: ${t}`].join('\n');
-  }
+      async function requestCode() {
+        clearError();
+        emailAddr = document.getElementById('email-input').value.trim();
+        if (!emailAddr || !emailAddr.includes('@')) { showError('Please enter a valid email.'); return; }
+        setLoading('Sending code…');
+        try {
+          const res = await fetch('/auth/email/request',{method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({email:emailAddr})});
+          if (!res.ok) { const d = await res.json(); throw new Error(d.error || 'Failed to send.'); }
+          document.getElementById('email-sent-to').textContent = emailAddr;
+          document.getElementById('email-step-1').style.display = 'none';
+          document.getElementById('email-step-2').style.display = 'block';
+          document.getElementById('code-input').focus();
+          setLoading('');
+        } catch(e) { setLoading(''); showError(e.message || 'Failed to send code.'); }
+      }
 
-  async function connectWallet() {
-    clearError();
-    if (!window.ethereum) { showError('No Ethereum wallet detected. Install MetaMask.'); return; }
-    try {
-      setLoading('Connecting…');
-      document.getElementById('btn-connect').disabled = true;
-      const [a] = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      address = a;
-      document.getElementById('wallet-address').textContent = a;
-      document.getElementById('wallet-state').style.display = 'block';
-      document.getElementById('btn-connect').style.display = 'none';
-      setLoading('');
-    } catch(e) {
-      setLoading(''); document.getElementById('btn-connect').disabled = false;
-      showError(e.message || 'Failed to connect.');
-    }
-  }
+      async function verifyCode() {
+        clearError();
+        const code = document.getElementById('code-input').value.trim();
+        if (code.length !== 6) { showError('Please enter the 6-digit code.'); return; }
+        setLoading('Verifying…');
+        try {
+          const res = await fetch('/auth/email/verify',{method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({email:emailAddr,code})});
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Verification failed.');
+          localStorage.setItem('insightnest_token', data.token);
+          window.location.href = data.redirect_to || '/';
+        } catch(e) {
+          setLoading('');
+          document.getElementById('code-input').value = '';
+          showError(e.message || 'Incorrect code. Try again.');
+        }
+      }
 
-  async function signIn() {
-    if (!address) return;
-    clearError();
-    const btn = document.getElementById('btn-sign');
-    btn.disabled = true; btn.textContent = 'Requesting nonce…';
-    try {
-      const {nonce} = await (await fetch(`/auth/nonce?address=${encodeURIComponent(address)}`,
-        {headers:{'Accept':'application/json'}})).json();
-      const msg = buildSiwe(address, nonce);
-      btn.textContent = 'Check your wallet…';
-      const sig = await window.ethereum.request({method:'personal_sign',params:[msg,address]});
-      btn.textContent = 'Verifying…';
-      const res = await fetch('/auth/verify',{method:'POST',
-        headers:{'Content-Type':'application/json','Accept':'application/json'},
-        body:JSON.stringify({message:msg,signature:sig})});
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Verification failed.');
-      localStorage.setItem('insightnest_token', data.token);
-      window.location.href = data.redirect_to || '/';
-    } catch(e) {
-      btn.disabled = false; btn.textContent = 'Sign in with Ethereum';
-      showError(e.code === 4001 ? 'Signature rejected.' : (e.message || 'Something went wrong.'));
-    }
-  }
+      function resetEmail() {
+        document.getElementById('email-step-1').style.display = 'block';
+        document.getElementById('email-step-2').style.display = 'none';
+        document.getElementById('code-input').value = '';
+        clearError();
+      }
 
-  async function requestCode() {
-    clearError();
-    emailAddr = document.getElementById('email-input').value.trim();
-    if (!emailAddr || !emailAddr.includes('@')) { showError('Please enter a valid email.'); return; }
-    setLoading('Sending code…');
-    try {
-      const res = await fetch('/auth/email/request',{method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email:emailAddr})});
-      if (!res.ok) { const d = await res.json(); throw new Error(d.error || 'Failed to send.'); }
-      document.getElementById('email-sent-to').textContent = emailAddr;
-      document.getElementById('email-step-1').style.display = 'none';
-      document.getElementById('email-step-2').style.display = 'block';
-      document.getElementById('code-input').focus();
-      setLoading('');
-    } catch(e) { setLoading(''); showError(e.message || 'Failed to send code.'); }
-  }
-
-  async function verifyCode() {
-    clearError();
-    const code = document.getElementById('code-input').value.trim();
-    if (code.length !== 6) { showError('Please enter the 6-digit code.'); return; }
-    setLoading('Verifying…');
-    try {
-      const res = await fetch('/auth/email/verify',{method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({email:emailAddr,code})});
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Verification failed.');
-      localStorage.setItem('insightnest_token', data.token);
-      window.location.href = data.redirect_to || '/';
-    } catch(e) {
-      setLoading('');
-      document.getElementById('code-input').value = '';
-      showError(e.message || 'Incorrect code. Try again.');
-    }
-  }
-
-  function resetEmail() {
-    document.getElementById('email-step-1').style.display = 'block';
-    document.getElementById('email-step-2').style.display = 'none';
-    document.getElementById('code-input').value = '';
-    clearError();
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('code-input').addEventListener('input', e => {
-      if (e.target.value.length === 6) verifyCode();
-    });
-    document.getElementById('email-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') requestCode();
-    });
-  });
-</script>
-</body>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('code-input').addEventListener('input', e => {
+          if (e.target.value.length === 6) verifyCode();
+        });
+        document.getElementById('email-input').addEventListener('keydown', e => {
+          if (e.key === 'Enter') requestCode();
+        });
+      });
+    </script>
+  </body>
 </html>

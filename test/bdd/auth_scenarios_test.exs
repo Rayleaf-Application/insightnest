@@ -111,6 +111,7 @@ defmodule Insightnest.BDD.AuthScenariosTest do
     step "rejects a valid-hex signature that is the wrong byte length" do
       # 31 bytes r + 32 bytes s + 1 byte v = correct, but 30+32+1 is wrong
       short_hex = Base.encode16(:crypto.strong_rand_bytes(62), case: :lower)
+
       assert {:error, :invalid_signature_length} =
                Siwe.verify("msg", "0x" <> short_hex, @address)
     end

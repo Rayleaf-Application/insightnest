@@ -42,15 +42,20 @@
 
     <nav class="flex items-center gap-1">
       <%= if assigns[:current_member] do %>
-        <a href="/garden" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-stone-800/60 transition-colors">
+        <a
+          href="/garden"
+          class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-stone-800/60 transition-colors"
+        >
           <InsightnestWeb.CoreComponents.avatar
             wallet={@current_member.wallet_address}
             username={@current_member.username}
             size={:xs}
           />
           <span class="text-sm text-stone-400 hover:text-stone-200 transition-colors">
-            <%= @current_member.username ||
-                  (if w = @current_member.wallet_address, do: String.slice(w, 0, 6) <> "…", else: "anon") %>
+            {@current_member.username ||
+              if w = @current_member.wallet_address,
+                do: String.slice(w, 0, 6) <> "…",
+                else: "anon"}
           </span>
         </a>
         <a

@@ -8,20 +8,22 @@ defmodule Insightnest.Accounts.Avatar do
   Background is always the platform dark (#1c1917).
   """
 
-  @grid_size    5
-  @cell_px      16    # each cell in pixels
-  @padding      4     # padding around the grid
-  @bg           "#1c1917"
+  @grid_size 5
+  # each cell in pixels
+  @cell_px 16
+  # padding around the grid
+  @padding 4
+  @bg "#1c1917"
 
   @doc """
   Returns an inline SVG string for the given seed.
   Size in pixels = grid_size * cell_px + padding * 2 = 88px default.
   """
   def generate(seed) when is_binary(seed) do
-    hash   = :crypto.hash(:sha256, String.downcase(seed)) |> :binary.bin_to_list()
-    color  = extract_color(hash)
-    cells  = extract_cells(hash)
-    size   = @grid_size * @cell_px + @padding * 2
+    hash = :crypto.hash(:sha256, String.downcase(seed)) |> :binary.bin_to_list()
+    color = extract_color(hash)
+    cells = extract_cells(hash)
+    size = @grid_size * @cell_px + @padding * 2
 
     rects =
       cells
@@ -30,8 +32,9 @@ defmodule Insightnest.Accounts.Avatar do
       |> Enum.map_join("\n    ", fn {_, idx} ->
         row = div(idx, @grid_size)
         col = rem(idx, @grid_size)
-        x   = col * @cell_px + @padding
-        y   = row * @cell_px + @padding
+        x = col * @cell_px + @padding
+        y = row * @cell_px + @padding
+
         ~s(<rect x="#{x}" y="#{y}" width="#{@cell_px}" height="#{@cell_px}" fill="#{color}" rx="2"/>)
       end)
 
@@ -50,7 +53,7 @@ defmodule Insightnest.Accounts.Avatar do
 
   @doc "Returns a data URI suitable for use in an <img> src attribute."
   def data_uri(seed) do
-    svg     = generate(seed)
+    svg = generate(seed)
     encoded = Base.encode64(svg)
     "data:image/svg+xml;base64,#{encoded}"
   end
@@ -60,9 +63,11 @@ defmodule Insightnest.Accounts.Avatar do
   # Extract HSL colour from hash bytes, convert to hex.
   # Hue from bytes 0-1, high saturation and medium lightness for vibrancy.
   defp extract_color([b0, b1 | _]) do
-    hue        = rem(b0 * 256 + b1, 360)
-    saturation = 45 + rem(b0, 30)   # 45–75%
-    lightness  = 55 + rem(b1, 20)   # 55–75%
+    hue = rem(b0 * 256 + b1, 360)
+    # 45–75%
+    saturation = 45 + rem(b0, 30)
+    # 55–75%
+    lightness = 55 + rem(b1, 20)
     hsl_to_hex(hue, saturation, lightness)
   end
 
@@ -77,8 +82,8 @@ defmodule Insightnest.Accounts.Avatar do
       for col <- 0..4 do
         # Mirror: cols 0,1 mirror cols 4,3; col 2 is center
         mirror_col = min(col, @grid_size - 1 - col)
-        idx        = row * 3 + mirror_col
-        byte       = Enum.at(source, idx, 0)
+        idx = row * 3 + mirror_col
+        byte = Enum.at(source, idx, 0)
         rem(byte, 2) == 1
       end
     end
@@ -96,12 +101,12 @@ defmodule Insightnest.Accounts.Avatar do
 
     {r1, g1, b1} =
       cond do
-        h < 60  -> {c, x, 0.0}
+        h < 60 -> {c, x, 0.0}
         h < 120 -> {x, c, 0.0}
         h < 180 -> {0.0, c, x}
         h < 240 -> {0.0, x, c}
         h < 300 -> {x, 0.0, c}
-        true    -> {c, 0.0, x}
+        true -> {c, 0.0, x}
       end
 
     r = round((r1 + m) * 255)

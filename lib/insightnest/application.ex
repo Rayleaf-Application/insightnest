@@ -30,7 +30,6 @@ defmodule Insightnest.Application do
       # Nonce store — ETS-backed GenServer
       # Swap for NonceStoreRedis in production by changing this line only
       Insightnest.Accounts.NonceStoreETS,
-
       Insightnest.Accounts.PasscodeStore,
       {Finch, name: Insightnest.Finch},
 

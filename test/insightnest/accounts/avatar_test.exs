@@ -50,7 +50,7 @@ defmodule Insightnest.Accounts.AvatarTest do
     end
 
     test "the encoded payload decodes to a valid SVG" do
-      uri     = Avatar.data_uri("some_wallet")
+      uri = Avatar.data_uri("some_wallet")
       encoded = String.replace_prefix(uri, "data:image/svg+xml;base64,", "")
       decoded = Base.decode64!(encoded)
       assert decoded =~ "<svg"

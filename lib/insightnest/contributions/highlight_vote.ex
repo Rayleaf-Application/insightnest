@@ -9,7 +9,7 @@ defmodule Insightnest.Contributions.HighlightVote do
 
   schema "highlight_votes" do
     belongs_to :contribution, Contribution
-    belongs_to :voter,        Member
+    belongs_to :voter, Member
 
     timestamps(type: :utc_datetime)
   end

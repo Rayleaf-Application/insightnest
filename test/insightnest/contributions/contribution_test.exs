@@ -3,15 +3,15 @@ defmodule Insightnest.Contributions.ContributionTest do
 
   alias Insightnest.Contributions.Contribution
 
-  @spark_id  Ecto.UUID.generate()
+  @spark_id Ecto.UUID.generate()
   @author_id Ecto.UUID.generate()
 
   defp valid_attrs(overrides \\ %{}) do
     Map.merge(
       %{
-        body:      String.duplicate("insightful analysis here ", 60),
-        stance:    "expands",
-        spark_id:  @spark_id,
+        body: String.duplicate("insightful analysis here ", 60),
+        stance: "expands",
+        spark_id: @spark_id,
         author_id: @author_id
       },
       overrides
@@ -48,18 +48,37 @@ defmodule Insightnest.Contributions.ContributionTest do
     end
 
     test "body longer than 5_000 chars is rejected" do
-      cs = Contribution.changeset(%Contribution{}, valid_attrs(%{body: String.duplicate("x", 5_001)}))
+      cs =
+        Contribution.changeset(
+          %Contribution{},
+          valid_attrs(%{body: String.duplicate("x", 5_001)})
+        )
+
       refute cs.valid?
     end
 
     test "body with fewer than 50 words is rejected" do
-      cs = Contribution.changeset(%Contribution{}, valid_attrs(%{body: String.duplicate("word ", 49)}))
+      cs =
+        Contribution.changeset(
+          %Contribution{},
+          valid_attrs(%{body: String.duplicate("word ", 49)})
+        )
+
       refute cs.valid?
-      assert Enum.any?(errors_on(cs).body || [], &String.starts_with?(&1, "must be at least 50 words"))
+
+      assert Enum.any?(
+               errors_on(cs).body || [],
+               &String.starts_with?(&1, "must be at least 50 words")
+             )
     end
 
     test "body with exactly 50 words is accepted" do
-      cs = Contribution.changeset(%Contribution{}, valid_attrs(%{body: String.duplicate("word ", 50)}))
+      cs =
+        Contribution.changeset(
+          %Contribution{},
+          valid_attrs(%{body: String.duplicate("word ", 50)})
+        )
+
       assert cs.valid?
     end
 

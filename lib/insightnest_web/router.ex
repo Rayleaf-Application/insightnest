@@ -37,11 +37,11 @@ defmodule InsightnestWeb.Router do
   scope "/auth", InsightnestWeb do
     pipe_through :api
 
-    get    "/nonce", AuthController, :nonce
-    post   "/verify", AuthController, :verify
+    get "/nonce", AuthController, :nonce
+    post "/verify", AuthController, :verify
 
-    post   "/email/request", AuthController, :request_passcode
-    post   "/email/verify",  AuthController, :verify_passcode
+    post "/email/request", AuthController, :request_passcode
+    post "/email/verify", AuthController, :verify_passcode
 
     delete "/logout", AuthController, :logout
   end

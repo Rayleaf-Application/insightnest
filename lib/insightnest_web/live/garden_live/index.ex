@@ -10,15 +10,15 @@ defmodule InsightnestWeb.GardenLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    member  = socket.assigns.current_member
-    sparks  = Sparks.list_by_author(member.id)
+    member = socket.assigns.current_member
+    sparks = Sparks.list_by_author(member.id)
     insights = member_insights(member.id)
 
     {:ok,
      assign(socket,
        page_title: "Garden — #{member.username}",
-       sparks:     sparks,
-       insights:   insights
+       sparks: sparks,
+       insights: insights
      )}
   end
 
@@ -26,8 +26,8 @@ defmodule InsightnestWeb.GardenLive.Index do
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
-
-      <!-- Header -->
+      
+    <!-- Header -->
       <div class="flex items-center gap-4 mb-10">
         <div class="w-14 h-14 rounded-2xl overflow-hidden border border-stone-700/60 shrink-0">
           {Phoenix.HTML.raw(
@@ -48,20 +48,22 @@ defmodule InsightnestWeb.GardenLive.Index do
           </p>
         </div>
       </div>
-
-      <!-- Stats -->
+      
+    <!-- Stats -->
       <div class="grid grid-cols-3 gap-3 mb-10">
-        <.stat label="Sparks"     value={length(@sparks)} />
-        <.stat label="Insights"   value={length(@insights)} />
-        <.stat label="Published"  value={Enum.count(@sparks, &(&1.status == "published"))} />
+        <.stat label="Sparks" value={length(@sparks)} />
+        <.stat label="Insights" value={length(@insights)} />
+        <.stat label="Published" value={Enum.count(@sparks, &(&1.status == "published"))} />
       </div>
-
-      <!-- Sparks -->
+      
+    <!-- Sparks -->
       <section class="mb-10">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xs text-stone-600 uppercase tracking-widest">Your Sparks</h2>
-          <a href="/sparks/new"
-             class="text-xs text-violet-400 hover:text-violet-300 transition-colors">
+          <a
+            href="/sparks/new"
+            class="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+          >
             + New Spark
           </a>
         </div>
@@ -77,8 +79,8 @@ defmodule InsightnestWeb.GardenLive.Index do
           <.spark_row :for={spark <- @sparks} spark={spark} />
         </div>
       </section>
-
-      <!-- Insights -->
+      
+    <!-- Insights -->
       <section>
         <h2 class="text-xs text-stone-600 uppercase tracking-widest mb-4">
           Insights Contributed
@@ -92,7 +94,6 @@ defmodule InsightnestWeb.GardenLive.Index do
           <.insight_row :for={insight <- @insights} insight={insight} />
         </div>
       </section>
-
     </div>
     """
   end
@@ -169,11 +170,13 @@ defmodule InsightnestWeb.GardenLive.Index do
   defp identity(%{wallet_address: w}) when not is_nil(w) do
     String.slice(w, 0, 6) <> "…" <> String.slice(w, -4, 4)
   end
+
   defp identity(%{email: e}) when not is_nil(e), do: e
   defp identity(_), do: "anonymous"
 
   defp format_date(%DateTime{} = dt) do
     "#{dt.day}/#{dt.month}/#{dt.year}"
   end
+
   defp format_date(_), do: ""
 end

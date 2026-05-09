@@ -10,7 +10,7 @@ defmodule Insightnest.BDD.SparkLifecycleTest do
     Map.merge(
       %{
         "title" => "A thought-provoking spark about knowledge #{System.unique_integer()}",
-        "body"  => String.duplicate("meaning is constructed through dialogue. ", 5)
+        "body" => String.duplicate("meaning is constructed through dialogue. ", 5)
       },
       overrides
     )
@@ -40,8 +40,8 @@ defmodule Insightnest.BDD.SparkLifecycleTest do
     end
 
     step "publishing is author-only — another member cannot publish it", %{member: m} do
-      {:ok, draft}   = Sparks.create_spark(valid_spark_attrs(), m.id)
-      other_member   = AccountsFixtures.onboarded_member()
+      {:ok, draft} = Sparks.create_spark(valid_spark_attrs(), m.id)
+      other_member = AccountsFixtures.onboarded_member()
       assert {:error, :unauthorized} = Sparks.publish_spark(draft, other_member.id)
     end
   end
@@ -62,11 +62,16 @@ defmodule Insightnest.BDD.SparkLifecycleTest do
     end
 
     step "the error references the unengaged spark", %{author: a, first_spark: fs} do
-      {:error, {:no_engagement, referenced_spark}} = Sparks.create_spark(valid_spark_attrs(), a.id)
+      {:error, {:no_engagement, referenced_spark}} =
+        Sparks.create_spark(valid_spark_attrs(), a.id)
+
       assert referenced_spark.id == fs.id
     end
 
-    step "after receiving a contribution, a second spark is allowed", %{author: a, first_spark: fs} do
+    step "after receiving a contribution, a second spark is allowed", %{
+      author: a,
+      first_spark: fs
+    } do
       ContributionsFixtures.contribution(%{spark: fs})
       assert {:ok, _second} = Sparks.create_spark(valid_spark_attrs(), a.id)
     end
@@ -77,7 +82,7 @@ defmodule Insightnest.BDD.SparkLifecycleTest do
   scenario "fetching sparks" do
     setup do
       author = AccountsFixtures.onboarded_member()
-      {:ok, draft}  = Sparks.create_spark(valid_spark_attrs(), author.id)
+      {:ok, draft} = Sparks.create_spark(valid_spark_attrs(), author.id)
       {:ok, published} = Sparks.publish_spark(draft, author.id)
       {:ok, author: author, spark: published}
     end
@@ -96,13 +101,13 @@ defmodule Insightnest.BDD.SparkLifecycleTest do
 
     step "list_published includes the published spark", %{spark: s} do
       sparks = Sparks.list_published()
-      ids    = Enum.map(sparks, & &1.id)
+      ids = Enum.map(sparks, & &1.id)
       assert s.id in ids
     end
 
     step "list_by_author returns the author's own sparks", %{author: a, spark: s} do
       sparks = Sparks.list_by_author(a.id)
-      ids    = Enum.map(sparks, & &1.id)
+      ids = Enum.map(sparks, & &1.id)
       assert s.id in ids
     end
 

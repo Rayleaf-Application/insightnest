@@ -13,14 +13,14 @@ defmodule Insightnest.Contributions.Contribution do
   @valid_stances ~w(expands challenges evidence question)
 
   schema "contributions" do
-    field :body,            :string
-    field :stance,          :string
-    field :status,          :string, default: "active"
-    field :highlighted,     :boolean, default: false
+    field :body, :string
+    field :stance, :string
+    field :status, :string, default: "active"
+    field :highlighted, :boolean, default: false
     field :highlight_count, :integer, default: 0
     field :author_override, :boolean
 
-    belongs_to :spark,  Spark
+    belongs_to :spark, Spark
     belongs_to :author, Member
 
     timestamps(type: :utc_datetime)
@@ -31,14 +31,15 @@ defmodule Insightnest.Contributions.Contribution do
     |> cast(attrs, [:body, :stance, :status, :spark_id, :author_id])
     |> validate_required([:body, :spark_id, :author_id])
     |> validate_length(:body, min: 10, max: 5000)
-    |> validate_word_count(:body, min: 50)          # ← add this
+    # ← add this
+    |> validate_word_count(:body, min: 50)
     |> validate_inclusion(:stance, @valid_stances,
-        message: "must be one of: expands, challenges, evidence, question"
-      )
+      message: "must be one of: expands, challenges, evidence, question"
+    )
     |> unique_constraint([:spark_id, :author_id],
-        name: :contributions_one_per_member_per_spark,
-        message: "you have already contributed to this spark"
-      )
+      name: :contributions_one_per_member_per_spark,
+      message: "you have already contributed to this spark"
+    )
     |> foreign_key_constraint(:spark_id)
     |> foreign_key_constraint(:author_id)
   end
@@ -46,6 +47,7 @@ defmodule Insightnest.Contributions.Contribution do
   defp validate_word_count(changeset, field, min: min) do
     validate_change(changeset, field, fn _, value ->
       count = value |> String.split(~r/\s+/, trim: true) |> length()
+
       if count >= min do
         []
       else

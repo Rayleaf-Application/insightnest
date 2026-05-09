@@ -53,31 +53,31 @@ defmodule Insightnest.Weaves do
       weave =
         %Weave{}
         |> Ecto.Changeset.change(%{
-          spark_id:   spark.id,
+          spark_id: spark.id,
           curator_id: curator_id,
-          status:     "in_progress"
+          status: "in_progress"
         })
         |> Repo.insert!()
         |> Repo.preload(:curator)
 
       # 2. Build draft insight
       contributors = Weight.compute(spark, weave, highlighted)
-      body         = build_draft_body(highlighted)
+      body = build_draft_body(highlighted)
       content_hash = compute_hash(spark.title, body, spark.id, weave.id)
-      slug         = generate_slug(spark.title)
+      slug = generate_slug(spark.title)
 
       insight =
         %Insight{}
         |> Insight.changeset(%{
-          weave_id:     weave.id,
-          spark_id:     spark.id,
-          title:        spark.title,
-          summary:      "",
-          body:         %{"blocks" => body},
+          weave_id: weave.id,
+          spark_id: spark.id,
+          title: spark.title,
+          summary: "",
+          body: %{"blocks" => body},
           contributors: %{"shares" => contributors},
           content_hash: content_hash,
-          slug:         slug,
-          status:       "draft"
+          slug: slug,
+          status: "draft"
         })
         |> Repo.insert!()
 
@@ -88,7 +88,7 @@ defmodule Insightnest.Weaves do
       rows =
         Enum.map(highlighted, fn c ->
           %{
-            weave_id:        weave_id_bin,
+            weave_id: weave_id_bin,
             contribution_id: Ecto.UUID.dump!(c.id)
           }
         end)
@@ -129,7 +129,7 @@ defmodule Insightnest.Weaves do
   Returns {:ok, insight} or {:error, reason}.
   """
   def publish_insight(weave_id, curator_id) do
-    weave   = get_weave!(weave_id)
+    weave = get_weave!(weave_id)
     insight = get_draft!(weave_id)
 
     cond do
@@ -147,14 +147,14 @@ defmodule Insightnest.Weaves do
   defp do_publish(weave, insight) do
     Repo.transaction(fn ->
       content_hash = compute_hash(insight.title, insight.body, insight.spark_id, weave.id)
-      slug         = generate_slug(insight.title)
+      slug = generate_slug(insight.title)
 
       {:ok, cid} =
         Insightnest.Application.publisher().publish(%{
-          id:           insight.id,
-          title:        insight.title,
-          summary:      insight.summary,
-          body:         insight.body,
+          id: insight.id,
+          title: insight.title,
+          summary: insight.summary,
+          body: insight.body,
           contributors: insight.contributors,
           content_hash: content_hash
         })
@@ -162,10 +162,10 @@ defmodule Insightnest.Weaves do
       {:ok, published_insight} =
         insight
         |> Insight.changeset(%{
-          status:       "published",
+          status: "published",
           content_hash: content_hash,
-          slug:         slug,
-          codex_cid:    cid
+          slug: slug,
+          codex_cid: cid
         })
         |> Repo.update()
 
@@ -209,21 +209,21 @@ defmodule Insightnest.Weaves do
     if length(stances_used) <= 1 do
       Enum.map(contributions, fn c ->
         %{
-          "type"    => "quote",
+          "type" => "quote",
           "content" => c.body,
-          "author"  => c.author.wallet_address,
-          "stance"  => c.stance
+          "author" => c.author.wallet_address,
+          "stance" => c.stance
         }
       end)
     else
       section_order = ["evidence", "expands", "challenges", "question", nil]
 
       section_labels = %{
-        "evidence"   => "Evidence",
-        "expands"    => "Expansions",
+        "evidence" => "Evidence",
+        "expands" => "Expansions",
         "challenges" => "Challenges",
-        "question"   => "Open Questions",
-        nil          => "Other contributions"
+        "question" => "Open Questions",
+        nil => "Other contributions"
       }
 
       grouped = Enum.group_by(contributions, & &1.stance)
@@ -236,17 +236,17 @@ defmodule Insightnest.Weaves do
           []
         else
           header = %{
-            "type"    => "section_header",
+            "type" => "section_header",
             "content" => section_labels[stance]
           }
 
           quotes =
             Enum.map(cs, fn c ->
               %{
-                "type"    => "quote",
+                "type" => "quote",
                 "content" => c.body,
-                "author"  => c.author.wallet_address,
-                "stance"  => c.stance
+                "author" => c.author.wallet_address,
+                "stance" => c.stance
               }
             end)
 
@@ -262,7 +262,7 @@ defmodule Insightnest.Weaves do
   end
 
   defp generate_slug(title) do
-    base   = Slug.slugify(title) || "insight"
+    base = Slug.slugify(title) || "insight"
     suffix = :crypto.strong_rand_bytes(3) |> Base.encode16(case: :lower)
     "#{base}-#{suffix}"
   end

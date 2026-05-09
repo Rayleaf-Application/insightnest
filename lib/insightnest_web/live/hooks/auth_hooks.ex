@@ -51,6 +51,7 @@ defmodule InsightnestWeb.Live.AuthHooks do
           {:ok, member} -> assign(socket, :current_member, member)
           _ -> assign(socket, :current_member, nil)
         end
+
       _ ->
         assign(socket, :current_member, nil)
     end

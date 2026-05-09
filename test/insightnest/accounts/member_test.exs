@@ -9,18 +9,30 @@ defmodule Insightnest.Accounts.MemberTest do
 
   describe "wallet_changeset/2" do
     test "accepts a valid checksummed Ethereum address" do
-      cs = Member.wallet_changeset(%Member{}, %{wallet_address: "0xf39Fd6e51aad88F6f4ce6aB8827279cffFb92266"})
+      cs =
+        Member.wallet_changeset(%Member{}, %{
+          wallet_address: "0xf39Fd6e51aad88F6f4ce6aB8827279cffFb92266"
+        })
+
       assert cs.valid?
     end
 
     test "normalizes address to lowercase" do
-      cs = Member.wallet_changeset(%Member{}, %{wallet_address: "0xF39FD6E51AAD88F6F4CE6AB8827279CFFFB92266"})
+      cs =
+        Member.wallet_changeset(%Member{}, %{
+          wallet_address: "0xF39FD6E51AAD88F6F4CE6AB8827279CFFFB92266"
+        })
+
       assert cs.valid?
       assert get_change(cs, :wallet_address) == "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
     end
 
     test "rejects address without 0x prefix" do
-      cs = Member.wallet_changeset(%Member{}, %{wallet_address: "f39fd6e51aad88f6f4ce6ab8827279cfffb92266"})
+      cs =
+        Member.wallet_changeset(%Member{}, %{
+          wallet_address: "f39fd6e51aad88f6f4ce6ab8827279cfffb92266"
+        })
+
       refute cs.valid?
       assert "must be a valid Ethereum address" in errors_on(cs).wallet_address
     end
@@ -31,7 +43,9 @@ defmodule Insightnest.Accounts.MemberTest do
     end
 
     test "rejects non-hex characters in address" do
-      cs = Member.wallet_changeset(%Member{}, %{wallet_address: "0x" <> String.duplicate("g", 40)})
+      cs =
+        Member.wallet_changeset(%Member{}, %{wallet_address: "0x" <> String.duplicate("g", 40)})
+
       refute cs.valid?
     end
 

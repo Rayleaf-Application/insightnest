@@ -7,17 +7,18 @@ defmodule Insightnest.Auth.SiweTest do
   @address "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266"
 
   @valid_message """
-  localhost wants you to sign in with your Ethereum account:
-  #{@address}
+                 localhost wants you to sign in with your Ethereum account:
+                 #{@address}
 
-  Sign in to InsightNest
+                 Sign in to InsightNest
 
-  URI: http://localhost:4000
-  Version: 1
-  Chain ID: 1
-  Nonce: abc123def456
-  Issued At: 2026-01-01T00:00:00.000Z
-  """ |> String.trim()
+                 URI: http://localhost:4000
+                 Version: 1
+                 Chain ID: 1
+                 Nonce: abc123def456
+                 Issued At: 2026-01-01T00:00:00.000Z
+                 """
+                 |> String.trim()
 
   test "parse/1 extracts address and nonce" do
     assert {:ok, msg} = Siwe.parse(@valid_message)
@@ -52,6 +53,7 @@ defmodule Insightnest.Auth.SiweTest do
     Nonce: abc123def456
     Issued At: 2026-01-01T00:00:00.000Z
     """
+
     assert {:error, _} = Siwe.parse(String.trim(bad_header))
   end
 
@@ -78,7 +80,7 @@ defmodule Insightnest.Auth.SiweTest do
   test "parse/1 extracts the address verbatim — normalisation happens at the call site" do
     # The parser does not lowercase; find_or_create_by_wallet normalises downstream.
     upper_addr = String.upcase(@address)
-    upper_msg  = String.replace(@valid_message, @address, upper_addr)
+    upper_msg = String.replace(@valid_message, @address, upper_addr)
     assert {:ok, msg} = Siwe.parse(upper_msg)
     assert String.downcase(msg.address) == @address
   end
@@ -96,6 +98,7 @@ defmodule Insightnest.Auth.SiweTest do
 
   test "verify/3 rejects a valid-hex but wrong-length signature" do
     short_sig = "0x" <> Base.encode16(:crypto.strong_rand_bytes(62), case: :lower)
+
     assert {:error, :invalid_signature_length} =
              Siwe.verify("msg", short_sig, @address)
   end

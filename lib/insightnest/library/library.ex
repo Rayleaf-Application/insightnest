@@ -46,12 +46,13 @@ defmodule Insightnest.Library do
   @doc "Returns ownership data for an Insight (computed, not on-chain in Phase 0)."
   def get_ownership(insight) do
     shares = get_in(insight.contributors, ["shares"]) || []
+
     %{
-      insight_id:       insight.id,
-      token_id:         nil,
+      insight_id: insight.id,
+      token_id: nil,
       contract_address: nil,
-      on_chain:         false,
-      shares:           shares
+      on_chain: false,
+      shares: shares
     }
   end
 end

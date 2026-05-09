@@ -64,7 +64,9 @@ defmodule Insightnest.Accounts do
     email = String.downcase(String.trim(email))
 
     case Repo.get_by(Member, email: email) do
-      %Member{} = member -> {:ok, member}
+      %Member{} = member ->
+        {:ok, member}
+
       nil ->
         %Member{}
         |> Member.email_changeset(%{email: email})
@@ -88,7 +90,7 @@ defmodule Insightnest.Accounts do
 
   @doc "Returns true if the member has completed onboarding (has a username)."
   def onboarded?(%Member{username: nil}), do: false
-  def onboarded?(%Member{username: ""}),  do: false
-  def onboarded?(%Member{}),              do: true
-  def onboarded?(nil),                    do: false
+  def onboarded?(%Member{username: ""}), do: false
+  def onboarded?(%Member{}), do: true
+  def onboarded?(nil), do: false
 end

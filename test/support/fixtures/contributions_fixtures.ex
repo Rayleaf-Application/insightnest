@@ -18,9 +18,9 @@ defmodule Insightnest.ContributionsFixtures do
     - `:stance` — defaults to "expands"
   """
   def contribution(attrs \\ %{}) do
-    spark  = attrs[:spark]  || SparksFixtures.published_spark()
+    spark = attrs[:spark] || SparksFixtures.published_spark()
     author = attrs[:author] || AccountsFixtures.onboarded_member()
-    body   = attrs[:body]   || @default_body
+    body = attrs[:body] || @default_body
     stance = attrs[:stance] || "expands"
 
     {:ok, contribution} =

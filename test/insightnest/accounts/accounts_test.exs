@@ -16,7 +16,7 @@ defmodule Insightnest.AccountsTest do
 
     test "is idempotent — returns same member on repeated calls" do
       wallet = random_wallet()
-      {:ok, first}  = Accounts.find_or_create_by_wallet(wallet)
+      {:ok, first} = Accounts.find_or_create_by_wallet(wallet)
       {:ok, second} = Accounts.find_or_create_by_wallet(wallet)
       assert first.id == second.id
     end
@@ -66,13 +66,13 @@ defmodule Insightnest.AccountsTest do
 
     test "returns the member for a known wallet" do
       member = AccountsFixtures.member()
-      found  = Accounts.get_member_by_wallet(member.wallet_address)
+      found = Accounts.get_member_by_wallet(member.wallet_address)
       assert found.id == member.id
     end
 
     test "is case-insensitive" do
       member = AccountsFixtures.member()
-      found  = Accounts.get_member_by_wallet(String.upcase(member.wallet_address))
+      found = Accounts.get_member_by_wallet(String.upcase(member.wallet_address))
       assert found.id == member.id
     end
   end
@@ -81,7 +81,9 @@ defmodule Insightnest.AccountsTest do
 
   describe "username_taken?/1" do
     test "returns false for an unused username" do
-      refute Accounts.username_taken?("definitely_not_taken_#{System.unique_integer([:positive])}")
+      refute Accounts.username_taken?(
+               "definitely_not_taken_#{System.unique_integer([:positive])}"
+             )
     end
 
     test "returns true for a taken username" do
@@ -99,7 +101,7 @@ defmodule Insightnest.AccountsTest do
 
   describe "set_username/2" do
     test "stores a valid username lowercased" do
-      member   = AccountsFixtures.member()
+      member = AccountsFixtures.member()
       username = "User_#{System.unique_integer([:positive])}"
       assert {:ok, updated} = Accounts.set_username(member, username)
       assert updated.username == String.downcase(username)
@@ -113,7 +115,7 @@ defmodule Insightnest.AccountsTest do
 
     test "returns an error changeset for a duplicate username" do
       existing = AccountsFixtures.onboarded_member()
-      member   = AccountsFixtures.member()
+      member = AccountsFixtures.member()
       assert {:error, changeset} = Accounts.set_username(member, existing.username)
       assert "is already taken" in errors_on(changeset).username
     end
@@ -130,13 +132,15 @@ defmodule Insightnest.AccountsTest do
 
     test "is idempotent — returns same member on repeated calls" do
       email = "repeat_#{System.unique_integer([:positive])}@example.com"
-      {:ok, first}  = Accounts.find_or_create_by_email(email)
+      {:ok, first} = Accounts.find_or_create_by_email(email)
       {:ok, second} = Accounts.find_or_create_by_email(email)
       assert first.id == second.id
     end
 
     test "normalizes email to lowercase" do
-      {:ok, member} = Accounts.find_or_create_by_email("Test#{System.unique_integer([:positive])}@EXAMPLE.COM")
+      {:ok, member} =
+        Accounts.find_or_create_by_email("Test#{System.unique_integer([:positive])}@EXAMPLE.COM")
+
       assert member.email == String.downcase(member.email)
     end
   end

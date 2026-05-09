@@ -5,7 +5,7 @@ defmodule InsightnestWeb.InsightComponents do
 
   @doc "Card for an Insight in the Library feed."
   attr :insight, :map, required: true
-  attr :index,   :integer, default: 0
+  attr :index, :integer, default: 0
 
   def insight_card(assigns) do
     ~H"""
@@ -29,7 +29,10 @@ defmodule InsightnestWeb.InsightComponents do
           </span>
         </div>
 
-        <p :if={@insight.summary != ""} class="text-sm text-stone-500 leading-relaxed line-clamp-2 mb-3">
+        <p
+          :if={@insight.summary != ""}
+          class="text-sm text-stone-500 leading-relaxed line-clamp-2 mb-3"
+        >
           {@insight.summary}
         </p>
 
@@ -71,7 +74,7 @@ defmodule InsightnestWeb.InsightComponents do
   end
 
   @doc "Full Insight viewer — title, summary, body blocks, contributors."
-  attr :insight,   :map, required: true
+  attr :insight, :map, required: true
   attr :ownership, :map, required: true
 
   def insight_viewer(assigns) do
@@ -166,8 +169,10 @@ defmodule InsightnestWeb.InsightComponents do
             style={"width: #{share_percent(@share["bps"])}%"}
           />
         </div>
-        <span class="text-sm text-stone-300 font-mono w-12 text-right"
-              style="font-family: 'DM Mono', monospace;">
+        <span
+          class="text-sm text-stone-300 font-mono w-12 text-right"
+          style="font-family: 'DM Mono', monospace;"
+        >
           {format_bps(@share["bps"])}%
         </span>
       </div>
@@ -187,7 +192,6 @@ defmodule InsightnestWeb.InsightComponents do
           </span>
           <div class="flex-1 border-t border-stone-800"></div>
         </div>
-
       <% "quote" -> %>
         <blockquote class={[
           "rounded-xl border-l-2 pl-4 pr-4 py-3",
@@ -206,10 +210,8 @@ defmodule InsightnestWeb.InsightComponents do
             </span>
           </cite>
         </blockquote>
-
       <% "paragraph" -> %>
         <p class="text-stone-300 leading-relaxed">{@block["content"]}</p>
-
       <% _ -> %>
         <p class="text-stone-400 text-sm">{@block["content"]}</p>
     <% end %>
@@ -232,9 +234,11 @@ defmodule InsightnestWeb.InsightComponents do
   defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)
 
   defp format_bps(nil), do: "0.0"
+
   defp format_bps(bps) when is_integer(bps) do
     :erlang.float_to_binary(bps / 100, decimals: 1)
   end
+
   defp format_bps(bps) when is_binary(bps) do
     {n, _} = Integer.parse(bps)
     format_bps(n)
@@ -242,20 +246,21 @@ defmodule InsightnestWeb.InsightComponents do
 
   defp share_percent(nil), do: 0
   defp share_percent(bps) when is_integer(bps), do: bps / 100
+
   defp share_percent(bps) when is_binary(bps) do
     {n, _} = Integer.parse(bps)
     n / 100
   end
 
-  defp stance_style("evidence"),   do: "border-emerald-700 bg-emerald-950/20"
-  defp stance_style("expands"),    do: "border-blue-700 bg-blue-950/20"
+  defp stance_style("evidence"), do: "border-emerald-700 bg-emerald-950/20"
+  defp stance_style("expands"), do: "border-blue-700 bg-blue-950/20"
   defp stance_style("challenges"), do: "border-orange-700 bg-orange-950/20"
-  defp stance_style("question"),   do: "border-purple-700 bg-purple-950/20"
-  defp stance_style(_),            do: "border-stone-700 bg-stone-900/40"
+  defp stance_style("question"), do: "border-purple-700 bg-purple-950/20"
+  defp stance_style(_), do: "border-stone-700 bg-stone-900/40"
 
-  defp stance_cite_color("evidence"),   do: "color: #6ee7b7;"
-  defp stance_cite_color("expands"),    do: "color: #93c5fd;"
+  defp stance_cite_color("evidence"), do: "color: #6ee7b7;"
+  defp stance_cite_color("expands"), do: "color: #93c5fd;"
   defp stance_cite_color("challenges"), do: "color: #fdba74;"
-  defp stance_cite_color("question"),   do: "color: #c4b5fd;"
-  defp stance_cite_color(_),            do: "color: #57534e;"
+  defp stance_cite_color("question"), do: "color: #c4b5fd;"
+  defp stance_cite_color(_), do: "color: #57534e;"
 end

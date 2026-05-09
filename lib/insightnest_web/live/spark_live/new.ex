@@ -40,7 +40,8 @@ defmodule InsightnestWeb.SparkLive.New do
            |> assign(concept_error: nil)}
 
         concept in socket.assigns.concepts ->
-          {:noreply, assign(socket, concept_input: "", concept_error: "\"#{concept}\" already added")}
+          {:noreply,
+           assign(socket, concept_input: "", concept_error: "\"#{concept}\" already added")}
 
         true ->
           {:noreply, assign(socket, concept_input: "", concept_error: nil)}

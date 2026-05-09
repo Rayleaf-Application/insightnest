@@ -7,9 +7,9 @@ defmodule Insightnest.Sparks.SparkTest do
 
   defp valid_attrs do
     %{
-      title:        "A thoughtful title about epistemology",
-      body:         String.duplicate("meaningful word here ", 20),
-      author_id:    Ecto.UUID.generate(),
+      title: "A thoughtful title about epistemology",
+      body: String.duplicate("meaningful word here ", 20),
+      author_id: Ecto.UUID.generate(),
       content_hash: "abc123def456"
     }
   end
@@ -88,7 +88,7 @@ defmodule Insightnest.Sparks.SparkTest do
   describe "publish_changeset/1" do
     test "changes status to published" do
       spark = %Spark{status: "draft"}
-      cs    = Spark.publish_changeset(spark)
+      cs = Spark.publish_changeset(spark)
       assert get_change(cs, :status) == "published"
     end
   end
