@@ -136,6 +136,27 @@ defmodule InsightnestWeb.SparkLive.Show do
     end
   end
 
+  def handle_event("publish_spark", _params, socket) do
+    member = socket.assigns.current_member
+
+    if is_nil(member) do
+      {:noreply, assign(socket, error: "You must be signed in.")}
+    else
+      member_uuid = Ecto.UUID.cast!(member.id)
+
+      case Sparks.publish_spark(socket.assigns.spark, member_uuid) do
+        {:ok, spark} ->
+          {:noreply,
+           socket
+           |> assign(spark: spark)
+           |> update_can_contribute()}
+
+        {:error, reason} ->
+          {:noreply, assign(socket, error: Error.message(reason))}
+      end
+    end
+  end
+
   def handle_event("extend_spark", %{"days" => days_str}, socket) do
     member = socket.assigns.current_member
     days = String.to_integer(days_str)
@@ -232,6 +253,25 @@ defmodule InsightnestWeb.SparkLive.Show do
 
         <SparkComponents.concept_tag_list concepts={@spark.concepts} />
 
+        <%!-- Draft banner — author only --%>
+        <div
+          :if={@spark.status == "draft" and @current_member && @current_member.id == @spark.author_id}
+          class="mb-5 flex items-center justify-between gap-4 px-4 py-3 rounded-xl
+                 border border-amber-800/50 bg-amber-950/30"
+        >
+          <p class="text-sm text-amber-400">
+            Draft — only you can see this spark.
+          </p>
+          <button
+            phx-click="publish_spark"
+            class="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium
+                   bg-emerald-900/60 border border-emerald-700/50 text-emerald-300
+                   hover:bg-emerald-800/60 transition-colors"
+          >
+            Publish
+          </button>
+        </div>
+
         <div class="mt-6 spark-body">
           <p :for={para <- paragraphs(@spark.body)} class="mb-4 last:mb-0">
             {para}
@@ -295,6 +335,22 @@ defmodule InsightnestWeb.SparkLive.Show do
         <%!-- Form area --%>
         <div class="border-t border-stone-800 pt-6">
           <%= cond do %>
+            <% @spark.status == "draft" and @current_member && @current_member.id == @spark.author_id -> %>
+              <div class="text-center py-4">
+                <p class="text-sm text-amber-500/80 mb-3">Publish this spark to open it for contributions.</p>
+                <button
+                  phx-click="publish_spark"
+                  class="px-4 py-2 rounded-xl text-sm font-medium
+                         bg-emerald-900/60 border border-emerald-700/50 text-emerald-300
+                         hover:bg-emerald-800/60 transition-colors"
+                >
+                  Publish Spark
+                </button>
+              </div>
+            <% @spark.status == "draft" -> %>
+              <p class="text-sm text-stone-600 text-center py-4">
+                This spark hasn't been published yet.
+              </p>
             <% @spark.is_closed -> %>
               <ContributionComponents.closed_notice />
             <% is_nil(@current_member) -> %>
