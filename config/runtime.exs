@@ -7,6 +7,8 @@ if config_env() == :prod do
 
   config :insightnest, Insightnest.Repo,
     url: database_url,
+    ssl: true,
+    ssl_opts: [verify: :verify_none],
     pool_size: String.to_integer(System.get_env("POOL_SIZE", "10"))
 
   secret_key_base =

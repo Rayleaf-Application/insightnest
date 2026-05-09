@@ -1,7 +1,7 @@
 # ==========================================
 # Stage 1: Build
 # ==========================================
-FROM hexpm/elixir:1.18.0-erlang-27.2 AS build
+FROM elixir:1.18-otp-27 AS build
 
 # Build deps: Rust for ex_keccak (Rustler NIF)
 RUN apt-get update && apt-get install -y \
