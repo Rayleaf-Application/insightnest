@@ -7,8 +7,7 @@ if config_env() == :prod do
 
   config :insightnest, Insightnest.Repo,
     url: database_url,
-    ssl: true,
-    ssl_opts: [verify: :verify_none],
+    ssl: [verify: :verify_none],
     pool_size: String.to_integer(System.get_env("POOL_SIZE", "10"))
 
   secret_key_base =
@@ -30,8 +29,9 @@ if config_env() == :prod do
   config :insightnest, Insightnest.Auth.Guardian, secret_key: guardian_secret
 
   config :insightnest, InsightnestWeb.Endpoint,
+    server: true,
     url: [host: host, port: 443, scheme: "https"],
-    http: [ip: {0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT", "4000"))],
+    http: [ip: {0, 0, 0, 0, 0, 0, 0, 0}, port: String.to_integer(System.get_env("PORT", "4000"))],
     secret_key_base: secret_key_base,
     live_view: [signing_salt: live_view_salt]
 end
