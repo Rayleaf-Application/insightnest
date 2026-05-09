@@ -1,0 +1,31 @@
+app = "insightnest"
+primary_region = "ams"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "4000"
+  POOL_SIZE = "5"
+  PHX_HOST = "insightnest.fly.dev"
+
+[deploy]
+  release_command = "./bin/insightnest eval 'Insightnest.Release.migrate()'"
+
+[http_service]
+  internal_port = 4000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "30s"
+    interval = "15s"
+    timeout = "10s"
+    path = "/health"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
