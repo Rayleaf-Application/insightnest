@@ -28,6 +28,12 @@ if config_env() == :prod do
 
   config :insightnest, Insightnest.Auth.Guardian, secret_key: guardian_secret
 
+  admin_api_key =
+    System.get_env("ADMIN_API_KEY") ||
+      raise "ADMIN_API_KEY environment variable is missing"
+
+  config :insightnest, :admin_api_key, admin_api_key
+
   config :insightnest, InsightnestWeb.Endpoint,
     server: true,
     url: [host: host, port: 443, scheme: "https"],

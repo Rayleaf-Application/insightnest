@@ -25,6 +25,26 @@ defmodule InsightnestWeb.Router do
     plug InsightnestWeb.Plugs.RequireAuth
   end
 
+  pipeline :admin_api do
+    plug InsightnestWeb.Plugs.RequireAdminKey
+  end
+
+  # ── Waitlist — public signup ──────────────────────────────────────────────────
+
+  scope "/api/waitlist", InsightnestWeb do
+    pipe_through :api
+    post "/", WaitlistController, :signup
+  end
+
+  # ── Waitlist — admin CRUD ────────────────────────────────────────────────────
+
+  scope "/api/waitlist", InsightnestWeb do
+    pipe_through [:api, :admin_api]
+    get "/", WaitlistController, :index
+    patch "/:id", WaitlistController, :update
+    delete "/:id", WaitlistController, :delete
+  end
+
   # ── Health check ──────────────────────────────────────────────────────────────
 
   scope "/", InsightnestWeb do
