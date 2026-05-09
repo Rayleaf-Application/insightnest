@@ -94,12 +94,12 @@ defmodule Insightnest.MixProject do
       "assets.setup": ["esbuild.install --if-missing"],
       "assets.build": [
         "cmd tailwindcss --input=assets/css/app.css --output=priv/static/assets/app.css",
-        "esbuild project"
+        "esbuild insightnest"
       ],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": [
         "cmd tailwindcss --input=assets/css/app.css --output=priv/static/assets/app.css --minify",
-        "esbuild project --minify",
+        "esbuild insightnest --minify",
         "phx.digest"
       ]
     ]

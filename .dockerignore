@@ -1,0 +1,11 @@
+.git
+.gitignore
+.nix-rustup/
+_build/
+deps/
+test/
+priv/static/assets/
+*.md
+.dockerignore
+.github/
+doc/

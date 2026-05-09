@@ -1,35 +1,35 @@
 services:
   - type: web
-    name: insightnest-api
-    env: elixir
+    name: insightnest
+    env: docker
     region: oregon
     plan: free
     branch: main
-    buildCommand: "./build.sh"
-    startCommand: "bin/server"
-
     dockerfilePath: ./Dockerfile
     dockerContext: .
+    healthCheckPath: /health
 
     envVars:
-      - key: NODE_VERSION
-        value: 20
-      - key: ELIXIR_VERSION
-        value: 1.18
       - key: PORT
-        value: 8080
+        value: 4000
+      - key: POOL_SIZE
+        value: 5
 
-      - fromGroup: database
+      # Set this to your Render service domain after first deploy, e.g. insightnest.onrender.com
+      - key: PHX_HOST
+        sync: false
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: insightnest-db
+          property: connectionString
 
       - key: SECRET_KEY_BASE
-        sync: false
+        generateValue: true
       - key: GUARDIAN_SECRET_KEY
-        sync: false
-      - key: SIWE_CHAIN_ID
-        value: "31337"
-
+        generateValue: true
       - key: LIVE_VIEW_SIGN_SALT
-        sync: false
+        generateValue: true
 
 databases:
   - type: postgres

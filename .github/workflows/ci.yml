@@ -66,14 +66,14 @@ jobs:
       - name: Compile (warnings as errors)
         run: mix compile
 
-      # - name: Check formatting
-      #   run: mix format --check-formatted
+      - name: Check formatting
+        run: mix format --check-formatted
 
       # - name: Run Credo
       #   run: mix credo --strict
 
-      # - name: Run tests
-      #   run: mix test --cover
+      - name: Run tests
+        run: mix test --cover
 
       - name: Check migrations are reversible
         run: |

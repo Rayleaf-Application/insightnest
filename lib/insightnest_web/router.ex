@@ -25,6 +25,13 @@ defmodule InsightnestWeb.Router do
     plug InsightnestWeb.Plugs.RequireAuth
   end
 
+  # ── Health check ──────────────────────────────────────────────────────────────
+
+  scope "/", InsightnestWeb do
+    pipe_through :api
+    get "/health", HealthController, :check
+  end
+
   # ── Auth routes (JSON, no CSRF needed for nonce/verify) ──────────────────────
 
   scope "/auth", InsightnestWeb do
