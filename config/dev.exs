@@ -18,13 +18,7 @@ config :insightnest, InsightnestWeb.Endpoint,
   secret_key_base: "+/QTQNAaI436A6zvThyLME80IgnD1jf4oD1Japn6PUkE/DnGGW1r8ZA+vkgdNU7m",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:insightnest, ~w(--sourcemap=inline --watch)]},
-    tailwind:
-      {System, :cmd,
-       [
-         "tailwindcss",
-         ["--input=assets/css/app.css", "--output=priv/static/assets/css/app.css", "--watch"],
-         [cd: File.cwd!()]
-       ]}
+    tailwind: {Tailwind, :install_and_run, [:insightnest, ~w(--watch)]}
   ],
   live_reload: [
     patterns: [

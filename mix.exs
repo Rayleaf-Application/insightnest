@@ -73,6 +73,7 @@ defmodule Insightnest.MixProject do
       {:bandit, "~> 1.5"},
 
       # Assets
+      {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:heroicons, "~> 0.5"},
 
@@ -91,14 +92,15 @@ defmodule Insightnest.MixProject do
       setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "assets.setup": ["esbuild.install --if-missing"],
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": [
-        "cmd tailwindcss --input=assets/css/app.css --output=priv/static/assets/app.css",
+        "tailwind insightnest",
         "esbuild insightnest"
       ],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.deploy": [
-        "cmd tailwindcss --input=assets/css/app.css --output=priv/static/assets/app.css --minify",
+        "tailwind.install --if-missing",
+        "tailwind insightnest --minify",
         "esbuild insightnest --minify",
         "phx.digest"
       ]

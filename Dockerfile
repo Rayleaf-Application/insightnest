@@ -3,7 +3,7 @@
 # ==========================================
 FROM hexpm/elixir:1.18.0-erlang-27.2 AS build
 
-# Build deps: Rust for ex_keccak (Rustler NIF), curl for tailwindcss binary
+# Build deps: Rust for ex_keccak (Rustler NIF)
 RUN apt-get update && apt-get install -y \
     build-essential \
     git \
@@ -18,13 +18,6 @@ RUN apt-get update && apt-get install -y \
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
-# Standalone tailwindcss binary — project calls the binary directly, no npm needed
-# --fail: exit non-zero on HTTP 4xx/5xx (prevents silently saving a 404 HTML page)
-ARG TAILWIND_VERSION=3.4.17
-RUN curl -fSLo /usr/local/bin/tailwindcss \
-    "https://github.com/tailwindlabs/tailwindcss/releases/download/v${TAILWIND_VERSION}/tailwindcss-linux-x64" \
-    && chmod +x /usr/local/bin/tailwindcss \
-    && /usr/local/bin/tailwindcss --version
 
 ENV MIX_ENV=prod \
     HEX_HOME=/root/.hex \
