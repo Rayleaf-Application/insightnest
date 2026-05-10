@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>The InsightNest Manifesto</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            :root {
+                --ink: #1a1714;
+                --ink-soft: #4a453f;
+                --ink-faint: #8a8279;
+                --paper: #f5f2ed;
+                --paper-alt: #edeae4;
+                --accent: #c2622a;
+                --rule: #d6d0c7;
+                --max: 680px;
+            }
+
+            html {
+                font-size: 18px;
+                scroll-behavior: smooth;
+            }
+
+            body {
+                background: var(--paper);
+                color: var(--ink);
+                font-family: "DM Sans", sans-serif;
+                font-weight: 300;
+                line-height: 1.75;
+                padding: 0 1.5rem;
+            }
+
+            /* ── Layout ───────────────────────────────────────── */
+            .page {
+                max-width: var(--max);
+                margin: 0 auto;
+                padding: 5rem 0 8rem;
+            }
+
+            /* ── Header ───────────────────────────────────────── */
+            .masthead {
+                border-top: 3px solid var(--ink);
+                padding-top: 2.5rem;
+                margin-bottom: 4rem;
+            }
+
+            .kicker {
+                font-family: "DM Mono", monospace;
+                font-size: 0.65rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: var(--ink-faint);
+                margin-bottom: 1.25rem;
+            }
+
+            h1 {
+                font-family: "Playfair Display", Georgia, serif;
+                font-size: clamp(2.4rem, 6vw, 3.6rem);
+                font-weight: 700;
+                line-height: 1.1;
+                letter-spacing: -0.02em;
+                color: var(--ink);
+            }
+
+            h1 em {
+                font-style: italic;
+                color: var(--accent);
+            }
+
+            .lede {
+                margin-top: 2rem;
+                font-size: 1.15rem;
+                line-height: 1.8;
+                color: var(--ink-soft);
+                border-left: 2px solid var(--accent);
+                padding-left: 1.25rem;
+            }
+
+            /* ── Sections ─────────────────────────────────────── */
+            section {
+                margin-bottom: 3.5rem;
+            }
+
+            .rule {
+                border: none;
+                border-top: 1px solid var(--rule);
+                margin-bottom: 3rem;
+            }
+
+            h2 {
+                font-family: "Playfair Display", Georgia, serif;
+                font-size: 1.5rem;
+                font-weight: 600;
+                letter-spacing: -0.01em;
+                margin-bottom: 1.25rem;
+                color: var(--ink);
+            }
+
+            h3 {
+                font-family: "DM Mono", monospace;
+                font-size: 0.7rem;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+                color: var(--accent);
+                margin-bottom: 0.5rem;
+                margin-top: 2rem;
+            }
+
+            p {
+                margin-bottom: 1rem;
+                color: var(--ink-soft);
+            }
+
+            strong {
+                color: var(--ink);
+                font-weight: 500;
+            }
+
+            /* ── Pipeline ─────────────────────────────────────── */
+            .pipeline {
+                display: flex;
+                flex-direction: column;
+                gap: 0;
+                margin: 2rem 0;
+                border: 1px solid var(--rule);
+                border-radius: 2px;
+                overflow: hidden;
+            }
+
+            .pipeline-step {
+                display: block;
+                grid-template-columns: 6rem 1fr;
+                align-items: start;
+                border-bottom: 1px solid var(--rule);
+            }
+
+            .pipeline-step:last-child {
+                border-bottom: none;
+            }
+
+            .step-label {
+                font-family: "DM Mono", monospace;
+                font-size: 0.65rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                color: var(--paper);
+                background: var(--ink);
+                padding: 1rem 0.75rem;
+                align-self: stretch;
+                display: flex;
+                align-items: flex-start;
+                padding-top: 1.1rem;
+            }
+
+            .pipeline-step:nth-child(3) .step-label {
+                background: var(--accent);
+            }
+
+            .step-body {
+                padding: 0.9rem 1.1rem;
+            }
+
+            .step-body strong {
+                display: block;
+                font-size: 0.9rem;
+                margin-bottom: 0.2rem;
+            }
+
+            .step-body p {
+                font-size: 0.82rem;
+                margin: 0;
+                color: var(--ink-faint);
+                line-height: 1.6;
+            }
+
+            /* ── Principles ───────────────────────────────────── */
+            .principle {
+                padding: 1.25rem 0;
+                border-bottom: 1px solid var(--rule);
+            }
+
+            .principle:last-child {
+                border-bottom: none;
+            }
+
+            .principle-head {
+                font-family: "Playfair Display", Georgia, serif;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--ink);
+                margin-bottom: 0.4rem;
+            }
+
+            .principle-head span {
+                color: var(--ink-faint);
+                font-weight: 400;
+                font-style: italic;
+                margin: 0 0.4rem;
+                font-size: 0.9rem;
+            }
+
+            .principle p {
+                font-size: 0.9rem;
+                margin: 0;
+            }
+
+            /* ── Promise list ─────────────────────────────────── */
+            .promise-list {
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 0.9rem;
+                margin-top: 1.25rem;
+            }
+
+            .promise-list li {
+                display: grid;
+                gap: 0.5rem;
+                font-size: 0.9rem;
+                color: var(--ink-soft);
+                line-height: 1.6;
+            }
+
+            .promise-list li::before {
+                content: "—";
+                color: var(--accent);
+                font-family: "DM Mono", monospace;
+                font-size: 0.75rem;
+                padding-top: 0.1rem;
+            }
+
+            /* ── Closing ──────────────────────────────────────── */
+            .closing {
+                background: var(--paper-alt);
+                border: 1px solid var(--rule);
+                border-radius: 2px;
+                padding: 2.5rem 2rem;
+                margin-top: 3.5rem;
+                text-align: center;
+            }
+
+            .closing p {
+                font-family: "Playfair Display", Georgia, serif;
+                font-size: 1.2rem;
+                font-style: italic;
+                color: var(--ink);
+                margin-bottom: 1.5rem;
+                line-height: 1.6;
+            }
+
+            .cta {
+                display: inline-block;
+                background: var(--ink);
+                color: var(--paper);
+                font-family: "DM Mono", monospace;
+                font-size: 0.7rem;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                text-decoration: none;
+                padding: 0.75rem 1.75rem;
+                transition: background 0.18s ease;
+            }
+
+            .cta:hover {
+                background: var(--accent);
+            }
+
+            /* ── Fade-in ──────────────────────────────────────── */
+            .fade {
+                opacity: 0;
+                transform: translateY(14px);
+                transition:
+                    opacity 0.55s ease,
+                    transform 0.55s ease;
+            }
+            .fade.visible {
+                opacity: 1;
+                transform: none;
+            }
+
+            @media (max-width: 520px) {
+                html {
+                    font-size: 16px;
+                }
+                .pipeline-step {
+                    grid-template-columns: 4.5rem 1fr;
+                }
+                .step-label {
+                    font-size: 0.55rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page">
+            <!-- Masthead -->
+            <div class="masthead fade">
+                <p class="kicker">InsightNest — Manifesto</p>
+                <h1>A place for<br /><em>slow knowledge</em></h1>
+                <p class="lede">
+                    Conversation should be the <em>beginning</em> of durable,
+                    accessible knowledge — not the end product. InsightNest is
+                    the infrastructure for what comes after the discussion.
+                </p>
+            </div>
+
+            <hr class="rule" />
+
+            <!-- Why -->
+            <section class="fade">
+                <h2>The problem with now</h2>
+                <p>
+                    In a world that rewards noise, signal gets buried. Most
+                    digital spaces are optimised for reaction — likes, retweets,
+                    engagement streaks — not for understanding. The result is a
+                    landscape of transient thoughts and lost knowledge: ideas
+                    that briefly surface and then disappear, owned by no one and
+                    retained by nothing.
+                </p>
+                <p>
+                    <strong>InsightNest is the antidote.</strong> It is a tool
+                    and a community built on one belief: that deliberate,
+                    friction-aware collaboration produces better knowledge than
+                    fast, reactive content. We are not a social network. We are
+                    a collaborative thinking platform.
+                </p>
+
+                <h3>The platforms getting it wrong</h3>
+                <div class="principle">
+                    <div class="principle-head">
+                        Noise-driven feeds<span>→</span>drown ideas in endless
+                        scroll
+                    </div>
+                    <p>
+                        Algorithmic amplification surfaces the most reactive
+                        content, not the most considered.
+                    </p>
+                </div>
+                <div class="principle">
+                    <div class="principle-head">
+                        Shallow metrics<span>→</span>reward virality over value
+                    </div>
+                    <p>
+                        Likes and retweets measure emotional response, not
+                        intellectual contribution.
+                    </p>
+                </div>
+                <div class="principle">
+                    <div class="principle-head">
+                        Platform ownership<span>→</span>extracts value from
+                        creators
+                    </div>
+                    <p>
+                        The people who create the knowledge never own a share of
+                        what they helped build.
+                    </p>
+                </div>
+            </section>
+
+            <hr class="rule" />
+
+            <!-- Principles -->
+            <section class="fade">
+                <h2>Our principles</h2>
+
+                <div class="principle">
+                    <div class="principle-head">
+                        Curation<span>over</span>Popularity
+                    </div>
+                    <p>
+                        The best ideas are not always the most popular. Spark
+                        authors surface the most constructive contributions —
+                        not the most upvoted ones. Quality is editorial, not
+                        algorithmic.
+                    </p>
+                </div>
+
+                <div class="principle">
+                    <div class="principle-head">
+                        Reflection<span>over</span>Impulse
+                    </div>
+                    <p>
+                        Deliberate friction is a feature. A minimum read time
+                        unlocks the contribution form. Fifty words is the
+                        minimum contribution length. Your previous Spark must
+                        have received at least one contribution before you can
+                        post a new one. These constraints are not limitations —
+                        they are the product.
+                    </p>
+                </div>
+
+                <div class="principle">
+                    <div class="principle-head">
+                        Conversation<span>as</span>Asset
+                    </div>
+                    <p>
+                        Discussions are raw material, not dead ends. The
+                        platform guides a Spark from a fleeting thought to a
+                        permanent, structured Insight — a canonical piece of
+                        knowledge co-owned by everyone who helped shape it.
+                    </p>
+                </div>
+
+                <div class="principle">
+                    <div class="principle-head">
+                        Identity Through Contribution
+                    </div>
+                    <p>
+                        Your reputation is built on what you help create, not on
+                        follower counts. Your profile is a portfolio of the
+                        Insights you authored and contributed to, reflecting
+                        intellectual generosity and collaborative success.
+                    </p>
+                </div>
+            </section>
+
+            <hr class="rule" />
+
+            <!-- Pipeline -->
+            <section class="fade">
+                <h2>How an idea becomes knowledge</h2>
+                <p style="margin-bottom: 1.5rem">
+                    Every piece of knowledge on InsightNest moves through the
+                    same four-stage pipeline.
+                </p>
+
+                <div class="pipeline">
+                    <div class="pipeline-step">
+                        <div class="step-label">Spark</div>
+                        <div class="step-body">
+                            <strong>Plant the seed</strong>
+                            <p>
+                                A question, hypothesis, or idea that invites
+                                discussion. Lightweight by design — the seed,
+                                not the finished product.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-label">Contribution</div>
+                        <div class="step-body">
+                            <strong>The community adds depth</strong>
+                            <p>
+                                Members respond with perspective, evidence,
+                                challenges, or open questions. Each contribution
+                                requires genuine engagement — not a reaction.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-label">Weave</div>
+                        <div class="step-body">
+                            <strong>Crystallise the discussion</strong>
+                            <p>
+                                An eligible member triggers a Weave. Highlighted
+                                contributions are assembled into a structured
+                                draft Insight, grouped by stance. The curator
+                                edits and publishes.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-label">Insight</div>
+                        <div class="step-body">
+                            <strong>A permanent, owned artifact</strong>
+                            <p>
+                                A versioned, content-hashed piece of knowledge
+                                stored in the Library, with fractional ownership
+                                shares assigned to every contributor who helped
+                                build it.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-label">Library</div>
+                        <div class="step-body">
+                            <strong>The growing commons</strong>
+                            <p>
+                                A searchable repository of every Insight ever
+                                created — curated, community-crafted, and open
+                                to anyone.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="rule" />
+
+            <!-- Promise -->
+            <section class="fade">
+                <h2>Our promise</h2>
+                <ul class="promise-list">
+                    <li>
+                        <strong>No ads, ever.</strong> We do not sell attention.
+                        We do not sell your data. We never will.
+                    </li>
+                    <li>
+                        <strong>Sovereign identity.</strong> Log in with your
+                        wallet or an email passcode — no password, no personal
+                        data required. You own your identity.
+                    </li>
+                    <li>
+                        <strong>Contributor ownership.</strong> Every Insight
+                        carries a record of who shaped it and their fractional
+                        share. In the future, each Insight will be an on-chain
+                        token — contributors earn royalties whenever the
+                        knowledge is reused.
+                    </li>
+                    <li>
+                        <strong>Community governance.</strong> Major policy
+                        decisions are made through a transparent DAO voting
+                        process. The platform belongs to its contributors, not
+                        its founders.
+                    </li>
+                    <li>
+                        <strong>Sanctuary for thought.</strong> No infinite
+                        scroll. No vanity metrics. No push notifications
+                        engineered for addiction. A quiet place for thinkers,
+                        researchers, and builders of ideas.
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Closing -->
+            <div class="closing fade">
+                <p>
+                    If you value slow thought, deep work, and the idea that
+                    knowledge should be owned by the people who create it — you
+                    belong here.
+                </p>
+                <a
+                    class="cta"
+                    href="https://share.formglio.com/c1299mF8F8Cg5j8H"
+                >
+                    Start your first Spark →
+                </a>
+            </div>
+        </div>
+
+        <script>
+            const observer = new IntersectionObserver(
+                (entries) =>
+                    entries.forEach((e) => {
+                        if (e.isIntersecting) e.target.classList.add("visible");
+                    }),
+                { threshold: 0.12 },
+            );
+            document
+                .querySelectorAll(".fade")
+                .forEach((el) => observer.observe(el));
+        </script>
+    </body>
+</html>

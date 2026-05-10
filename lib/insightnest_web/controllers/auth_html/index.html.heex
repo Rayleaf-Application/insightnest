@@ -214,7 +214,7 @@
           const res = await fetch('/auth/verify',{method:'POST',
             headers:{'Content-Type':'application/json','Accept':'application/json'},
             body:JSON.stringify({message:msg,signature:sig})});
-          const data = await res.json();
+          const data = await safeJson(res);
           if (!res.ok) throw new Error(data.error || 'Verification failed.');
           localStorage.setItem('insightnest_token', data.token);
           window.location.href = data.redirect_to || '/';
@@ -224,6 +224,12 @@
         }
       }
 
+      async function safeJson(res) {
+        const text = await res.text();
+        try { return JSON.parse(text); }
+        catch(_) { throw new Error(`HTTP ${res.status} — unexpected response: ${text.slice(0, 200)}`); }
+      }
+
       async function requestCode() {
         clearError();
         emailAddr = document.getElementById('email-input').value.trim();
@@ -231,9 +237,9 @@
         setLoading('Sending code…');
         try {
           const res = await fetch('/auth/email/request',{method:'POST',
-            headers:{'Content-Type':'application/json'},
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
             body:JSON.stringify({email:emailAddr})});
-          if (!res.ok) { const d = await res.json(); throw new Error(d.error || 'Failed to send.'); }
+          if (!res.ok) { const d = await safeJson(res); throw new Error(d.error || 'Failed to send.'); }
           document.getElementById('email-sent-to').textContent = emailAddr;
           document.getElementById('email-step-1').style.display = 'none';
           document.getElementById('email-step-2').style.display = 'block';
@@ -249,9 +255,9 @@
         setLoading('Verifying…');
         try {
           const res = await fetch('/auth/email/verify',{method:'POST',
-            headers:{'Content-Type':'application/json'},
+            headers:{'Content-Type':'application/json','Accept':'application/json'},
             body:JSON.stringify({email:emailAddr,code})});
-          const data = await res.json();
+          const data = await safeJson(res);
           if (!res.ok) throw new Error(data.error || 'Verification failed.');
           localStorage.setItem('insightnest_token', data.token);
           window.location.href = data.redirect_to || '/';

@@ -34,16 +34,11 @@ if config_env() == :prod do
 
   config :insightnest, :admin_api_key, admin_api_key
 
-  # Mailer — activated once SMTP_PASSWORD is set via fly secrets
-  if smtp_pass = System.get_env("SMTP_PASSWORD") do
+  # Mailer — Mailtrap sending API
+  if mailtrap_token = System.get_env("MAILTRAP_API_TOKEN") do
     config :insightnest, Insightnest.Mailer,
-      adapter: Swoosh.Adapters.SMTP,
-      relay: System.get_env("SMTP_RELAY", "smtp.postmarkapp.com"),
-      port: String.to_integer(System.get_env("SMTP_PORT", "587")),
-      username: System.get_env("SMTP_USERNAME", ""),
-      password: smtp_pass,
-      tls: :always,
-      auth: :always
+      adapter: Swoosh.Adapters.Mailtrap,
+      api_key: mailtrap_token
 
     config :swoosh, :api_client, Swoosh.ApiClient.Finch
   end

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InsightNest — Waitlist</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: #0c0a09;
+      color: #d6d3d1;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    h1 { font-size: 1.25rem; font-weight: 500; color: #f5f5f4; letter-spacing: -0.01em; }
+    h2 { font-size: 0.8rem; font-weight: 500; color: #78716c; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .shell { max-width: 860px; margin: 0 auto; }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2rem; padding-bottom: 1rem;
+      border-bottom: 1px solid #292524;
+    }
+
+    .tabs { display: flex; gap: 0.25rem; margin-bottom: 1.5rem; }
+
+    .tab {
+      padding: 0.4rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer;
+      border: 1px solid transparent; color: #78716c; background: none;
+      transition: all 0.15s;
+    }
+    .tab:hover { color: #d6d3d1; }
+    .tab.active {
+      background: #1c1917; border-color: #292524; color: #f5f5f4;
+    }
+
+    /* Config panel */
+    .config-card {
+      background: #1c1917; border: 1px solid #292524; border-radius: 12px;
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; font-size: 0.8rem;
+    }
+    .config-card label { color: #78716c; display: block; margin-bottom: 0.25rem; }
+    .config-card input {
+      width: 100%; background: #0c0a09; border: 1px solid #292524; border-radius: 6px;
+      padding: 0.4rem 0.6rem; color: #e7e5e4; font-size: 0.8rem;
+      font-family: 'DM Mono', 'Courier New', monospace; margin-bottom: 0.75rem;
+    }
+    .config-card input:focus { outline: none; border-color: #44403c; }
+    .config-note { color: #57534e; font-size: 0.72rem; }
+
+    /* Table */
+    .table-wrap { border: 1px solid #292524; border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    thead { background: #1c1917; }
+    thead th {
+      padding: 0.7rem 1rem; text-align: left;
+      color: #78716c; font-weight: 500; font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      border-bottom: 1px solid #292524;
+    }
+    tbody tr { border-bottom: 1px solid #1c1917; transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #1c1917; }
+    tbody td { padding: 0.75rem 1rem; vertical-align: middle; color: #d6d3d1; }
+    .td-email { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #e7e5e4; }
+    .td-reason { color: #78716c; font-size: 0.75rem; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Status chips */
+    .chip {
+      display: inline-flex; align-items: center; padding: 0.2rem 0.55rem;
+      border-radius: 6px; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.02em;
+    }
+    .chip-pending  { background: #292524; color: #78716c;  border: 1px solid #44403c; }
+    .chip-approved { background: #052e16; color: #4ade80;  border: 1px solid #14532d; }
+    .chip-rejected { background: #1c0a0a; color: #f87171;  border: 1px solid #7f1d1d; }
+
+    /* Action buttons */
+    .actions { display: flex; gap: 0.4rem; }
+    .btn {
+      padding: 0.3rem 0.65rem; border-radius: 7px; font-size: 0.72rem; cursor: pointer;
+      border: 1px solid transparent; transition: all 0.15s; font-weight: 500;
+    }
+    .btn-approve { background: #052e16; border-color: #14532d; color: #4ade80; }
+    .btn-approve:hover { background: #065f46; }
+    .btn-reject  { background: #1c0a0a; border-color: #7f1d1d; color: #f87171; }
+    .btn-reject:hover  { background: #450a0a; }
+    .btn-delete  { background: transparent; border-color: #292524; color: #57534e; }
+    .btn-delete:hover  { border-color: #7f1d1d; color: #f87171; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Signup form */
+    .form-card {
+      background: #1c1917; border: 1px solid #292524; border-radius: 12px;
+      padding: 1.5rem; max-width: 480px;
+    }
+    .form-card h2 { color: #f5f5f4; text-transform: none; letter-spacing: 0; font-size: 1rem; margin-bottom: 1rem; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 0.75rem; color: #78716c; margin-bottom: 0.3rem; }
+    .field input, .field textarea {
+      width: 100%; background: #0c0a09; border: 1px solid #292524; border-radius: 8px;
+      padding: 0.55rem 0.75rem; color: #e7e5e4; font-size: 0.85rem; font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .field input:focus, .field textarea:focus { outline: none; border-color: #44403c; }
+    .field textarea { resize: vertical; min-height: 90px; }
+    .submit-btn {
+      width: 100%; padding: 0.6rem; border-radius: 8px; font-size: 0.85rem;
+      cursor: pointer; border: 1px solid #44403c; background: #1c1917;
+      color: #e7e5e4; font-weight: 500; transition: all 0.15s;
+    }
+    .submit-btn:hover { background: #292524; }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Misc */
+    .empty { text-align: center; padding: 3rem; color: #57534e; font-size: 0.85rem; }
+    .notice {
+      padding: 0.65rem 1rem; border-radius: 8px; font-size: 0.8rem; margin-bottom: 1rem;
+    }
+    .notice-ok  { background: #052e16; border: 1px solid #14532d; color: #4ade80; }
+    .notice-err { background: #1c0a0a; border: 1px solid #7f1d1d; color: #f87171; }
+    .counts { display: flex; gap: 1rem; font-size: 0.75rem; color: #78716c; }
+    .counts span { display: flex; align-items: center; gap: 0.35rem; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .dot-pending  { background: #78716c; }
+    .dot-approved { background: #4ade80; }
+    .dot-rejected { background: #f87171; }
+
+    [data-tab] { display: none; }
+    [data-tab].active { display: block; }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div>
+      <h1>InsightNest — Waitlist</h1>
+      <div class="counts" id="counts" style="margin-top:0.35rem;"></div>
+    </div>
+    <button class="btn btn-delete" onclick="loadEntries()" style="font-size:0.75rem;">↺ Refresh</button>
+  </header>
+
+  <!-- Config -->
+  <div class="config-card">
+    <h2 style="margin-bottom:0.75rem;">Connection</h2>
+    <label>Admin Key</label>
+    <input type="password" id="cfg-key" value="" placeholder="x-admin-key value" />
+    <p class="config-note">Sent as <code>X-Admin-Key</code> header. API calls go to the same origin this page is served from.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('admin', event)">Entries</button>
+    <button class="tab" onclick="switchTab('signup', event)">Test Signup</button>
+  </div>
+
+  <!-- Admin tab -->
+  <div data-tab="admin" class="active">
+    <div id="admin-notice"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Joined</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="entries-body">
+          <tr><td colspan="6" class="empty">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Signup test tab -->
+  <div data-tab="signup">
+    <div id="signup-notice"></div>
+    <div class="form-card">
+      <h2>Request Alpha Access</h2>
+      <form id="signup-form" onsubmit="handleSignup(event)">
+        <div class="field">
+          <label>Email *</label>
+          <input type="email" id="s-email" required placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label>Name</label>
+          <input type="text" id="s-name" placeholder="Optional" />
+        </div>
+        <div class="field">
+          <label>Why do you want access?</label>
+          <textarea id="s-reason" placeholder="Tell us a bit about yourself…"></textarea>
+        </div>
+        <button class="submit-btn" type="submit" id="signup-btn">Request Access</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // API calls go to the same origin — no config needed
+  const apiKey = () => document.getElementById('cfg-key').value;
+
+  // ── TAB SWITCHING ─────────────────────────────────────────────────────────────
+  function switchTab(name, event) {
+    document.querySelectorAll('[data-tab]').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // ── ADMIN: LOAD ENTRIES ───────────────────────────────────────────────────────
+  async function loadEntries() {
+    try {
+      const res = await fetch('/api/waitlist', {
+        headers: { 'X-Admin-Key': apiKey(), 'Accept': 'application/json' },
+      });
+      if (res.status === 401) { renderEntries(null, 'Unauthorized — check your admin key.'); return; }
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (_) {
+        renderEntries(null, `HTTP ${res.status} — unexpected response (first 200 chars): ${text.slice(0, 200)}`);
+        return;
+      }
+      if (!Array.isArray(data.entries)) {
+        renderEntries(null, `Unexpected response shape (status ${res.status}): ${JSON.stringify(data).slice(0, 200)}`);
+        return;
+      }
+      renderEntries(data.entries);
+    } catch (e) {
+      renderEntries(null, `Network error: ${e.message}`);
+    }
+  }
+
+  function renderEntries(entries, err) {
+    const tbody = document.getElementById('entries-body');
+    const counts = document.getElementById('counts');
+
+    if (err) {
+      tbody.innerHTML = `<tr><td colspan="6" class="empty" style="color:#f87171;">${err}</td></tr>`;
+      counts.innerHTML = '';
+      return;
+    }
+
+    if (!entries || !entries.length) {
+      tbody.innerHTML = `<tr><td colspan="6" class="empty">No entries yet.</td></tr>`;
+      counts.innerHTML = '';
+      return;
+    }
+
+    const tally = { pending: 0, approved: 0, rejected: 0 };
+    entries.forEach(e => { tally[e.status] = (tally[e.status] || 0) + 1; });
+    counts.innerHTML = [
+      `<span><span class="dot dot-pending"></span>${tally.pending} pending</span>`,
+      `<span><span class="dot dot-approved"></span>${tally.approved} approved</span>`,
+      `<span><span class="dot dot-rejected"></span>${tally.rejected} rejected</span>`,
+    ].join('');
+
+    tbody.innerHTML = entries.map(e => `
+      <tr id="row-${e.id}">
+        <td class="td-email">${esc(e.email)}</td>
+        <td>${esc(e.name || '—')}</td>
+        <td class="td-reason" title="${esc(e.reason || '')}">${esc(e.reason || '—')}</td>
+        <td><span class="chip chip-${e.status}">${e.status}</span></td>
+        <td style="font-size:0.72rem;color:#57534e;">${fmtDate(e.inserted_at)}</td>
+        <td>
+          <div class="actions">
+            ${e.status !== 'approved' ? `<button class="btn btn-approve" onclick="updateStatus('${e.id}','approved')">Approve</button>` : ''}
+            ${e.status !== 'rejected' ? `<button class="btn btn-reject"  onclick="updateStatus('${e.id}','rejected')">Reject</button>` : ''}
+            <button class="btn btn-delete" onclick="deleteEntry('${e.id}')">✕</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // ── ADMIN: UPDATE STATUS ──────────────────────────────────────────────────────
+  async function updateStatus(id, status) {
+    try {
+      const res = await fetch(`/api/waitlist/${id}`, {
+        method: 'PATCH',
+        headers: { 'X-Admin-Key': apiKey(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch (_) {
+        showAdminNotice(`HTTP ${res.status} — non-JSON response`, 'err'); return;
+      }
+      if (data.ok) {
+        showAdminNotice(`Marked ${status}.`, 'ok');
+        loadEntries();
+      } else {
+        showAdminNotice(JSON.stringify(data.errors), 'err');
+      }
+    } catch (e) {
+      showAdminNotice(`Network error: ${e.message}`, 'err');
+    }
+  }
+
+  // ── ADMIN: DELETE ─────────────────────────────────────────────────────────────
+  async function deleteEntry(id) {
+    if (!confirm('Remove this entry?')) return;
+    try {
+      const res = await fetch(`/api/waitlist/${id}`, {
+        method: 'DELETE',
+        headers: { 'X-Admin-Key': apiKey() },
+      });
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch (_) {
+        showAdminNotice(`HTTP ${res.status} — non-JSON response`, 'err'); return;
+      }
+      if (data.ok) {
+        loadEntries();
+      } else {
+        showAdminNotice('Delete failed.', 'err');
+      }
+    } catch (e) {
+      showAdminNotice(`Network error: ${e.message}`, 'err');
+    }
+  }
+
+  // ── PUBLIC: SIGNUP ────────────────────────────────────────────────────────────
+  async function handleSignup(e) {
+    e.preventDefault();
+    const btn = document.getElementById('signup-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('s-email').value,
+          name: document.getElementById('s-name').value,
+          reason: document.getElementById('s-reason').value,
+        }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        showSignupNotice("You're on the list. We'll be in touch.", 'ok');
+        document.getElementById('signup-form').reset();
+      } else {
+        const msgs = Object.entries(data.errors || {})
+          .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+          .join(' · ');
+        showSignupNotice(msgs || 'Something went wrong.', 'err');
+      }
+    } catch (err) {
+      showSignupNotice(err.message, 'err');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Request Access';
+    }
+  }
+
+  // ── HELPERS ───────────────────────────────────────────────────────────────────
+  function showAdminNotice(msg, type) {
+    const el = document.getElementById('admin-notice');
+    el.innerHTML = `<div class="notice notice-${type}">${esc(msg)}</div>`;
+    setTimeout(() => { el.innerHTML = ''; }, 4000);
+  }
+
+  function showSignupNotice(msg, type) {
+    const el = document.getElementById('signup-notice');
+    el.innerHTML = `<div class="notice notice-${type}">${esc(msg)}</div>`;
+  }
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────────────────
+  loadEntries();
+</script>
+</body>
+</html>
