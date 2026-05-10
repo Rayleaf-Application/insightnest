@@ -104,8 +104,20 @@ defmodule InsightnestWeb.InsightComponents do
           {@insight.title}
         </h1>
 
-        <p :if={@insight.summary != ""} class="text-base text-stone-400 leading-relaxed">
+        <p :if={@insight.summary != ""} class="text-base text-stone-400 leading-relaxed mb-4">
           {@insight.summary}
+        </p>
+
+        <p class="text-sm text-stone-600 leading-relaxed">
+          This Insight emerged from
+          <a
+            href={"/sparks/#{@insight.spark_id}"}
+            class="text-stone-500 hover:text-stone-300 transition-colors"
+          >
+            a Spark by @{member_handle(@insight.spark.author)}
+          </a>, curated by
+          <span class="text-stone-500">@{member_handle(@insight.weave.curator)}</span>,
+          shaped over {insight_age(@insight.spark.inserted_at, @insight.inserted_at)}.
         </p>
       </div>
 
@@ -116,20 +128,13 @@ defmodule InsightnestWeb.InsightComponents do
 
       <%!-- Contributors --%>
       <div class="border-t border-stone-800 pt-8">
-        <h2
-          class="text-lg text-stone-300 mb-5"
-          style="font-family: 'Playfair Display', serif;"
-        >
-          Contributors
-        </h2>
+        <p class="text-sm text-stone-500 leading-relaxed mb-5">
+          {length(@ownership.shares)} {if length(@ownership.shares) == 1, do: "person", else: "people"} shaped this Insight.
+          Each holds a fractional share of it.
+        </p>
 
-        <div class="space-y-3 mb-6">
+        <div class="space-y-3">
           <.ownership_row :for={share <- @ownership.shares} share={share} />
-        </div>
-
-        <div :if={not @ownership.on_chain} class="flex items-center gap-2 text-xs text-stone-700">
-          <span>⏳</span>
-          <span>On-chain ownership pending — Phase 3</span>
         </div>
       </div>
     </div>
@@ -222,6 +227,20 @@ defmodule InsightnestWeb.InsightComponents do
 
   defp get_blocks(%{body: %{"blocks" => blocks}}), do: blocks
   defp get_blocks(_), do: []
+
+  defp member_handle(%{username: u}) when is_binary(u) and u != "", do: u
+  defp member_handle(%{wallet_address: addr}) when is_binary(addr), do: format_wallet(addr)
+  defp member_handle(_), do: "anon"
+
+  defp insight_age(spark_created, insight_published) do
+    days = DateTime.diff(insight_published, spark_created, :day)
+
+    cond do
+      days <= 0 -> "less than a day"
+      days == 1 -> "1 day"
+      true -> "#{days} days"
+    end
+  end
 
   defp contributor_count(insight) do
     (get_in(insight.contributors, ["shares"]) || []) |> length()

@@ -116,7 +116,7 @@ defmodule Insightnest.Contributions do
 
   # ── Highlights ────────────────────────────────────────────────────────────────
 
-  @highlight_threshold Application.compile_env(:insightnest, :highlight_threshold, 3)
+  @highlight_threshold Application.compile_env(:insightnest, :highlight_threshold, 1)
 
   @doc "Toggles a highlight vote. Returns {:ok, contribution} or {:error, reason}."
   def toggle_highlight(contribution_id, voter_id) do

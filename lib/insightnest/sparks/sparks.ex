@@ -3,19 +3,28 @@ defmodule Insightnest.Sparks do
 
   import Ecto.Query
 
+  alias Insightnest.Contributions.Contribution
   alias Insightnest.Repo
   alias Insightnest.Sparks.Spark
 
   # ── Queries ──────────────────────────────────────────────────────────────────
 
-  @doc "Returns all published sparks, newest first."
+  @doc "Returns all published sparks, newest first, with contribution stats."
   def list_published do
-    Spark
-    |> where([s], s.status == "published")
-    |> order_by([s], desc: s.inserted_at)
-    |> preload(:author)
-    |> Repo.all()
-    |> Enum.map(&compute_is_closed/1)
+    sparks =
+      Spark
+      |> where([s], s.status == "published")
+      |> order_by([s], desc: s.inserted_at)
+      |> preload(:author)
+      |> Repo.all()
+      |> Enum.map(&compute_is_closed/1)
+
+    stats = load_contribution_stats(Enum.map(sparks, & &1.id))
+
+    Enum.map(sparks, fn spark ->
+      {contrib, highlighted} = Map.get(stats, spark.id, {0, 0})
+      %{spark | contribution_count: contrib, highlighted_count: highlighted}
+    end)
   end
 
   @doc "Returns a spark by ID with author preloaded. Raises if not found."
@@ -163,6 +172,18 @@ defmodule Insightnest.Sparks do
   end
 
   # ── Private ──────────────────────────────────────────────────────────────────
+
+  defp load_contribution_stats([]), do: %{}
+
+  defp load_contribution_stats(spark_ids) do
+    from(c in Contribution,
+      where: c.spark_id in ^spark_ids and c.status == "active",
+      group_by: c.spark_id,
+      select: {c.spark_id, count(c.id), fragment("COUNT(CASE WHEN ? THEN 1 END)", c.highlighted)}
+    )
+    |> Repo.all()
+    |> Map.new(fn {id, count, highlighted} -> {id, {count, highlighted}} end)
+  end
 
   defp compute_is_closed(%Spark{closes_at: nil} = spark), do: %{spark | is_closed: false}
 

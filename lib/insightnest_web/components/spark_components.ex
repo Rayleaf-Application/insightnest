@@ -40,6 +40,18 @@ defmodule InsightnestWeb.SparkComponents do
             {format_wallet(@spark.author.wallet_address)}
           </span>
         </div>
+
+        <div class="flex items-center gap-1.5 mt-2.5 text-xs text-stone-700">
+          <span>{@spark.contribution_count} contributions</span>
+          <span>·</span>
+          <span>{@spark.highlighted_count} highlighted</span>
+          <span
+            :if={@spark.highlighted_count >= 1}
+            class="ml-0.5 text-violet-500/80"
+          >
+            · Weave-ready
+          </span>
+        </div>
       </a>
     </article>
     """

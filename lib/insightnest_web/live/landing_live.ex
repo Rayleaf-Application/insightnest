@@ -7,7 +7,7 @@ defmodule InsightnestWeb.LandingLive do
   @impl true
   def mount(_params, _session, socket) do
     if socket.assigns[:current_member] do
-      {:ok, push_navigate(socket, to: "/feed")}
+      {:ok, push_navigate(socket, to: "/library")}
     else
       {:ok,
        socket

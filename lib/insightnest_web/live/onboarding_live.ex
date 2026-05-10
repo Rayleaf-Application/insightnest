@@ -14,7 +14,7 @@ defmodule InsightnestWeb.OnboardingLive do
 
     # Already onboarded — send home
     if Accounts.onboarded?(member) do
-      {:ok, push_navigate(socket, to: "/feed")}
+      {:ok, push_navigate(socket, to: "/library")}
     else
       {:ok,
        assign(socket,
@@ -66,7 +66,7 @@ defmodule InsightnestWeb.OnboardingLive do
 
     case Accounts.set_username(member, username) do
       {:ok, _member} ->
-        {:noreply, push_navigate(socket, to: "/feed")}
+        {:noreply, push_navigate(socket, to: "/library")}
 
       {:error, reason} ->
         {:noreply,

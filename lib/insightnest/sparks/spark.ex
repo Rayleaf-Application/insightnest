@@ -21,6 +21,8 @@ defmodule Insightnest.Sparks.Spark do
 
     # Computed at read time — not stored
     field :is_closed, :boolean, virtual: true, default: false
+    field :contribution_count, :integer, virtual: true, default: 0
+    field :highlighted_count, :integer, virtual: true, default: 0
 
     belongs_to :author, Member
 
