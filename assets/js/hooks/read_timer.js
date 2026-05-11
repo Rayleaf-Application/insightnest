@@ -67,8 +67,12 @@ const ReadTimer = {
       stopTimer();
       observer.disconnect();
 
+      // Update DOM immediately for instant feedback
       if (lock) lock.style.display = "none";
       if (form) form.style.display = "block";
+
+      // Tell the server so re-renders (stance, highlight, etc.) don't re-hide the form
+      this.pushEvent("read_timer_unlocked", {});
     };
 
     // If already read enough (e.g. navigated back), unlock immediately

@@ -45,8 +45,8 @@ defmodule InsightnestWeb.SparkLive.Show do
        max_extensions: @max_extensions,
        can_contribute: can_contribute?(spark, member, contributions),
        can_weave: member && Weaves.eligible_to_weave?(spark_id, Ecto.UUID.cast!(member.id)),
-       # Store the binary ID for later use if needed
-       spark_id: spark_id
+       spark_id: spark_id,
+       timer_unlocked: false
      )}
   end
 
@@ -82,6 +82,10 @@ defmodule InsightnestWeb.SparkLive.Show do
   # ── Events ────────────────────────────────────────────────────────────────────
 
   @impl true
+  def handle_event("read_timer_unlocked", _params, socket) do
+    {:noreply, assign(socket, timer_unlocked: true)}
+  end
+
   def handle_event("select_stance", %{"stance" => stance}, socket) do
     {:noreply, assign(socket, selected_stance: if(stance == "", do: nil, else: stance))}
   end
@@ -368,7 +372,11 @@ defmodule InsightnestWeb.SparkLive.Show do
               </p>
             <% true -> %>
               <%!-- Read lock overlay --%>
-              <div id="contribution-lock" class="text-center py-6">
+              <div
+                id="contribution-lock"
+                style={if @timer_unlocked, do: "display:none", else: ""}
+                class="text-center py-6"
+              >
                 <div class="inline-flex items-center gap-3 px-5 py-3 rounded-xl
                             border border-stone-800 bg-stone-900/60">
                   <span class="text-stone-600 text-sm">Finish reading</span>
@@ -383,8 +391,11 @@ defmodule InsightnestWeb.SparkLive.Show do
                 </div>
               </div>
 
-              <%!-- Form — hidden until timer unlocks it --%>
-              <div id="contribution-form-wrapper" style="display: none;">
+              <%!-- Form — shown once timer unlocks --%>
+              <div
+                id="contribution-form-wrapper"
+                style={if @timer_unlocked, do: "", else: "display:none"}
+              >
                 <ContributionComponents.contribution_form
                   form={@form}
                   selected_stance={@selected_stance}
