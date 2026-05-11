@@ -27,4 +27,10 @@ defmodule Insightnest.Waitlist do
     get!(id)
     |> Repo.delete()
   end
+
+  @doc "Returns true if the email has an approved waitlist entry."
+  def approved?(email) do
+    email = String.downcase(String.trim(email))
+    Repo.exists?(from e in Entry, where: e.email == ^email and e.status == "approved")
+  end
 end

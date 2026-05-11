@@ -8,6 +8,7 @@ defmodule InsightnestWeb.AuthController do
   alias Insightnest.Accounts.PasscodeStore
   alias Insightnest.Auth.Guardian
   alias Insightnest.Auth.Siwe
+  alias Insightnest.Waitlist
   alias InsightnestWeb.UserEmail
 
   @nonce_ttl Application.compile_env(:insightnest, :nonce_ttl_seconds, 300)
@@ -64,6 +65,7 @@ defmodule InsightnestWeb.AuthController do
          {:ok, stored_nonce} <- NonceStore.get_and_delete(address),
          :ok <- verify_nonce(siwe_message.nonce, stored_nonce),
          :ok <- verify_signature(raw_message, signature, address),
+         :ok <- check_wallet_alpha_gate(address),
          {:ok, member} <- Accounts.find_or_create_by_wallet(address),
          {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
       # Redirect to onboarding if username not set yet
@@ -85,6 +87,7 @@ defmodule InsightnestWeb.AuthController do
       {:error, :expired} -> auth_error(conn, "Nonce expired — request a new one")
       {:error, :nonce_mismatch} -> auth_error(conn, "Nonce mismatch")
       {:error, :invalid_signature} -> auth_error(conn, "Invalid signature")
+      {:error, :alpha_restricted} -> auth_error(conn, "Access is by invitation only during the closed alpha.")
       {:error, reason} -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
     end
   end
@@ -131,16 +134,21 @@ defmodule InsightnestWeb.AuthController do
   # POST /auth/email/request
   def request_passcode(conn, %{"email" => email}) when byte_size(email) > 0 do
     email = String.downcase(String.trim(email))
-    code = Accounts.generate_passcode()
-    :ok = PasscodeStore.put(email, code)
 
-    case email |> UserEmail.passcode_email(code) |> Insightnest.Mailer.deliver() do
-      {:ok, _} -> :ok
-      {:error, reason} -> Logger.error("[Mailer] Failed to deliver passcode to #{email}: #{inspect(reason)}")
+    if alpha_mode?() and not email_alpha_allowed?(email) do
+      # Return ok to avoid leaking which emails are approved
+      json(conn, %{ok: true})
+    else
+      code = Accounts.generate_passcode()
+      :ok = PasscodeStore.put(email, code)
+
+      case email |> UserEmail.passcode_email(code) |> Insightnest.Mailer.deliver() do
+        {:ok, _} -> :ok
+        {:error, reason} -> Logger.error("[Mailer] Failed to deliver passcode to #{email}: #{inspect(reason)}")
+      end
+
+      json(conn, %{ok: true})
     end
-
-    # Always return ok — don't leak whether email exists
-    json(conn, %{ok: true})
   end
 
   def request_passcode(conn, _) do
@@ -175,6 +183,20 @@ defmodule InsightnestWeb.AuthController do
 
   def verify_passcode(conn, _) do
     conn |> put_status(:bad_request) |> json(%{error: "email and code are required"})
+  end
+
+  defp alpha_mode?, do: Application.get_env(:insightnest, :alpha_mode, false)
+
+  defp email_alpha_allowed?(email) do
+    Waitlist.approved?(email) or Accounts.get_member_by_email(email) != nil
+  end
+
+  defp check_wallet_alpha_gate(address) do
+    if alpha_mode?() and Accounts.get_member_by_wallet(address) == nil do
+      {:error, :alpha_restricted}
+    else
+      :ok
+    end
   end
 
   defp auth_error(conn, message) do

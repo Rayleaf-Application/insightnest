@@ -14,6 +14,7 @@ config :insightnest, Insightnest.Auth.Guardian,
 config :insightnest,
   nonce_ttl_seconds: 300,
   highlight_threshold: 1,
+  alpha_mode: true,
   spark_default_timeout_days: 14,
   spark_max_timeout_days: 90,
   spark_max_extensions: 2

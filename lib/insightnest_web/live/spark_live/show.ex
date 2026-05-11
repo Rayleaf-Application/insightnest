@@ -233,7 +233,7 @@ defmodule InsightnestWeb.SparkLive.Show do
             class="text-xs text-stone-600"
             style="font-family: 'DM Mono', monospace;"
           >
-            {format_wallet(@spark.author.wallet_address)}
+            {format_author(@spark.author)}
           </span>
 
           <%!-- Extend button — spark author only --%>
@@ -430,6 +430,10 @@ defmodule InsightnestWeb.SparkLive.Show do
   defp paragraphs(body) do
     body |> String.split("\n\n") |> Enum.map(&String.trim/1) |> Enum.reject(&(&1 == ""))
   end
+
+  defp format_author(%{username: u}) when is_binary(u) and u != "", do: "@" <> u
+  defp format_author(%{wallet_address: addr}) when is_binary(addr), do: format_wallet(addr)
+  defp format_author(_), do: "anon"
 
   defp format_wallet(nil), do: "anon"
   defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)

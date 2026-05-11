@@ -37,7 +37,7 @@ defmodule InsightnestWeb.SparkComponents do
             class="text-xs shrink-0 ml-3"
             style="font-family: 'DM Mono', monospace; color: #57534e;"
           >
-            {format_wallet(@spark.author.wallet_address)}
+            {format_author(@spark.author)}
           </span>
         </div>
 
@@ -152,6 +152,10 @@ defmodule InsightnestWeb.SparkComponents do
 
   defp excerpt(body) when byte_size(body) > 160, do: String.slice(body, 0, 157) <> "…"
   defp excerpt(body), do: body
+
+  defp format_author(%{username: u}) when is_binary(u) and u != "", do: "@" <> u
+  defp format_author(%{wallet_address: addr}) when is_binary(addr), do: format_wallet(addr)
+  defp format_author(_), do: "anon"
 
   defp format_wallet(nil), do: "anon"
   defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)

@@ -1,6 +1,10 @@
 defmodule InsightnestWeb.WaitlistController do
   use InsightnestWeb, :controller
+
+  require Logger
+
   alias Insightnest.Waitlist
+  alias InsightnestWeb.UserEmail
 
   # ── Public ────────────────────────────────────────────────────────────────────
 
@@ -32,6 +36,7 @@ defmodule InsightnestWeb.WaitlistController do
 
     case Waitlist.update_status(id, status) do
       {:ok, entry} ->
+        if status == "approved", do: send_invitation(entry)
         json(conn, %{ok: true, entry: entry_json(entry)})
 
       {:error, changeset} ->
@@ -49,6 +54,16 @@ defmodule InsightnestWeb.WaitlistController do
   end
 
   # ── Private ───────────────────────────────────────────────────────────────────
+
+  defp send_invitation(entry) do
+    case UserEmail.invitation_email(entry.email, entry.name) |> Insightnest.Mailer.deliver() do
+      {:ok, _} ->
+        :ok
+
+      {:error, reason} ->
+        Logger.error("[Mailer] Failed to send invitation to #{entry.email}: #{inspect(reason)}")
+    end
+  end
 
   defp entry_json(e) do
     %{
