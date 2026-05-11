@@ -7,7 +7,7 @@ primary_region = "ams"
 [env]
   PORT = "4000"
   POOL_SIZE = "5"
-  PHX_HOST = "insightnest.fly.dev"
+  PHX_HOST = "insightnest.xyz"
 
 [deploy]
   release_command = "./bin/insightnest eval 'Insightnest.Release.migrate()'"
