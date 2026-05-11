@@ -17,7 +17,7 @@ defmodule InsightnestWeb.AuthController do
   def index(conn, _params) do
     # If already logged in, redirect to home
     if conn.assigns[:current_member] do
-      redirect(conn, to: ~p"/feed")
+      redirect(conn, to: ~p"/library")
     else
       render(conn, :index)
     end
@@ -67,7 +67,7 @@ defmodule InsightnestWeb.AuthController do
          {:ok, member} <- Accounts.find_or_create_by_wallet(address),
          {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
       # Redirect to onboarding if username not set yet
-      redirect_to = if Accounts.onboarded?(member), do: "/feed", else: "/onboarding"
+      redirect_to = if Accounts.onboarded?(member), do: "/library", else: "/onboarding"
 
       conn
       |> put_session(:guardian_token, token)
@@ -156,7 +156,7 @@ defmodule InsightnestWeb.AuthController do
          {:ok, member} <- Accounts.find_or_create_by_email(email),
          {:ok, member} <- Accounts.verify_email(member),
          {:ok, token, _claims} <- Guardian.encode_and_sign(member) do
-      redirect_to = if Accounts.onboarded?(member), do: "/feed", else: "/onboarding"
+      redirect_to = if Accounts.onboarded?(member), do: "/library", else: "/onboarding"
 
       conn
       |> put_session(:guardian_token, token)

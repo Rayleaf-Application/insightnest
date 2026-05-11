@@ -6,7 +6,7 @@ defmodule InsightnestWeb.UserEmail do
   def passcode_email(email, code) do
     new()
     |> to(email)
-    |> from({"InsightNest", "hello@insightnest.app"})
+    |> from({"InsightNest", "hello@insightnest.xyz"})
     |> subject("Your InsightNest sign-in code: #{code}")
     |> text_body("""
     Your InsightNest sign-in code is:

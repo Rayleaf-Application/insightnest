@@ -35,13 +35,15 @@ if config_env() == :prod do
   config :insightnest, :admin_api_key, admin_api_key
 
   # Mailer — Mailtrap sending API
-  if mailtrap_token = System.get_env("MAILTRAP_API_TOKEN") do
-    config :insightnest, Insightnest.Mailer,
-      adapter: Swoosh.Adapters.Mailtrap,
-      api_key: mailtrap_token
+  mailtrap_token =
+    System.get_env("MAILTRAP_API_TOKEN") ||
+      raise "MAILTRAP_API_TOKEN environment variable is missing"
 
-    config :swoosh, :api_client, Swoosh.ApiClient.Finch
-  end
+  config :insightnest, Insightnest.Mailer,
+    adapter: Swoosh.Adapters.Mailtrap,
+    api_key: mailtrap_token
+
+  config :swoosh, :api_client, Swoosh.ApiClient.Finch
 
   config :insightnest, InsightnestWeb.Endpoint,
     server: true,
