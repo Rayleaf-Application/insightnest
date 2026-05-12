@@ -209,15 +209,18 @@ defmodule Insightnest.Weaves do
       |> Enum.reject(&is_nil/1)
       |> Enum.uniq()
 
+    quote_block = fn c ->
+      %{
+        "type" => "quote",
+        "content" => c.body,
+        "author" => contribution_handle(c.author),
+        "member_id" => c.author_id,
+        "stance" => c.stance
+      }
+    end
+
     if length(stances_used) <= 1 do
-      Enum.map(contributions, fn c ->
-        %{
-          "type" => "quote",
-          "content" => c.body,
-          "author" => contribution_handle(c.author),
-          "stance" => c.stance
-        }
-      end)
+      Enum.map(contributions, quote_block)
     else
       section_order = ["evidence", "expands", "challenges", "question", nil]
 
@@ -238,22 +241,8 @@ defmodule Insightnest.Weaves do
         if cs == [] do
           []
         else
-          header = %{
-            "type" => "section_header",
-            "content" => section_labels[stance]
-          }
-
-          quotes =
-            Enum.map(cs, fn c ->
-              %{
-                "type" => "quote",
-                "content" => c.body,
-                "author" => contribution_handle(c.author),
-                "stance" => c.stance
-              }
-            end)
-
-          [header | quotes]
+          header = %{"type" => "section_header", "content" => section_labels[stance]}
+          [header | Enum.map(cs, quote_block)]
         end
       end)
     end

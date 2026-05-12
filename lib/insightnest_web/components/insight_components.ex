@@ -209,7 +209,7 @@ defmodule InsightnestWeb.InsightComponents do
             class="text-xs not-italic"
             style={"font-family: 'DM Mono', monospace; #{stance_cite_color(@block["stance"])}"}
           >
-            {format_wallet(@block["author"])}
+            {block_author(@block["author"])}
             <span :if={@block["stance"]} class="ml-2 opacity-60">
               · {@block["stance"]}
             </span>
@@ -252,6 +252,11 @@ defmodule InsightnestWeb.InsightComponents do
   defp share_handle(%{"handle" => h}) when is_binary(h) and h != "", do: "@" <> h
   defp share_handle(%{"wallet" => w}), do: format_wallet(w)
   defp share_handle(_), do: "anon"
+
+  defp block_author("@" <> _ = handle), do: handle
+  defp block_author(addr) when is_binary(addr) and byte_size(addr) > 10, do: format_wallet(addr)
+  defp block_author(v) when is_binary(v) and v != "", do: v
+  defp block_author(_), do: "anon"
 
   defp format_wallet(nil), do: "anon"
   defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)
