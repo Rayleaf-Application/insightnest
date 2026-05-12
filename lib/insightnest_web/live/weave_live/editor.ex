@@ -292,7 +292,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
           class="text-xs text-stone-400"
           style="font-family: 'DM Mono', monospace;"
         >
-          {format_wallet(@share["wallet"])}
+          {share_handle(@share)}
         </span>
         <div class="flex gap-1">
           <span
@@ -328,6 +328,10 @@ defmodule InsightnestWeb.WeaveLive.Editor do
   end
 
   defp format_bps(_), do: "0.0"
+
+  defp share_handle(%{"handle" => h}) when is_binary(h) and h != "", do: h
+  defp share_handle(%{"wallet" => w}), do: format_wallet(w)
+  defp share_handle(_), do: "anon"
 
   defp format_wallet(nil), do: "anon"
   defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)

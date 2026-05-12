@@ -36,10 +36,6 @@ defmodule Insightnest.Contributions.Contribution do
     |> validate_inclusion(:stance, @valid_stances,
       message: "must be one of: expands, challenges, evidence, question"
     )
-    |> unique_constraint([:spark_id, :author_id],
-      name: :contributions_one_per_member_per_spark,
-      message: "you have already contributed to this spark"
-    )
     |> foreign_key_constraint(:spark_id)
     |> foreign_key_constraint(:author_id)
   end

@@ -68,6 +68,7 @@ defmodule Insightnest.Weaves.Weight do
   defp put_author(shares, spark, bps) do
     Map.put(shares, spark.author_id, %{
       member_id: spark.author_id,
+      handle: spark.author.username,
       wallet: spark.author.wallet_address,
       roles: ["spark"],
       bps: bps
@@ -92,6 +93,7 @@ defmodule Insightnest.Weaves.Weight do
   defp put_curator(shares, weave, curator_id, _spark_author_id, bps) do
     Map.put(shares, curator_id, %{
       member_id: curator_id,
+      handle: weave.curator.username,
       wallet: weave.curator.wallet_address,
       roles: ["weave"],
       bps: bps
@@ -119,6 +121,7 @@ defmodule Insightnest.Weaves.Weight do
       else
         Map.put(acc, cid, %{
           member_id: cid,
+          handle: contrib.author.username,
           wallet: contrib.author.wallet_address,
           roles: ["contribution"],
           bps: this_bps
