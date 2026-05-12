@@ -90,6 +90,10 @@ defmodule InsightnestWeb.SparkLive.Show do
     {:noreply, assign(socket, selected_stance: if(stance == "", do: nil, else: stance))}
   end
 
+  def handle_event("update_contribution_draft", %{"contribution" => %{"body" => body}}, socket) do
+    {:noreply, assign(socket, form: to_form(%{"body" => body}))}
+  end
+
   def handle_event("filter_stance", %{"stance" => stance}, socket) do
     {:noreply, assign(socket, active_filter: if(stance == "", do: nil, else: stance))}
   end
