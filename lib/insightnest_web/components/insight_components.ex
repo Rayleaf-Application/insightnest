@@ -249,7 +249,7 @@ defmodule InsightnestWeb.InsightComponents do
   defp excerpt(str, max) when byte_size(str) > max, do: String.slice(str, 0, max - 1) <> "…"
   defp excerpt(str, _), do: str
 
-  defp share_handle(%{"handle" => h}) when is_binary(h) and h != "", do: h
+  defp share_handle(%{"handle" => h}) when is_binary(h) and h != "", do: "@" <> h
   defp share_handle(%{"wallet" => w}), do: format_wallet(w)
   defp share_handle(_), do: "anon"
 

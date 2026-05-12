@@ -149,17 +149,16 @@ defmodule Insightnest.Weaves do
       content_hash = compute_hash(insight.title, insight.body, insight.spark_id, weave.id)
       slug = generate_slug(insight.title)
 
-      {:ok, cid} =
-        Insightnest.Application.publisher().publish(%{
-          id: insight.id,
-          title: insight.title,
-          summary: insight.summary,
-          body: insight.body,
-          contributors: insight.contributors,
-          content_hash: content_hash
-        })
+      {:ok, cid} = Insightnest.Application.publisher().publish(%{
+        id: insight.id,
+        title: insight.title,
+        summary: insight.summary,
+        body: insight.body,
+        contributors: insight.contributors,
+        content_hash: content_hash
+      })
 
-      {:ok, published_insight} =
+      published_insight =
         insight
         |> Insight.changeset(%{
           status: "published",
@@ -168,6 +167,10 @@ defmodule Insightnest.Weaves do
           codex_cid: cid
         })
         |> Repo.update()
+        |> case do
+          {:ok, i} -> i
+          {:error, cs} -> Repo.rollback(cs)
+        end
 
       weave
       |> Ecto.Changeset.change(status: "published")
@@ -211,7 +214,7 @@ defmodule Insightnest.Weaves do
         %{
           "type" => "quote",
           "content" => c.body,
-          "author" => c.author.wallet_address,
+          "author" => contribution_handle(c.author),
           "stance" => c.stance
         }
       end)
@@ -245,7 +248,7 @@ defmodule Insightnest.Weaves do
               %{
                 "type" => "quote",
                 "content" => c.body,
-                "author" => c.author.wallet_address,
+                "author" => contribution_handle(c.author),
                 "stance" => c.stance
               }
             end)
@@ -255,6 +258,10 @@ defmodule Insightnest.Weaves do
       end)
     end
   end
+
+  defp contribution_handle(%{username: u}) when is_binary(u) and u != "", do: "@" <> u
+  defp contribution_handle(%{wallet_address: w}) when is_binary(w), do: w
+  defp contribution_handle(_), do: "anon"
 
   defp compute_hash(title, body, spark_id, weave_id) do
     content = "#{title}|#{inspect(body)}|#{spark_id}|#{weave_id}"

@@ -366,10 +366,6 @@ defmodule InsightnestWeb.SparkLive.Show do
                   Sign in to contribute →
                 </a>
               </div>
-            <% not @can_contribute -> %>
-              <p class="text-sm text-stone-600 text-center py-4">
-                You have already contributed to this Spark.
-              </p>
             <% true -> %>
               <%!-- Read lock overlay --%>
               <div
@@ -414,11 +410,10 @@ defmodule InsightnestWeb.SparkLive.Show do
 
   defp can_contribute?(_spark, nil, _contributions), do: false
 
-  defp can_contribute?(spark, member, contributions) do
+  defp can_contribute?(spark, member, _contributions) do
     not spark.is_closed and
       spark.status == "published" and
-      not Sparks.author?(spark, member.id) and
-      not Enum.any?(contributions, &(&1.author_id == member.id))
+      not Sparks.author?(spark, member.id)
   end
 
   defp update_can_contribute(socket) do

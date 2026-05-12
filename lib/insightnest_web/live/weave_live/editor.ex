@@ -1,6 +1,7 @@
 defmodule InsightnestWeb.WeaveLive.Editor do
   use InsightnestWeb, :live_view
 
+  alias Insightnest.Accounts
   alias Insightnest.Error
   alias Insightnest.Sparks
   alias Insightnest.Weaves
@@ -22,7 +23,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
 
     {weave, insight, triggered} =
       if existing_weave do
-        insight = Weaves.get_draft!(existing_weave.id)
+        insight = existing_weave.id |> Weaves.get_draft!() |> enrich_shares()
         {existing_weave, insight, true}
       else
         {nil, nil, false}
@@ -56,7 +57,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
         {:noreply,
          assign(socket,
            weave: weave,
-           insight: insight,
+           insight: enrich_shares(insight),
            triggered: true,
            triggering: false
          )}
@@ -166,39 +167,40 @@ defmodule InsightnestWeb.WeaveLive.Editor do
           <span :if={@saving} class="text-xs text-stone-600">Saving…</span>
         </div>
 
-        <%!-- Title --%>
-        <div>
-          <label class="block text-xs text-stone-500 uppercase tracking-widest mb-2">
-            Title
-          </label>
-          <input
-            type="text"
-            value={@insight.title}
-            phx-blur="update_draft"
-            phx-value-insight-title={@insight.title}
-            name="insight[title]"
-            class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
-                   text-stone-100 text-base focus:outline-none focus:border-violet-500
-                   transition-colors"
-            style="font-family: 'Playfair Display', serif;"
-          />
-        </div>
+        <form phx-change="update_draft">
+          <%!-- Title --%>
+          <div class="mb-6">
+            <label class="block text-xs text-stone-500 uppercase tracking-widest mb-2">
+              Title
+            </label>
+            <input
+              type="text"
+              name="insight[title]"
+              value={@insight.title}
+              phx-debounce="600"
+              class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
+                     text-stone-100 text-base focus:outline-none focus:border-violet-500
+                     transition-colors"
+              style="font-family: 'Playfair Display', serif;"
+            />
+          </div>
 
-        <%!-- Summary --%>
-        <div>
-          <label class="block text-xs text-stone-500 uppercase tracking-widest mb-2">
-            Summary
-          </label>
-          <textarea
-            name="insight[summary]"
-            rows="3"
-            placeholder="Write a brief summary of this Insight…"
-            phx-blur="update_draft"
-            class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
-                   text-stone-300 text-sm leading-relaxed focus:outline-none
-                   focus:border-violet-500 transition-colors resize-none"
-          >{@insight.summary}</textarea>
-        </div>
+          <%!-- Summary --%>
+          <div>
+            <label class="block text-xs text-stone-500 uppercase tracking-widest mb-2">
+              Summary
+            </label>
+            <textarea
+              name="insight[summary]"
+              rows="3"
+              placeholder="Write a brief summary of this Insight…"
+              phx-debounce="600"
+              class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
+                     text-stone-300 text-sm leading-relaxed focus:outline-none
+                     focus:border-violet-500 transition-colors resize-none"
+            >{@insight.summary}</textarea>
+          </div>
+        </form>
 
         <%!-- Body blocks (read-only preview — curator edits prose around them) --%>
         <div>
@@ -275,7 +277,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
             class="text-xs text-stone-600"
             style="font-family: 'DM Mono', monospace;"
           >
-            {format_wallet(@block["author"])}
+            {block_author(@block["author"])}
           </span>
         </div>
       <% _ -> %>
@@ -312,6 +314,23 @@ defmodule InsightnestWeb.WeaveLive.Editor do
 
   # ── Private helpers ───────────────────────────────────────────────────────────
 
+  defp enrich_shares(%{contributors: %{"shares" => shares}} = insight) when is_list(shares) do
+    ids = shares |> Enum.map(& &1["member_id"]) |> Enum.reject(&is_nil/1)
+    member_map = ids |> Accounts.list_by_ids() |> Map.new(&{&1.id, &1})
+
+    enriched =
+      Enum.map(shares, fn share ->
+        case Map.get(member_map, share["member_id"]) do
+          nil -> share
+          m -> Map.merge(share, %{"handle" => m.username, "wallet" => m.wallet_address})
+        end
+      end)
+
+    put_in(insight.contributors["shares"], enriched)
+  end
+
+  defp enrich_shares(insight), do: insight
+
   defp get_blocks(%{body: %{"blocks" => blocks}}), do: blocks
   defp get_blocks(_), do: []
 
@@ -329,9 +348,14 @@ defmodule InsightnestWeb.WeaveLive.Editor do
 
   defp format_bps(_), do: "0.0"
 
-  defp share_handle(%{"handle" => h}) when is_binary(h) and h != "", do: h
+  defp share_handle(%{"handle" => h}) when is_binary(h) and h != "", do: "@" <> h
   defp share_handle(%{"wallet" => w}), do: format_wallet(w)
   defp share_handle(_), do: "anon"
+
+  defp block_author("@" <> _ = handle), do: handle
+  defp block_author(addr) when is_binary(addr) and byte_size(addr) > 10, do: format_wallet(addr)
+  defp block_author(v) when is_binary(v) and v != "", do: v
+  defp block_author(_), do: "anon"
 
   defp format_wallet(nil), do: "anon"
   defp format_wallet(addr), do: String.slice(addr, 0, 6) <> "…" <> String.slice(addr, -4, 4)

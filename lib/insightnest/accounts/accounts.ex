@@ -39,6 +39,11 @@ defmodule Insightnest.Accounts do
     Repo.get!(Member, id)
   end
 
+  @doc "Returns all members whose IDs are in the given list."
+  def list_by_ids(ids) do
+    Repo.all(from m in Member, where: m.id in ^ids)
+  end
+
   @doc "Returns a member by wallet address, or nil."
   def get_member_by_wallet(address) do
     Repo.get_by(Member, wallet_address: String.downcase(address))

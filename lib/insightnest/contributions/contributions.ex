@@ -69,9 +69,6 @@ defmodule Insightnest.Contributions do
       Sparks.author?(spark, author_id) ->
         {:error, :own_spark}
 
-      already_contributed?(spark_id, author_id) ->
-        {:error, :already_contributed}
-
       true ->
         %Contribution{}
         |> Contribution.changeset(
