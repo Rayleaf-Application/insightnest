@@ -17,7 +17,7 @@ defmodule InsightnestWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt admin manifesto.html)
+  def static_paths, do: ~w(assets fonts images favicon.ico favicon.svg robots.txt admin manifesto.html)
 
   def router do
     quote do
