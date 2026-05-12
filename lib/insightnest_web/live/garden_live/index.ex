@@ -36,7 +36,7 @@ defmodule InsightnestWeb.GardenLive.Index do
             )
           )}
         </div>
-        <div>
+        <div class="flex-1">
           <h1
             class="text-xl font-medium text-stone-100"
             style="font-family: 'Playfair Display', serif;"
@@ -47,6 +47,12 @@ defmodule InsightnestWeb.GardenLive.Index do
             {identity(@current_member)}
           </p>
         </div>
+        <a
+          href="/garden/settings"
+          class="text-xs text-stone-700 hover:text-stone-400 transition-colors shrink-0"
+        >
+          Settings
+        </a>
       </div>
       
     <!-- Stats -->

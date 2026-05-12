@@ -22,5 +22,10 @@ config :swoosh, local: false
 # Do not print debug messages in production
 config :logger, level: :info
 
+# GDPR: anonymise IP addresses in all log output before they reach any sink.
+# Masks last IPv4 octet and last 80 bits of IPv6.
+config :logger, :default_handler,
+  filters: [{Insightnest.Logger.IpFilter, :filter}]
+
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.

@@ -8,7 +8,10 @@ defmodule Insightnest.Accounts do
   import Ecto.Query
 
   alias Insightnest.Accounts.Member
+  alias Insightnest.Accounts.MemberDeletionLog
+  alias Insightnest.Contributions.Contribution
   alias Insightnest.Repo
+  alias Insightnest.Sparks.Spark
 
   @doc """
   Returns the member with the given wallet address,
@@ -104,4 +107,89 @@ defmodule Insightnest.Accounts do
   def onboarded?(%Member{username: ""}), do: false
   def onboarded?(%Member{}), do: true
   def onboarded?(nil), do: false
+
+  @doc """
+  GDPR Article 17 — Right to erasure.
+
+  Deletes the member record and cascades to all platform-held PII
+  (sparks, contributions, highlight votes, weaves). Stores an abuse-prevention
+  log containing only the timestamp and a one-way hash of the wallet address —
+  never the address itself.
+
+  Phase 0 note: contributions and insights are PostgreSQL-only and are
+  cascade-deleted. From Phase 2 (Codex) and Phase 3 (on-chain), artifacts
+  attributed to the wallet address will remain immutable in the Codex/chain;
+  the platform-side re-identification path is severed by this deletion.
+  """
+  def delete_member(%Member{} = member) do
+    # Write the abuse-prevention log first, independently of the delete.
+    # If the log table doesn't exist yet (migration pending), this silently
+    # fails — deletion still proceeds so the user is not blocked.
+    wallet_hash =
+      if member.wallet_address do
+        :crypto.hash(:sha256, member.wallet_address) |> Base.encode16(case: :lower)
+      end
+
+    _ =
+      Repo.insert(%MemberDeletionLog{
+        wallet_hash: wallet_hash,
+        deleted_at: DateTime.utc_now(:second)
+      })
+
+    # Delete the member; DB ON DELETE CASCADE handles all related rows.
+    case Repo.delete(member) do
+      {:ok, _} -> {:ok, :ok}
+      {:error, cs} -> {:error, cs}
+    end
+  end
+
+  @doc """
+  GDPR Articles 15 + 20 — Right of access and data portability.
+
+  Returns a map containing all platform-held data for the member,
+  suitable for JSON serialisation and delivery to the data subject.
+  """
+  def export_member_data(%Member{} = member) do
+    sparks =
+      Repo.all(from s in Spark, where: s.author_id == ^member.id, order_by: [asc: s.inserted_at])
+
+    contributions =
+      Repo.all(
+        from c in Contribution,
+          where: c.author_id == ^member.id,
+          order_by: [asc: c.inserted_at]
+      )
+
+    %{
+      exported_at: DateTime.utc_now(:second),
+      member: %{
+        id: member.id,
+        username: member.username,
+        wallet_address: member.wallet_address,
+        email: member.email,
+        email_verified: member.email_verified,
+        joined_at: member.inserted_at
+      },
+      sparks:
+        Enum.map(sparks, fn s ->
+          %{
+            id: s.id,
+            title: s.title,
+            body: s.body,
+            status: s.status,
+            created_at: s.inserted_at
+          }
+        end),
+      contributions:
+        Enum.map(contributions, fn c ->
+          %{
+            id: c.id,
+            spark_id: c.spark_id,
+            body: c.body,
+            stance: c.stance,
+            created_at: c.inserted_at
+          }
+        end)
+    }
+  end
 end

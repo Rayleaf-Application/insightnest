@@ -86,12 +86,24 @@ defmodule InsightnestWeb.Router do
     live "/", LandingLive, :index
     live "/feed", SparkLive.Index, :index
     live "/garden", GardenLive.Index, :index
+    live "/garden/settings", GardenLive.Settings, :index
     live "/sparks/new", SparkLive.New, :new
     live "/sparks/:id", SparkLive.Show, :show
     live "/weave/:spark_id", WeaveLive.Editor, :edit
     live "/library", LibraryLive.Index, :index
     live "/insights/:slug", LibraryLive.Show, :show
     live "/roadmap", RoadmapLive, :index
+  end
+
+  # ── GDPR — authenticated controller routes ────────────────────────────────────
+  scope "/garden", InsightnestWeb do
+    pipe_through [:browser, :authenticated]
+    get "/export", GardenController, :export
+  end
+
+  scope "/auth", InsightnestWeb do
+    pipe_through :browser
+    get "/delete_redirect", AuthController, :delete_redirect
   end
 
   # ── Dev routes ────────────────────────────────────────────────────────────────

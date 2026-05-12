@@ -106,6 +106,18 @@ defmodule InsightnestWeb.AuthController do
     |> json(%{ok: true})
   end
 
+  # ── GET /auth/delete_redirect ─────────────────────────────────────────────────
+  # Called by GardenLive.Settings after a successful account deletion.
+  # Clears the session so the (now-deleted) JWT cannot be reused, then
+  # redirects to the landing page.
+
+  def delete_redirect(conn, _params) do
+    conn
+    |> clear_session()
+    |> put_flash(:info, "Your account has been deleted. Goodbye.")
+    |> redirect(to: "/")
+  end
+
   # ── Private ───────────────────────────────────────────────────────────────────
 
   defp generate_nonce do
