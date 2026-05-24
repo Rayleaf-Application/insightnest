@@ -110,7 +110,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
 
       <div class="mb-8">
         <div class="flex items-center gap-2 mb-1">
-          <span class="text-xs text-violet-400 uppercase tracking-widest">Weave</span>
+          <span class="text-xs text-[#C9913A] uppercase tracking-widest">Weave</span>
         </div>
         <h1
           class="text-2xl font-medium text-stone-100"
@@ -136,7 +136,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
         </p>
         <a
           href={"/sparks/#{@spark.id}"}
-          class="text-sm text-violet-400 hover:text-violet-300 transition-colors"
+          class="text-sm text-[#C9913A] hover:text-[#E8B86D] transition-colors"
         >
           ← Back to Spark
         </a>
@@ -153,7 +153,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
           phx-click="trigger_weave"
           disabled={@triggering}
           phx-disable-with="Weaving…"
-          class="px-6 py-3 bg-violet-600 hover:bg-violet-500 disabled:opacity-50
+          class="px-6 py-3 bg-[#C9913A] hover:bg-[#C9913A] disabled:opacity-50
                  text-white font-medium rounded-xl transition-colors"
         >
           Trigger Weave
@@ -179,7 +179,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
               value={@insight.title}
               phx-debounce="600"
               class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
-                     text-stone-100 text-base focus:outline-none focus:border-violet-500
+                     text-stone-100 text-base focus:outline-none focus:border-[#C9913A]
                      transition-colors"
               style="font-family: 'Playfair Display', serif;"
             />
@@ -197,7 +197,7 @@ defmodule InsightnestWeb.WeaveLive.Editor do
               phx-debounce="600"
               class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
                      text-stone-300 text-sm leading-relaxed focus:outline-none
-                     focus:border-violet-500 transition-colors resize-none"
+                     focus:border-[#C9913A] transition-colors resize-none"
             >{@insight.summary}</textarea>
           </div>
         </form>

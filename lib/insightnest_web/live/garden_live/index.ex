@@ -68,7 +68,7 @@ defmodule InsightnestWeb.GardenLive.Index do
           <h2 class="text-xs text-stone-600 uppercase tracking-widest">Your Sparks</h2>
           <a
             href="/sparks/new"
-            class="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+            class="text-xs text-[#C9913A] hover:text-[#E8B86D] transition-colors"
           >
             + New Spark
           </a>
@@ -76,7 +76,7 @@ defmodule InsightnestWeb.GardenLive.Index do
 
         <div :if={@sparks == []} class="text-center py-10 text-stone-700 text-sm">
           No Sparks yet.
-          <a href="/sparks/new" class="text-violet-500 hover:text-violet-400 ml-1">
+          <a href="/sparks/new" class="text-[#C9913A] hover:text-[#C9913A] ml-1">
             Create one →
           </a>
         </div>

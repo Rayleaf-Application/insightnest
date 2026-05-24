@@ -19,7 +19,7 @@ defmodule InsightnestWeb.SparkComponents do
         <div class="flex items-start justify-between gap-4 mb-2">
           <h2
             class="text-base font-medium leading-snug text-stone-100
-                   group-hover:text-violet-300 transition-colors"
+                   group-hover:text-[#E8B86D] transition-colors"
             style="font-family: 'Playfair Display', serif;"
           >
             {@spark.title}
@@ -47,7 +47,7 @@ defmodule InsightnestWeb.SparkComponents do
           <span>{@spark.highlighted_count} highlighted</span>
           <span
             :if={@spark.highlighted_count >= 1}
-            class="ml-0.5 text-violet-500/80"
+            class="ml-0.5 text-[#C9913A]/80"
           >
             · Weave-ready
           </span>
@@ -139,7 +139,7 @@ defmodule InsightnestWeb.SparkComponents do
       <a
         :if={@cta_href}
         href={@cta_href}
-        class="mt-5 inline-block px-4 py-2 bg-violet-600 hover:bg-violet-500
+        class="mt-5 inline-block px-4 py-2 bg-[#C9913A] hover:bg-[#C9913A]
                text-white text-sm rounded-lg transition-colors"
       >
         {@cta_label}

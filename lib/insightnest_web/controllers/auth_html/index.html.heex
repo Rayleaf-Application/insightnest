@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="background:#0c0a09;color:#f5f5f4;">
+<html lang="en" style="background:#141820;color:#FDFAF5;">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,41 +7,41 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/assets/app.css" />
     <style>
       *{box-sizing:border-box;margin:0;padding:0;}
-      body{font-family:'DM Sans',system-ui,sans-serif;background:#0c0a09;color:#f5f5f4;
+      body{font-family:'DM Sans',system-ui,sans-serif;background:#141820;color:#FDFAF5;
            min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
-      input{width:100%;background:#1c1917;border:1px solid #292524;border-radius:.625rem;
-            padding:.75rem 1rem;color:#f5f5f4;font-size:.875rem;font-family:inherit;
+      input{width:100%;background:#2D3142;border:1px solid #3d4464;border-radius:.625rem;
+            padding:.75rem 1rem;color:#FDFAF5;font-size:.875rem;font-family:inherit;
             outline:none;transition:border-color .15s;}
-      input:focus{border-color:#7c3aed;}
-      input::placeholder{color:#44403c;}
-      .btn{width:100%;padding:.75rem 1rem;border-radius:.625rem;background:#7c3aed;
-           color:#fff;font-size:.875rem;font-weight:500;border:none;cursor:pointer;
+      input:focus{border-color:#C9913A;}
+      input::placeholder{color:#7A7468;}
+      .btn{width:100%;padding:.75rem 1rem;border-radius:.625rem;background:#C9913A;
+           color:#141820;font-size:.875rem;font-weight:500;border:none;cursor:pointer;
            font-family:inherit;transition:background .15s;}
-      .btn:hover{background:#8b5cf6;}
+      .btn:hover{background:#E8B86D;}
       .btn:disabled{opacity:.5;cursor:not-allowed;}
-      .btn-ghost{background:transparent;border:1px solid #44403c;color:#a8a29e;}
-      .btn-ghost:hover{border-color:#78716c;color:#f5f5f4;background:transparent;}
+      .btn-ghost{background:transparent;border:1px solid #2D3142;color:#7A7468;}
+      .btn-ghost:hover{border-color:#7A7468;color:#FDFAF5;background:transparent;}
       .tab{flex:1;padding:.625rem;background:transparent;border:none;
-           border-bottom:2px solid transparent;color:#78716c;font-size:.875rem;
+           border-bottom:2px solid transparent;color:#7A7468;font-size:.875rem;
            font-family:inherit;cursor:pointer;transition:all .15s;}
-      .tab.active{color:#f5f5f4;border-bottom-color:#7c3aed;}
+      .tab.active{color:#FDFAF5;border-bottom-color:#C9913A;}
       .error-box{padding:.75rem 1rem;border-radius:.5rem;border:1px solid #991b1b;
                  background:#450a0a;color:#fca5a5;font-size:.8125rem;display:none;
                  margin-bottom:1rem;}
       .panel{display:none;}.panel.active{display:block;}
-      .hint{font-size:.75rem;color:#57534e;text-align:center;margin-top:.75rem;}
+      .hint{font-size:.75rem;color:#7A7468;text-align:center;margin-top:.75rem;}
       .space{margin-bottom:1rem;}
-      .wallet-box{padding:.75rem 1rem;border-radius:.625rem;border:1px solid #292524;
-                  background:#1c1917;margin-bottom:.875rem;}
-      .label{font-size:.6875rem;color:#57534e;text-transform:uppercase;
+      .wallet-box{padding:.75rem 1rem;border-radius:.625rem;border:1px solid #2D3142;
+                  background:#2D3142;margin-bottom:.875rem;}
+      .label{font-size:.6875rem;color:#7A7468;text-transform:uppercase;
              letter-spacing:.1em;margin-bottom:.25rem;}
-      .mono{font-family:'DM Mono',monospace;font-size:.8125rem;color:#d6d3d1;word-break:break-all;}
+      .mono{font-family:'DM Mono',monospace;font-size:.8125rem;color:#F5F0E8;word-break:break-all;}
       .code-input{font-family:'DM Mono',monospace;letter-spacing:.5rem;
                   font-size:1.25rem;text-align:center;}
     </style>
@@ -51,11 +51,22 @@
       
 <!-- Logo -->
       <div style="text-align:center;margin-bottom:2rem;">
-        <div style="font-size:1.75rem;color:#8b5cf6;margin-bottom:.75rem;">⬡</div>
-        <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;margin-bottom:.375rem;">
-          InsightNest
+        <div style="margin-bottom:.75rem;">
+          <svg width="36" height="36" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" rx="44" fill="#141820"/>
+            <path d="M 36 132 C 36 68 164 68 164 132" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+            <path d="M 54 148 C 54 92 146 92 146 148" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+            <path d="M 76 160 C 76 116 124 116 124 160" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+            <line x1="100" y1="56" x2="100" y2="28" stroke="#FDFAF5" stroke-width="6" stroke-linecap="round"/>
+            <path d="M 100 14 L 109 27 L 100 40 L 91 27 Z" fill="#FDFAF5"/>
+            <line x1="72" y1="42" x2="84" y2="53" stroke="#FDFAF5" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+            <line x1="128" y1="42" x2="116" y2="53" stroke="#FDFAF5" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+        </div>
+        <h1 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:400;margin-bottom:.375rem;line-height:1;letter-spacing:-0.01em;">
+          <span style="font-style:italic;color:#FDFAF5;">Insight</span><span style="color:#C9913A;">Nest</span>
         </h1>
-        <p style="font-size:.8125rem;color:#78716c;">Slow knowledge, co-owned.</p>
+        <p style="font-size:.8125rem;color:#7A7468;">Slow knowledge · Co-owned</p>
       </div>
       
 <!-- Tabs -->

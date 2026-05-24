@@ -290,8 +290,8 @@ defmodule InsightnestWeb.SparkLive.Show do
           <a
             href={"/weave/#{@spark.id}"}
             class="inline-flex items-center gap-2 px-4 py-2 rounded-xl
-                   border border-violet-700/50 text-violet-300 text-sm
-                   hover:bg-violet-950/40 transition-colors"
+                   border border-[#C9913A]/40 text-[#E8B86D] text-sm
+                   hover:bg-[#1d1a14]/40 transition-colors"
           >
             <span>⟡</span>
             <span>Trigger Weave</span>
@@ -365,7 +365,7 @@ defmodule InsightnestWeb.SparkLive.Show do
               <div class="text-center py-4">
                 <a
                   href="/auth"
-                  class="text-sm text-violet-400 hover:text-violet-300 transition-colors"
+                  class="text-sm text-[#C9913A] hover:text-[#E8B86D] transition-colors"
                 >
                   Sign in to contribute →
                 </a>
@@ -382,7 +382,7 @@ defmodule InsightnestWeb.SparkLive.Show do
                   <span class="text-stone-600 text-sm">Finish reading</span>
                   <span
                     id="read-timer-count"
-                    class="font-mono text-sm text-violet-400"
+                    class="font-mono text-sm text-[#C9913A]"
                     style="font-family: 'DM Mono', monospace; min-width: 2.5rem;"
                   >
                     …

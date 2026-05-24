@@ -163,7 +163,7 @@ defmodule InsightnestWeb.RoadmapLive do
     <div class="flex items-center gap-2.5">
       <span
         class="text-xs font-mono shrink-0 w-5 text-center"
-        style="font-family: 'DM Mono', monospace; color: #7c3aed;"
+        style="font-family: 'DM Mono', monospace; color: #C9913A;"
       >
         {if @done, do: "✓", else: @phase}
       </span>
@@ -259,17 +259,17 @@ defmodule InsightnestWeb.RoadmapLive do
   # ── Helpers ───────────────────────────────────────────────────────────────────
 
   defp phase_dot_class(:done), do: "bg-emerald-900 border-emerald-600 text-emerald-400"
-  defp phase_dot_class(:next), do: "bg-violet-950 border-violet-500 text-violet-300"
+  defp phase_dot_class(:next), do: "bg-[#1d1a14] border-[#C9913A] text-[#E8B86D]"
   defp phase_dot_class(:planned), do: "bg-stone-900 border-stone-600 text-stone-500"
   defp phase_dot_class(:horizon), do: "bg-stone-900 border-stone-700 text-stone-600"
 
   defp phase_card_class(:done), do: "border-emerald-900/50 bg-emerald-950/10"
-  defp phase_card_class(:next), do: "border-violet-800/40 bg-violet-950/10"
+  defp phase_card_class(:next), do: "border-[#C9913A]/25 bg-[#1d1a14]/10"
   defp phase_card_class(:planned), do: "border-stone-800 bg-stone-900/30"
   defp phase_card_class(:horizon), do: "border-stone-800/60 bg-stone-900/20"
 
   defp status_chip_class(:done), do: "bg-emerald-950 text-emerald-400 border-emerald-800/60"
-  defp status_chip_class(:next), do: "bg-violet-950 text-violet-300 border-violet-700/60"
+  defp status_chip_class(:next), do: "bg-[#1d1a14] text-[#E8B86D] border-[#C9913A]/40"
   defp status_chip_class(:planned), do: "bg-stone-900 text-stone-500 border-stone-700"
   defp status_chip_class(:horizon), do: "bg-stone-900 text-stone-600 border-stone-800"
 
@@ -279,10 +279,10 @@ defmodule InsightnestWeb.RoadmapLive do
   defp status_label(:horizon), do: "Horizon"
 
   defp estimate_class(:done), do: "bg-emerald-950/50 text-emerald-600 border-emerald-900/60"
-  defp estimate_class(:next), do: "bg-violet-950/50 text-violet-400 border-violet-900/60"
+  defp estimate_class(:next), do: "bg-[#1d1a14]/50 text-[#C9913A] border-[#C9913A]/30"
   defp estimate_class(_), do: "bg-stone-900 text-stone-600 border-stone-800"
 
   defp deliverable_dot_class(:done), do: "bg-emerald-700"
-  defp deliverable_dot_class(:next), do: "bg-violet-600"
+  defp deliverable_dot_class(:next), do: "bg-[#C9913A]"
   defp deliverable_dot_class(_), do: "bg-stone-700"
 end
