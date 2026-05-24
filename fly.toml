@@ -1,31 +1,37 @@
-app = "insightnest"
-primary_region = "ams"
+# fly.toml app configuration file generated for insightnest on 2026-05-24T20:41:21Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'insightnest'
+primary_region = 'ams'
 
 [build]
-  dockerfile = "Dockerfile"
-
-[env]
-  PORT = "4000"
-  POOL_SIZE = "5"
-  PHX_HOST = "insightnest.xyz"
+  dockerfile = 'Dockerfile'
 
 [deploy]
   release_command = "./bin/insightnest eval 'Insightnest.Release.migrate()'"
 
+[env]
+  PHX_HOST = 'insightnest.xyz'
+  POOL_SIZE = '5'
+  PORT = '4000'
+
 [http_service]
   internal_port = 4000
   force_https = true
-  auto_stop_machines = "stop"
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
   [[http_service.checks]]
-    grace_period = "30s"
-    interval = "15s"
-    timeout = "10s"
-    path = "/health"
+    interval = '15s'
+    timeout = '10s'
+    grace_period = '30s'
+    path = '/health'
 
 [[vm]]
-  memory = "512mb"
-  cpu_kind = "shared"
+  memory = '512mb'
+  cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 512
