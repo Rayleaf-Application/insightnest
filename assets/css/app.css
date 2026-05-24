@@ -11,20 +11,29 @@
     --font-sans: "DM Sans", system-ui, sans-serif;
     --font-mono: "DM Mono", "Courier New", monospace;
 
-    --color-bg: #0c0a09; /* stone-950 */
-    --color-surface: #1c1917; /* stone-900 */
-    --color-surface-2: #292524; /* stone-800 */
-    --color-border: #292524; /* stone-800 */
-    --color-border-2: #44403c; /* stone-700 */
+    /* Brand palette */
+    --ink:       #141820;
+    --gold:      #C9913A;
+    --gold-lt:   #E8B86D;
+    --parchment: #F5F0E8;
+    --cream:     #FDFAF5;
+    --muted:     #7A7468;
+    --slate:     #2D3142;
 
-    --color-text-1: #f5f5f4; /* stone-100 */
-    --color-text-2: #a8a29e; /* stone-400 */
-    --color-text-3: #78716c; /* stone-500 */
-    --color-text-4: #57534e; /* stone-600 */
+    --color-bg:        #141820;
+    --color-surface:   #2D3142;
+    --color-surface-2: #1e2232;
+    --color-border:    #2D3142;
+    --color-border-2:  #3d4464;
 
-    --color-accent: #8b5cf6; /* violet-500 */
-    --color-accent-2: #7c3aed; /* violet-600 */
-    --color-accent-bg: #2e1065; /* violet-950 */
+    --color-text-1: #FDFAF5;
+    --color-text-2: #F5F0E8;
+    --color-text-3: #7A7468;
+    --color-text-4: #5a534c;
+
+    --color-accent:    #C9913A;
+    --color-accent-2:  #E8B86D;
+    --color-accent-bg: rgba(201, 145, 58, 0.12);
 }
 
 /* ── Base ─────────────────────────────────────────────────────────────────── */
@@ -105,7 +114,9 @@ body {
 
 /* ── Flash messages ───────────────────────────────────────────────────────── */
 .flash-info {
-    @apply border border-violet-800 bg-violet-950 text-violet-200;
+    border: 1px solid rgba(201, 145, 58, 0.4);
+    background-color: rgba(201, 145, 58, 0.1);
+    color: #E8B86D;
 }
 .flash-error {
     @apply border border-red-800 bg-red-950 text-red-300;
