@@ -117,7 +117,7 @@ defmodule InsightnestWeb.SparkLive.New do
             autofocus
             class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
                    text-stone-100 placeholder-stone-700 text-base
-                   focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/30
+                   focus:outline-none focus:border-[#C9913A] focus:ring-1 focus:ring-[#C9913A]/30
                    transition-colors"
             style="font-family: 'Playfair Display', serif;"
           />
@@ -134,7 +134,7 @@ defmodule InsightnestWeb.SparkLive.New do
             placeholder="Develop your idea..."
             class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3
                    text-stone-300 placeholder-stone-700 text-sm leading-relaxed
-                   focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/30
+                   focus:outline-none focus:border-[#C9913A] focus:ring-1 focus:ring-[#C9913A]/30
                    transition-colors resize-none"
           >{@form[:body].value}</textarea>
         </div>
@@ -149,14 +149,14 @@ defmodule InsightnestWeb.SparkLive.New do
             <span
               :for={concept <- @concepts}
               class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs rounded-md
-                     bg-violet-950 text-violet-300 border border-violet-800/60"
+                     bg-[#1d1a14] text-[#E8B86D] border border-[#C9913A]/30"
             >
               {concept}
               <button
                 type="button"
                 phx-click="remove_concept"
                 phx-value-concept={concept}
-                class="text-violet-500 hover:text-red-400 transition-colors leading-none"
+                class="text-[#C9913A] hover:text-red-400 transition-colors leading-none"
               >
                 ×
               </button>
@@ -171,7 +171,7 @@ defmodule InsightnestWeb.SparkLive.New do
             onkeydown="if(event.key==='Enter'||event.key===',') event.preventDefault()"
             class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-2.5
                     text-stone-300 placeholder-stone-700 text-sm
-                    focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20
+                    focus:outline-none focus:border-[#C9913A] focus:ring-1 focus:ring-[#C9913A]/20
                     transition-colors"
           />
           <p :if={@concept_error} class="text-xs text-amber-500/80 mt-1.5">
@@ -191,7 +191,7 @@ defmodule InsightnestWeb.SparkLive.New do
                 name="spark[status]"
                 value="published"
                 checked={@form[:status].value != "draft"}
-                class="w-4 h-4 accent-violet-500"
+                class="w-4 h-4 accent-[#C9913A]"
               />
               <span class="text-sm text-stone-300 group-hover:text-stone-100 transition-colors">
                 Publish now
@@ -203,7 +203,7 @@ defmodule InsightnestWeb.SparkLive.New do
                 name="spark[status]"
                 value="draft"
                 checked={@form[:status].value == "draft"}
-                class="w-4 h-4 accent-violet-500"
+                class="w-4 h-4 accent-[#C9913A]"
               />
               <span class="text-sm text-stone-300 group-hover:text-stone-100 transition-colors">
                 Save as draft
@@ -227,7 +227,7 @@ defmodule InsightnestWeb.SparkLive.New do
               class={[
                 "px-3 py-1.5 text-sm rounded-lg border transition-colors",
                 if(@timeout_days == days,
-                  do: "bg-violet-950 text-violet-300 border-violet-700/60",
+                  do: "bg-[#1d1a14] text-[#E8B86D] border-[#C9913A]/40",
                   else: "bg-stone-900 text-stone-500 border-stone-700 hover:border-stone-500"
                 )
               ]}
@@ -240,10 +240,10 @@ defmodule InsightnestWeb.SparkLive.New do
         <button
           type="submit"
           phx-disable-with="Creating…"
-          class="w-full py-3 bg-violet-600 hover:bg-violet-500 active:bg-violet-700
+          class="w-full py-3 bg-[#C9913A] hover:bg-[#C9913A] active:bg-[#a5742a]
                  text-white text-sm font-medium rounded-lg transition-colors
-                 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-2
-                 focus:ring-offset-stone-950"
+                 focus:outline-none focus:ring-2 focus:ring-[#C9913A] focus:ring-offset-2
+                 focus:ring-offset-[#141820]"
         >
           Create Spark
         </button>

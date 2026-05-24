@@ -61,8 +61,8 @@ defmodule InsightnestWeb.LibraryLive.Index do
           name="query"
           class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-2.5
                  text-stone-200 placeholder-stone-700 text-sm
-                 focus:outline-none focus:border-violet-500 focus:ring-1
-                 focus:ring-violet-500/20 transition-colors"
+                 focus:outline-none focus:border-[#C9913A] focus:ring-1
+                 focus:ring-[#C9913A]/20 transition-colors"
         />
       </div>
 

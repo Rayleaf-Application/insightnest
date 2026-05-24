@@ -124,7 +124,7 @@ defmodule InsightnestWeb.ContributionComponents do
     <div class={[
       "rounded-xl border p-4 transition-all duration-200",
       if(@contribution.highlighted,
-        do: "border-violet-700/50 bg-violet-950/20",
+        do: "border-[#C9913A]/40 bg-[#1d1a14]/20",
         else: "border-stone-800 bg-stone-900/40"
       )
     ]}>
@@ -195,7 +195,7 @@ defmodule InsightnestWeb.ContributionComponents do
           placeholder="Add your contribution…"
           class="w-full bg-stone-900 border border-stone-700 rounded-lg px-3 py-2.5
                  text-stone-200 placeholder-stone-700 text-sm leading-relaxed
-                 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20
+                 focus:outline-none focus:border-[#C9913A] focus:ring-1 focus:ring-[#C9913A]/20
                  transition-colors resize-none"
         >{@form[:body].value}</textarea>
 
@@ -206,7 +206,7 @@ defmodule InsightnestWeb.ContributionComponents do
             type="submit"
             disabled={@submitting}
             phx-disable-with="Posting…"
-            class="px-4 py-2 bg-violet-600 hover:bg-violet-500 disabled:opacity-50
+            class="px-4 py-2 bg-[#C9913A] hover:bg-[#C9913A] disabled:opacity-50
                    text-white text-sm font-medium rounded-lg transition-colors shrink-0"
           >
             Contribute
@@ -248,7 +248,7 @@ defmodule InsightnestWeb.ContributionComponents do
       class={[
         "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs border transition-colors",
         if(@voted,
-          do: "bg-violet-950 text-violet-300 border-violet-700/60",
+          do: "bg-[#1d1a14] text-[#E8B86D] border-[#C9913A]/40",
           else:
             "bg-stone-900 text-stone-600 border-stone-700 hover:border-stone-500 hover:text-stone-400"
         )
@@ -282,8 +282,8 @@ defmodule InsightnestWeb.ContributionComponents do
         phx-click="author_override"
         phx-value-contribution_id={@contribution.id}
         phx-value-highlighted="true"
-        class="px-2 py-0.5 text-xs border border-violet-800/60 text-violet-400
-               hover:bg-violet-950 rounded-md transition-colors"
+        class="px-2 py-0.5 text-xs border border-[#C9913A]/30 text-[#C9913A]
+               hover:bg-[#1d1a14] rounded-md transition-colors"
         title="Force highlight"
       >
         ↑ Highlight

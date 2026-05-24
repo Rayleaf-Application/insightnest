@@ -23,7 +23,7 @@ defmodule InsightnestWeb.SparkLive.Index do
           style="font-family: 'Playfair Display', serif;"
         >
           Slow knowledge,<br />
-          <span class="italic text-violet-400">co-owned.</span>
+          <span class="italic text-[#C9913A]">co-owned.</span>
         </h1>
         <p class="text-sm text-stone-500 leading-relaxed max-w-md">
           Ideas refined through discussion. Insights owned by the contributors who shaped them.

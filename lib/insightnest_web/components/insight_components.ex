@@ -19,7 +19,7 @@ defmodule InsightnestWeb.InsightComponents do
         <div class="flex items-start justify-between gap-4 mb-2">
           <h2
             class="text-base font-medium leading-snug text-stone-100
-                   group-hover:text-violet-300 transition-colors"
+                   group-hover:text-[#E8B86D] transition-colors"
             style="font-family: 'Playfair Display', serif;"
           >
             {@insight.title}
@@ -170,7 +170,7 @@ defmodule InsightnestWeb.InsightComponents do
       <div class="flex items-center gap-2 shrink-0">
         <div class="w-24 h-1.5 bg-stone-800 rounded-full overflow-hidden">
           <div
-            class="h-full bg-violet-500 rounded-full"
+            class="h-full bg-[#C9913A] rounded-full"
             style={"width: #{share_percent(@share["bps"])}%"}
           />
         </div>
