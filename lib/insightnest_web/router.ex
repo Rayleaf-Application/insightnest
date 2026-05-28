@@ -53,7 +53,7 @@ defmodule InsightnestWeb.Router do
     patch "/:id", MemberAdminController, :update
   end
 
-  # ── Health check & sitemap ────────────────────────────────────────────────────
+  # ── Health check ──────────────────────────────────────────────────────────────
 
   scope "/", InsightnestWeb do
     pipe_through :api
