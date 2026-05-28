@@ -53,11 +53,12 @@ defmodule InsightnestWeb.Router do
     patch "/:id", MemberAdminController, :update
   end
 
-  # ── Health check ──────────────────────────────────────────────────────────────
+  # ── Health check & sitemap ────────────────────────────────────────────────────
 
   scope "/", InsightnestWeb do
     pipe_through :api
     get "/health", HealthController, :check
+    get "/sitemap.xml", SitemapController, :index
   end
 
   # ── Auth routes (JSON, no CSRF needed for nonce/verify) ──────────────────────

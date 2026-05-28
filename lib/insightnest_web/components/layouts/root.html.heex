@@ -4,9 +4,41 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
+
+    <%
+      page_title    = assigns[:page_title] || "InsightNest"
+      full_title    = page_title <> " · InsightNest"
+      description   = assigns[:page_description] || "InsightNest — a platform for collective intelligence. Community-crafted Insights, permanently preserved."
+      canonical_url = assigns[:page_url] || InsightnestWeb.Endpoint.url()
+      og_type       = assigns[:page_type] || "website"
+      og_image      = assigns[:page_image] || (InsightnestWeb.Endpoint.url() <> "/images/og-default.png")
+    %>
+
     <.live_title suffix=" · InsightNest">
       {assigns[:page_title] || "InsightNest"}
     </.live_title>
+
+    <%!-- Primary meta --%>
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
+
+    <%!-- Canonical --%>
+    <link rel="canonical" href={canonical_url} />
+
+    <%!-- Open Graph --%>
+    <meta property="og:site_name" content="InsightNest" />
+    <meta property="og:type" content={og_type} />
+    <meta property="og:title" content={full_title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical_url} />
+    <meta property="og:image" content={og_image} />
+
+    <%!-- Twitter / X card --%>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={full_title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={og_image} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

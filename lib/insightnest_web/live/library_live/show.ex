@@ -11,17 +11,26 @@ defmodule InsightnestWeb.LibraryLive.Show do
     ownership = insight |> Library.get_ownership() |> enrich_ownership()
     insight = enrich_blocks(insight, ownership)
 
+    base_url = InsightnestWeb.Endpoint.url()
+    page_url = base_url <> ~p"/insights/#{slug}"
+    description = build_description(insight)
+
     {:ok,
      assign(socket,
        insight: insight,
        ownership: ownership,
-       page_title: insight.title
+       page_title: insight.title,
+       page_description: description,
+       page_url: page_url,
+       page_type: "article"
      )}
   end
 
   @impl true
   def render(assigns) do
     ~H"""
+    {Phoenix.HTML.raw(json_ld(@insight, @ownership, @page_url))}
+
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
       <div class="flex items-center gap-3 mb-8">
         <a
@@ -84,5 +93,53 @@ defmodule InsightnestWeb.LibraryLive.Show do
       end
 
     put_in(insight.body["blocks"], blocks)
+  end
+
+  defp build_description(insight) do
+    text =
+      case insight.summary do
+        s when is_binary(s) and s != "" -> s
+        _ -> "An Insight from InsightNest — community-crafted collective intelligence."
+      end
+
+    if String.length(text) > 160, do: String.slice(text, 0, 157) <> "…", else: text
+  end
+
+  defp json_ld(insight, ownership, page_url) do
+    authors =
+      ownership.shares
+      |> Enum.map(fn share ->
+        name =
+          case share do
+            %{"handle" => h} when is_binary(h) and h != "" -> "@" <> h
+            %{"wallet" => w} when is_binary(w) -> String.slice(w, 0, 10) <> "…"
+            _ -> "anon"
+          end
+
+        %{"@type" => "Person", "name" => name}
+      end)
+
+    data = %{
+      "@context" => "https://schema.org",
+      "@type" => "Article",
+      "headline" => insight.title,
+      "description" => build_description(insight),
+      "url" => page_url,
+      "datePublished" => DateTime.to_iso8601(insight.inserted_at),
+      "dateModified" => DateTime.to_iso8601(insight.updated_at),
+      "author" => authors,
+      "publisher" => %{
+        "@type" => "Organization",
+        "name" => "InsightNest",
+        "url" => InsightnestWeb.Endpoint.url()
+      },
+      "isPartOf" => %{
+        "@type" => "WebSite",
+        "name" => "InsightNest",
+        "url" => InsightnestWeb.Endpoint.url()
+      }
+    }
+
+    ~s(<script type="application/ld+json">#{Jason.encode!(data)}</script>)
   end
 end
