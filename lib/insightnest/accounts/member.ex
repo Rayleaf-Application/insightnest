@@ -9,8 +9,8 @@ defmodule Insightnest.Accounts.Member do
     field :wallet_address, :string
     field :email, :string
     field :username, :string
-    # ← add this
     field :email_verified, :boolean, default: false
+    field :founder, :boolean, default: false
 
     timestamps(type: :utc_datetime)
   end
@@ -36,6 +36,13 @@ defmodule Insightnest.Accounts.Member do
       message: "must be a valid email address"
     )
     |> unique_constraint(:email)
+  end
+
+  @doc "Changeset for granting or revoking the founder badge."
+  def founder_changeset(member, attrs) do
+    member
+    |> cast(attrs, [:founder])
+    |> validate_required([:founder])
   end
 
   @doc "Changeset for setting/updating a username."

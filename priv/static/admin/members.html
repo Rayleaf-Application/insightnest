@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InsightNest — Members</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: #0c0a09;
+      color: #d6d3d1;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    h1 { font-size: 1.25rem; font-weight: 500; color: #f5f5f4; letter-spacing: -0.01em; }
+    h2 { font-size: 0.8rem; font-weight: 500; color: #78716c; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    .shell { max-width: 900px; margin: 0 auto; }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2rem; padding-bottom: 1rem;
+      border-bottom: 1px solid #292524;
+    }
+
+    .nav-links { display: flex; gap: 1rem; font-size: 0.8rem; }
+    .nav-links a { color: #78716c; text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: #d6d3d1; }
+    .nav-links a.active { color: #f5f5f4; }
+
+    /* Config panel */
+    .config-card {
+      background: #1c1917; border: 1px solid #292524; border-radius: 12px;
+      padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; font-size: 0.8rem;
+    }
+    .config-card label { color: #78716c; display: block; margin-bottom: 0.25rem; }
+    .config-card input {
+      width: 100%; background: #0c0a09; border: 1px solid #292524; border-radius: 6px;
+      padding: 0.4rem 0.6rem; color: #e7e5e4; font-size: 0.8rem;
+      font-family: 'DM Mono', 'Courier New', monospace; margin-bottom: 0.75rem;
+    }
+    .config-card input:focus { outline: none; border-color: #44403c; }
+    .config-note { color: #57534e; font-size: 0.72rem; }
+
+    /* Table */
+    .table-wrap { border: 1px solid #292524; border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    thead { background: #1c1917; }
+    thead th {
+      padding: 0.7rem 1rem; text-align: left;
+      color: #78716c; font-weight: 500; font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      border-bottom: 1px solid #292524;
+    }
+    tbody tr { border-bottom: 1px solid #1c1917; transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #1c1917; }
+    tbody td { padding: 0.75rem 1rem; vertical-align: middle; color: #d6d3d1; }
+    .td-mono { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: #e7e5e4; }
+    .td-dim { color: #57534e; font-size: 0.72rem; }
+
+    /* Founder badge */
+    .badge-founder {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.7rem; font-weight: 500;
+      background: rgba(201,145,58,0.12); color: #C9913A; border: 1px solid rgba(201,145,58,0.35);
+    }
+    .badge-none {
+      font-size: 0.72rem; color: #44403c;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.3rem 0.65rem; border-radius: 7px; font-size: 0.72rem; cursor: pointer;
+      border: 1px solid transparent; transition: all 0.15s; font-weight: 500;
+    }
+    .btn-grant  { background: rgba(201,145,58,0.1); border-color: rgba(201,145,58,0.35); color: #C9913A; }
+    .btn-grant:hover  { background: rgba(201,145,58,0.2); }
+    .btn-revoke { background: #1c1917; border-color: #292524; color: #78716c; }
+    .btn-revoke:hover { border-color: #44403c; color: #d6d3d1; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Search */
+    .search-bar {
+      display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center;
+    }
+    .search-bar input {
+      flex: 1; background: #1c1917; border: 1px solid #292524; border-radius: 8px;
+      padding: 0.45rem 0.75rem; color: #e7e5e4; font-size: 0.8rem; font-family: inherit;
+    }
+    .search-bar input:focus { outline: none; border-color: #44403c; }
+
+    /* Misc */
+    .empty { text-align: center; padding: 3rem; color: #57534e; font-size: 0.85rem; }
+    .notice {
+      padding: 0.65rem 1rem; border-radius: 8px; font-size: 0.8rem; margin-bottom: 1rem;
+    }
+    .notice-ok  { background: #052e16; border: 1px solid #14532d; color: #4ade80; }
+    .notice-err { background: #1c0a0a; border: 1px solid #7f1d1d; color: #f87171; }
+    .counts { display: flex; gap: 1rem; font-size: 0.75rem; color: #78716c; }
+    .counts span { display: flex; align-items: center; gap: 0.35rem; }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header>
+    <div>
+      <h1>InsightNest — Members</h1>
+      <div class="counts" id="counts" style="margin-top:0.35rem;"></div>
+    </div>
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <div class="nav-links">
+        <a href="/admin/waitlist.html">Waitlist</a>
+        <a href="/admin/members.html" class="active">Members</a>
+      </div>
+      <button class="btn btn-revoke" onclick="loadMembers()" style="font-size:0.75rem;">↺ Refresh</button>
+    </div>
+  </header>
+
+  <!-- Config -->
+  <div class="config-card">
+    <h2 style="margin-bottom:0.75rem;">Connection</h2>
+    <label>Admin Key</label>
+    <input type="password" id="cfg-key" value="" placeholder="x-admin-key value" />
+    <p class="config-note">Sent as <code>X-Admin-Key</code> header.</p>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Filter by username, email, or wallet…" oninput="filterMembers()" />
+  </div>
+
+  <div id="notice"></div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Identity</th>
+          <th>Badge</th>
+          <th>Joined</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="members-body">
+        <tr><td colspan="5" class="empty">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  const apiKey = () => document.getElementById('cfg-key').value;
+
+  let allMembers = [];
+
+  // ── LOAD ──────────────────────────────────────────────────────────────────────
+  async function loadMembers() {
+    try {
+      const res = await fetch('/api/members', {
+        headers: { 'X-Admin-Key': apiKey(), 'Accept': 'application/json' },
+      });
+      if (res.status === 401) { renderMembers(null, 'Unauthorized — check your admin key.'); return; }
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch (_) {
+        renderMembers(null, `HTTP ${res.status} — unexpected response: ${text.slice(0, 200)}`);
+        return;
+      }
+      if (!Array.isArray(data.members)) {
+        renderMembers(null, `Unexpected response shape: ${JSON.stringify(data).slice(0, 200)}`);
+        return;
+      }
+      allMembers = data.members;
+      filterMembers();
+    } catch (e) {
+      renderMembers(null, `Network error: ${e.message}`);
+    }
+  }
+
+  function filterMembers() {
+    const q = (document.getElementById('search-input').value || '').toLowerCase();
+    const filtered = q
+      ? allMembers.filter(m =>
+          (m.username || '').toLowerCase().includes(q) ||
+          (m.email || '').toLowerCase().includes(q) ||
+          (m.wallet_address || '').toLowerCase().includes(q)
+        )
+      : allMembers;
+    renderMembers(filtered);
+  }
+
+  function renderMembers(members, err) {
+    const tbody = document.getElementById('members-body');
+    const counts = document.getElementById('counts');
+
+    if (err) {
+      tbody.innerHTML = `<tr><td colspan="5" class="empty" style="color:#f87171;">${esc(err)}</td></tr>`;
+      counts.innerHTML = '';
+      return;
+    }
+
+    if (!members || !members.length) {
+      tbody.innerHTML = `<tr><td colspan="5" class="empty">No members found.</td></tr>`;
+      counts.innerHTML = '';
+      return;
+    }
+
+    const founderCount = allMembers.filter(m => m.founder).length;
+    counts.innerHTML = `
+      <span>${allMembers.length} member${allMembers.length !== 1 ? 's' : ''}</span>
+      <span style="color:#C9913A;">✦ ${founderCount} founder${founderCount !== 1 ? 's' : ''}</span>
+    `;
+
+    tbody.innerHTML = members.map(m => {
+      const identity = m.wallet_address
+        ? `${m.wallet_address.slice(0, 6)}…${m.wallet_address.slice(-4)}`
+        : (m.email || '—');
+      return `
+        <tr id="row-${m.id}">
+          <td class="td-mono">${m.username ? '@' + esc(m.username) : '<span class="td-dim">no username</span>'}</td>
+          <td class="td-mono" style="color:#57534e;">${esc(identity)}</td>
+          <td>${m.founder
+            ? '<span class="badge-founder">✦ Founder</span>'
+            : '<span class="badge-none">—</span>'}</td>
+          <td class="td-dim">${fmtDate(m.inserted_at)}</td>
+          <td>
+            ${m.founder
+              ? `<button class="btn btn-revoke" onclick="toggleFounder('${m.id}', false)">Revoke</button>`
+              : `<button class="btn btn-grant"  onclick="toggleFounder('${m.id}', true)">Grant Founder</button>`
+            }
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // ── TOGGLE FOUNDER ────────────────────────────────────────────────────────────
+  async function toggleFounder(id, grant) {
+    try {
+      const res = await fetch(`/api/members/${id}`, {
+        method: 'PATCH',
+        headers: { 'X-Admin-Key': apiKey(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ founder: grant }),
+      });
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch (_) {
+        showNotice(`HTTP ${res.status} — non-JSON response`, 'err'); return;
+      }
+      if (data.ok) {
+        showNotice(grant ? 'Founder badge granted.' : 'Founder badge revoked.', 'ok');
+        // Update in-place so we don't need a full reload
+        const idx = allMembers.findIndex(m => m.id === id);
+        if (idx !== -1) allMembers[idx] = data.member;
+        filterMembers();
+      } else {
+        showNotice(data.error || 'Update failed.', 'err');
+      }
+    } catch (e) {
+      showNotice(`Network error: ${e.message}`, 'err');
+    }
+  }
+
+  // ── HELPERS ───────────────────────────────────────────────────────────────────
+  function showNotice(msg, type) {
+    const el = document.getElementById('notice');
+    el.innerHTML = `<div class="notice notice-${type}">${esc(msg)}</div>`;
+    setTimeout(() => { el.innerHTML = ''; }, 4000);
+  }
+
+  function esc(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────────────────
+  loadMembers();
+</script>
+</body>
+</html>

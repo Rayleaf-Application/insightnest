@@ -37,12 +37,21 @@ defmodule InsightnestWeb.GardenLive.Index do
           )}
         </div>
         <div class="flex-1">
-          <h1
-            class="text-xl font-medium text-stone-100"
-            style="font-family: 'Playfair Display', serif;"
-          >
-            @{@current_member.username}
-          </h1>
+          <div class="flex items-center gap-2">
+            <h1
+              class="text-xl font-medium text-stone-100"
+              style="font-family: 'Playfair Display', serif;"
+            >
+              @{@current_member.username}
+            </h1>
+            <span
+              :if={@current_member.founder}
+              class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium border"
+              style="background: rgba(201,145,58,0.12); color: #C9913A; border-color: rgba(201,145,58,0.35);"
+            >
+              ✦ Founder
+            </span>
+          </div>
           <p class="text-xs text-stone-600 mt-0.5" style="font-family: 'DM Mono', monospace;">
             {identity(@current_member)}
           </p>

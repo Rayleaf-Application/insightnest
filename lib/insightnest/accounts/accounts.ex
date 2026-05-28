@@ -42,6 +42,25 @@ defmodule Insightnest.Accounts do
     Repo.get!(Member, id)
   end
 
+  @doc "Returns all members ordered by join date."
+  def list_members do
+    Repo.all(from m in Member, order_by: [asc: m.inserted_at])
+  end
+
+  @doc "Grants the founder badge to a member."
+  def grant_founder_badge(%Member{} = member) do
+    member
+    |> Member.founder_changeset(%{founder: true})
+    |> Repo.update()
+  end
+
+  @doc "Revokes the founder badge from a member."
+  def revoke_founder_badge(%Member{} = member) do
+    member
+    |> Member.founder_changeset(%{founder: false})
+    |> Repo.update()
+  end
+
   @doc "Returns all members whose IDs are in the given list."
   def list_by_ids(ids) do
     Repo.all(from m in Member, where: m.id in ^ids)

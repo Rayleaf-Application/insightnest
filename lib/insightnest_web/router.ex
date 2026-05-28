@@ -45,6 +45,14 @@ defmodule InsightnestWeb.Router do
     delete "/:id", WaitlistController, :delete
   end
 
+  # ── Members — admin ───────────────────────────────────────────────────────────
+
+  scope "/api/members", InsightnestWeb do
+    pipe_through [:api, :admin_api]
+    get "/", MemberAdminController, :index
+    patch "/:id", MemberAdminController, :update
+  end
+
   # ── Health check ──────────────────────────────────────────────────────────────
 
   scope "/", InsightnestWeb do
