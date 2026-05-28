@@ -39,7 +39,8 @@ defmodule Insightnest.Auth.RevokedTokenStore do
   @impl GenServer
   def handle_info(:cleanup, state) do
     now = System.system_time(:second)
-    :ets.select_delete(@table, [{{:_, :"$1"}, [{:=<, :"$1", now}], [true]}])
+    lte = :"=<"
+    :ets.select_delete(@table, [{{:_, :"$1"}, [{lte, :"$1", now}], [true]}])
     schedule_cleanup()
     {:noreply, state}
   end
