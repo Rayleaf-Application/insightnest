@@ -4,6 +4,7 @@ defmodule Insightnest.Auth.Guardian do
   use Guardian, otp_app: :insightnest
 
   alias Insightnest.Accounts
+  alias Insightnest.Auth.RevokedTokenStore
 
   @doc """
   The subject embedded in the JWT token.
@@ -27,4 +28,18 @@ defmodule Insightnest.Auth.Guardian do
   end
 
   def resource_from_claims(_), do: {:error, :missing_sub_claim}
+
+  @doc """
+  Rejects tokens whose JTI has been explicitly revoked (e.g. after logout).
+  Called by Guardian as part of decode_and_verify.
+  """
+  def verify_claims(%{"jti" => jti} = claims, _opts) do
+    if RevokedTokenStore.revoked?(jti) do
+      {:error, :token_revoked}
+    else
+      {:ok, claims}
+    end
+  end
+
+  def verify_claims(claims, _opts), do: {:ok, claims}
 end

@@ -101,9 +101,23 @@ defmodule InsightnestWeb.AuthController do
   # ── DELETE /auth/logout ───────────────────────────────────────────────────────
 
   def logout(conn, _params) do
+    revoke_session_token(conn)
+
     conn
     |> clear_session()
     |> json(%{ok: true})
+  end
+
+  # ── GET /auth/logout_redirect ─────────────────────────────────────────────────
+  # Browser-friendly logout used by LiveView pages. Revokes the current JWT,
+  # clears the session, and redirects to the auth page.
+
+  def logout_redirect(conn, _params) do
+    revoke_session_token(conn)
+
+    conn
+    |> clear_session()
+    |> redirect(to: "/auth")
   end
 
   # ── GET /auth/delete_redirect ─────────────────────────────────────────────────
@@ -112,6 +126,8 @@ defmodule InsightnestWeb.AuthController do
   # redirects to the landing page.
 
   def delete_redirect(conn, _params) do
+    revoke_session_token(conn)
+
     conn
     |> clear_session()
     |> put_flash(:info, "Your account has been deleted. Goodbye.")
@@ -215,5 +231,16 @@ defmodule InsightnestWeb.AuthController do
     conn
     |> put_status(:unauthorized)
     |> json(%{error: message})
+  end
+
+  defp revoke_session_token(conn) do
+    token = get_session(conn, :guardian_token)
+
+    with token when not is_nil(token) <- token,
+         {:ok, %{"jti" => jti, "exp" => exp}} <- Guardian.decode_and_verify(token) do
+      Insightnest.Auth.RevokedTokenStore.revoke(jti, exp)
+    else
+      _ -> :ok
+    end
   end
 end
