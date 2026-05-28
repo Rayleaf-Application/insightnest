@@ -16,7 +16,8 @@ defmodule InsightnestWeb.LibraryLive.Index do
      assign(socket,
        insights: insights,
        query: "",
-       page_title: "Knowledge Library"
+       page_title: "Knowledge Library",
+       page_description: "Browse community-crafted Insights on InsightNest — collaborative intelligence, permanently preserved on the Codex."
      )}
   end
 

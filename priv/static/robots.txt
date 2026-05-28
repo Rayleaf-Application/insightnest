@@ -1,5 +1,12 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
-#
-# To ban all spiders from the entire site uncomment the next two lines:
-# User-agent: *
-# Disallow: /
+User-agent: *
+Allow: /
+Disallow: /garden
+Disallow: /garden/settings
+Disallow: /garden/export
+Disallow: /sparks/new
+Disallow: /weave/
+Disallow: /onboarding
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://insightnest.io/sitemap.xml

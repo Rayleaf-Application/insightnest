@@ -58,6 +58,7 @@ defmodule InsightnestWeb.Router do
   scope "/", InsightnestWeb do
     pipe_through :api
     get "/health", HealthController, :check
+    get "/sitemap.xml", SitemapController, :index
   end
 
   # ── Auth routes (JSON, no CSRF needed for nonce/verify) ──────────────────────
