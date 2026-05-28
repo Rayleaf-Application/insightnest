@@ -112,6 +112,7 @@ defmodule InsightnestWeb.Router do
 
   scope "/auth", InsightnestWeb do
     pipe_through :browser
+    get "/logout_redirect", AuthController, :logout_redirect
     get "/delete_redirect", AuthController, :delete_redirect
   end
 

@@ -23,6 +23,11 @@ defmodule InsightnestWeb.GardenLive.Index do
   end
 
   @impl true
+  def handle_event("logout", _params, socket) do
+    {:noreply, redirect(socket, to: "/auth/logout_redirect")}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <div class="max-w-2xl mx-auto px-4 py-10 animate-fade-up">
@@ -56,12 +61,21 @@ defmodule InsightnestWeb.GardenLive.Index do
             {identity(@current_member)}
           </p>
         </div>
-        <a
-          href="/garden/settings"
-          class="text-xs text-stone-700 hover:text-stone-400 transition-colors shrink-0"
-        >
-          Settings
-        </a>
+        <div class="flex items-center gap-4 shrink-0">
+          <a
+            href="/garden/settings"
+            class="text-xs text-stone-700 hover:text-stone-400 transition-colors"
+          >
+            Settings
+          </a>
+          <button
+            type="button"
+            phx-click="logout"
+            class="text-xs text-stone-700 hover:text-red-400 transition-colors"
+          >
+            Log out
+          </button>
+        </div>
       </div>
       
     <!-- Stats -->

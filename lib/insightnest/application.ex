@@ -31,6 +31,7 @@ defmodule Insightnest.Application do
       # Swap for NonceStoreRedis in production by changing this line only
       Insightnest.Accounts.NonceStoreETS,
       Insightnest.Accounts.PasscodeStore,
+      Insightnest.Auth.RevokedTokenStore,
       {Finch, name: Insightnest.Finch},
 
       # Phoenix Endpoint
