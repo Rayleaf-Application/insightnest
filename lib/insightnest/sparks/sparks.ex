@@ -6,6 +6,7 @@ defmodule Insightnest.Sparks do
   alias Insightnest.Contributions.Contribution
   alias Insightnest.Repo
   alias Insightnest.Sparks.Spark
+  alias Insightnest.Weaves.Weave
 
   # ── Queries ──────────────────────────────────────────────────────────────────
 
@@ -65,6 +66,64 @@ defmodule Insightnest.Sparks do
   end
 
   def search_published(_), do: list_published()
+
+  @doc "Returns published sparks with no associated weave, newest first, with contribution stats."
+  def list_published_not_weaved do
+    weaved_ids = Repo.all(from w in Weave, select: w.spark_id)
+
+    sparks =
+      Spark
+      |> where([s], s.status == "published")
+      |> where([s], s.id not in ^weaved_ids)
+      |> order_by([s], desc: s.inserted_at)
+      |> preload(:author)
+      |> Repo.all()
+      |> Enum.map(&compute_is_closed/1)
+
+    stats = load_contribution_stats(Enum.map(sparks, & &1.id))
+
+    Enum.map(sparks, fn spark ->
+      {contrib, highlighted} = Map.get(stats, spark.id, {0, 0})
+      %{spark | contribution_count: contrib, highlighted_count: highlighted}
+    end)
+  end
+
+  @doc "Full-text search over published, not-yet-weaved sparks."
+  def search_published_not_weaved(query) when byte_size(query) > 0 do
+    weaved_ids = Repo.all(from w in Weave, select: w.spark_id)
+
+    Spark
+    |> where([s], s.status == "published")
+    |> where([s], s.id not in ^weaved_ids)
+    |> where([s], fragment("search_vector @@ plainto_tsquery('english', ?)", ^query))
+    |> order_by([s], desc: s.inserted_at)
+    |> preload(:author)
+    |> Repo.all()
+    |> Enum.map(&compute_is_closed/1)
+  end
+
+  def search_published_not_weaved(_), do: list_published_not_weaved()
+
+  @doc "Returns all distinct concepts from published sparks with usage counts, sorted by frequency."
+  def list_all_concepts do
+    Repo.all(from s in Spark, where: s.status == "published", select: s.concepts)
+    |> List.flatten()
+    |> Enum.reject(&is_nil/1)
+    |> Enum.frequencies()
+    |> Enum.sort_by(fn {_, count} -> -count end)
+  end
+
+  @doc "Returns concepts matching the query (case-insensitive substring match)."
+  def search_concepts(query) when byte_size(query) > 0 do
+    downcased = String.downcase(query)
+
+    list_all_concepts()
+    |> Enum.filter(fn {concept, _} ->
+      String.contains?(String.downcase(concept), downcased)
+    end)
+  end
+
+  def search_concepts(_), do: list_all_concepts()
 
   # ── Commands ─────────────────────────────────────────────────────────────────
 
