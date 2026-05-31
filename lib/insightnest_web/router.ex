@@ -14,6 +14,19 @@ defmodule InsightnestWeb.Router do
     plug InsightnestWeb.Plugs.LoadMember
   end
 
+  pipeline :admin_browser do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, html: {InsightnestWeb.Layouts, :root}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
+
+  pipeline :require_admin_session do
+    plug InsightnestWeb.Plugs.RequireAdminSession
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
     # needed so auth/verify can write session
@@ -27,6 +40,20 @@ defmodule InsightnestWeb.Router do
 
   pipeline :admin_api do
     plug InsightnestWeb.Plugs.RequireAdminKey
+  end
+
+  # ── Admin panel ──────────────────────────────────────────────────────────────
+
+  scope "/admin", InsightnestWeb do
+    pipe_through :admin_browser
+    get "/login", AdminAuthController, :login
+    post "/login", AdminAuthController, :do_login
+    get "/logout", AdminAuthController, :logout
+  end
+
+  scope "/admin", InsightnestWeb do
+    pipe_through [:admin_browser, :require_admin_session]
+    live "/", AdminLive, :dashboard
   end
 
   # ── Waitlist — public signup ──────────────────────────────────────────────────

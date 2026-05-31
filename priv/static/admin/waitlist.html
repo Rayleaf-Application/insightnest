@@ -26,6 +26,11 @@
       border-bottom: 1px solid #292524;
     }
 
+    .nav-links { display: flex; gap: 1rem; font-size: 0.8rem; }
+    .nav-links a { color: #78716c; text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: #d6d3d1; }
+    .nav-links a.active { color: #f5f5f4; }
+
     .tabs { display: flex; gap: 0.25rem; margin-bottom: 1.5rem; }
 
     .tab {
@@ -140,7 +145,14 @@
       <h1>InsightNest — Waitlist</h1>
       <div class="counts" id="counts" style="margin-top:0.35rem;"></div>
     </div>
-    <button class="btn btn-delete" onclick="loadEntries()" style="font-size:0.75rem;">↺ Refresh</button>
+    <div style="display:flex;gap:0.75rem;align-items:center;">
+      <div class="nav-links">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/waitlist.html" class="active">Waitlist</a>
+        <a href="/admin/members.html">Members</a>
+      </div>
+      <button class="btn btn-delete" onclick="loadEntries()" style="font-size:0.75rem;">↺ Refresh</button>
+    </div>
   </header>
 
   <!-- Config -->

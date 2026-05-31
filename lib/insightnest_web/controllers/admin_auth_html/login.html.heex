@@ -1,0 +1,44 @@
+<div style="background:#0c0a09;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;font-family:'DM Sans',system-ui,sans-serif;">
+  <div style="width:100%;max-width:22rem;background:#1c1917;border:1px solid #292524;border-radius:14px;padding:2rem 1.75rem;">
+
+    <div style="text-align:center;margin-bottom:1.75rem;">
+      <svg width="32" height="32" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:0.75rem;">
+        <rect width="200" height="200" rx="44" fill="#1c1917"/>
+        <path d="M 36 132 C 36 68 164 68 164 132" stroke="#C9913A" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+        <path d="M 54 148 C 54 92 146 92 146 148" stroke="#C9913A" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+        <path d="M 76 160 C 76 116 124 116 124 160" stroke="#C9913A" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+        <line x1="100" y1="56" x2="100" y2="28" stroke="#f5f5f4" stroke-width="6" stroke-linecap="round"/>
+        <path d="M 100 14 L 109 27 L 100 40 L 91 27 Z" fill="#f5f5f4"/>
+      </svg>
+      <h1 style="font-size:1.25rem;font-weight:500;color:#f5f5f4;letter-spacing:-0.01em;">InsightNest Admin</h1>
+      <p style="font-size:0.75rem;color:#57534e;margin-top:0.3rem;">Enter your admin key to continue</p>
+    </div>
+
+    <%= if @error do %>
+      <div style="padding:0.6rem 0.875rem;border-radius:8px;font-size:0.8rem;background:#1c0a0a;border:1px solid #7f1d1d;color:#f87171;margin-bottom:1rem;">
+        <%= @error %>
+      </div>
+    <% end %>
+
+    <form method="post" action="/admin/login">
+      <input type="hidden" name="_csrf_token" value={get_csrf_token()} />
+      <label style="display:block;font-size:0.75rem;color:#78716c;margin-bottom:0.4rem;" for="key">Admin Key</label>
+      <input
+        type="password"
+        id="key"
+        name="key"
+        placeholder="••••••••"
+        autofocus
+        autocomplete="current-password"
+        style="width:100%;background:#0c0a09;border:1px solid #292524;border-radius:8px;padding:0.6rem 0.75rem;color:#e7e5e4;font-size:0.875rem;font-family:'DM Mono',monospace;outline:none;transition:border-color 0.15s;margin-bottom:1rem;"
+      />
+      <button
+        type="submit"
+        style="width:100%;padding:0.65rem;border-radius:8px;font-size:0.875rem;cursor:pointer;border:1px solid #44403c;background:#292524;color:#e7e5e4;font-weight:500;transition:all 0.15s;font-family:inherit;"
+      >
+        Sign in
+      </button>
+    </form>
+
+  </div>
+</div>
