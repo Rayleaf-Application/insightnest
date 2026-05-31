@@ -75,7 +75,7 @@ defmodule Insightnest.Accounts do
   def username_taken?(username) do
     Repo.exists?(
       from m in Member,
-        where: fragment("lower(?)", m.username) == ^String.downcase(username)
+        where: m.username == ^String.downcase(username)
     )
   end
 
