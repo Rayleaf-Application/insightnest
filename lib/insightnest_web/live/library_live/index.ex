@@ -53,18 +53,19 @@ defmodule InsightnestWeb.LibraryLive.Index do
 
       <%!-- Search --%>
       <div class="mb-6">
-        <input
-          type="text"
-          value={@query}
-          placeholder="Search Insights…"
-          phx-change="search"
-          phx-debounce="300"
-          name="query"
-          class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-2.5
-                 text-stone-200 placeholder-stone-700 text-sm
-                 focus:outline-none focus:border-[#C9913A] focus:ring-1
-                 focus:ring-[#C9913A]/20 transition-colors"
-        />
+        <form phx-change="search">
+          <input
+            type="text"
+            value={@query}
+            placeholder="Search Insights…"
+            phx-debounce="300"
+            name="query"
+            class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-2.5
+                   text-stone-200 placeholder-stone-700 text-sm
+                   focus:outline-none focus:border-[#C9913A] focus:ring-1
+                   focus:ring-[#C9913A]/20 transition-colors"
+          />
+        </form>
       </div>
 
       <%!-- Empty state --%>

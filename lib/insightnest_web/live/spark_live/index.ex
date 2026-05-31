@@ -80,18 +80,19 @@ defmodule InsightnestWeb.SparkLive.Index do
 
       <%!-- Search bar --%>
       <div class="mb-5 animate-fade-up" style="animation-delay: 40ms">
-        <input
-          type="text"
-          value={@query}
-          placeholder={search_placeholder(@tab)}
-          phx-change="search"
-          phx-debounce="300"
-          name="query"
-          class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-2.5
-                 text-stone-200 placeholder-stone-600 text-sm
-                 focus:outline-none focus:border-[#C9913A] focus:ring-1
-                 focus:ring-[#C9913A]/20 transition-colors"
-        />
+        <form phx-change="search">
+          <input
+            type="text"
+            value={@query}
+            placeholder={search_placeholder(@tab)}
+            phx-debounce="300"
+            name="query"
+            class="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-2.5
+                   text-stone-200 placeholder-stone-600 text-sm
+                   focus:outline-none focus:border-[#C9913A] focus:ring-1
+                   focus:ring-[#C9913A]/20 transition-colors"
+          />
+        </form>
       </div>
 
       <%!-- Tab switcher --%>
