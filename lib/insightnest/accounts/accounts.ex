@@ -47,6 +47,26 @@ defmodule Insightnest.Accounts do
     Repo.all(from m in Member, order_by: [asc: m.inserted_at])
   end
 
+  @doc "Returns all members who have set a username, ordered alphabetically."
+  def list_members_with_usernames do
+    Repo.all(
+      from m in Member,
+        where: not is_nil(m.username) and m.username != "",
+        order_by: [asc: m.username]
+    )
+  end
+
+  @doc "Searches members by username (case-insensitive partial match)."
+  def search_members(query) when byte_size(query) > 0 do
+    Repo.all(
+      from m in Member,
+        where: not is_nil(m.username) and m.username != "" and ilike(m.username, ^"%#{query}%"),
+        order_by: [asc: m.username]
+    )
+  end
+
+  def search_members(_), do: list_members_with_usernames()
+
   @doc "Grants the founder badge to a member."
   def grant_founder_badge(%Member{} = member) do
     member
