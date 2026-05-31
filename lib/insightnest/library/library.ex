@@ -43,6 +43,22 @@ defmodule Insightnest.Library do
     |> Repo.one!()
   end
 
+  @doc "Returns published Insights where the given member appears in contributors.shares, newest first."
+  def list_insights_for_member(member_id) do
+    Insight
+    |> where([i], i.status == "published")
+    |> where(
+      [i],
+      fragment(
+        "?->'shares' @> jsonb_build_array(jsonb_build_object('member_id', ?::text))",
+        i.contributors,
+        ^member_id
+      )
+    )
+    |> order_by([i], desc: i.inserted_at)
+    |> Repo.all()
+  end
+
   @doc "Returns ownership data for an Insight (computed, not on-chain in Phase 0)."
   def get_ownership(insight) do
     shares = get_in(insight.contributors, ["shares"]) || []

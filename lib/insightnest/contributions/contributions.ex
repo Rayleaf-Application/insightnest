@@ -117,18 +117,28 @@ defmodule Insightnest.Contributions do
 
   @doc "Toggles a highlight vote. Returns {:ok, contribution} or {:error, reason}."
   def toggle_highlight(contribution_id, voter_id) do
-    contribution = Repo.get!(Contribution, contribution_id)
+    Repo.transaction(fn ->
+      # Lock the row to serialize concurrent toggle attempts on the same contribution,
+      # preventing lost updates to highlight_count.
+      contribution =
+        from(c in Contribution, where: c.id == ^contribution_id, lock: "FOR UPDATE")
+        |> Repo.one!()
 
-    existing =
-      Repo.get_by(HighlightVote,
-        contribution_id: contribution_id,
-        voter_id: voter_id
-      )
+      existing =
+        Repo.get_by(HighlightVote,
+          contribution_id: contribution_id,
+          voter_id: voter_id
+        )
 
-    if existing do
-      remove_highlight_vote(contribution, existing)
-    else
-      add_highlight_vote(contribution, voter_id)
+      if existing do
+        do_remove_highlight_vote(contribution, existing)
+      else
+        do_add_highlight_vote(contribution, voter_id)
+      end
+    end)
+    |> case do
+      {:ok, contribution} -> broadcast_highlight_update({:ok, contribution})
+      {:error, _} = err -> err
     end
   end
 
@@ -146,61 +156,40 @@ defmodule Insightnest.Contributions do
     end
   end
 
-  defp add_highlight_vote(contribution, voter_id) do
-    Repo.transaction(fn ->
-      %HighlightVote{}
-      |> Ecto.Changeset.change(contribution_id: contribution.id, voter_id: voter_id)
-      |> Repo.insert!(
-        on_conflict: :nothing,
-        conflict_target: [:contribution_id, :voter_id]
-      )
+  defp do_add_highlight_vote(contribution, voter_id) do
+    # Caller holds a FOR UPDATE lock on the contribution row.
+    Repo.insert!(%HighlightVote{contribution_id: contribution.id, voter_id: voter_id})
 
-      new_count = contribution.highlight_count + 1
+    new_count = contribution.highlight_count + 1
 
-      highlighted =
-        if is_nil(contribution.author_override) do
-          new_count >= @highlight_threshold
-        else
-          contribution.highlighted
-        end
+    highlighted =
+      if is_nil(contribution.author_override) do
+        new_count >= @highlight_threshold
+      else
+        contribution.highlighted
+      end
 
-      contribution
-      |> Ecto.Changeset.change(highlight_count: new_count, highlighted: highlighted)
-      |> Repo.update!()
-    end)
-    |> case do
-      {:ok, contribution} ->
-        broadcast_highlight_update({:ok, contribution})
-
-      {:error, _} = err ->
-        err
-    end
+    contribution
+    |> Ecto.Changeset.change(highlight_count: new_count, highlighted: highlighted)
+    |> Repo.update!()
   end
 
-  defp remove_highlight_vote(contribution, vote) do
-    Repo.transaction(fn ->
-      Repo.delete!(vote)
+  defp do_remove_highlight_vote(contribution, vote) do
+    # Caller holds a FOR UPDATE lock on the contribution row.
+    Repo.delete!(vote)
 
-      new_count = max(0, contribution.highlight_count - 1)
+    new_count = max(0, contribution.highlight_count - 1)
 
-      highlighted =
-        if is_nil(contribution.author_override) do
-          new_count >= @highlight_threshold
-        else
-          contribution.highlighted
-        end
+    highlighted =
+      if is_nil(contribution.author_override) do
+        new_count >= @highlight_threshold
+      else
+        contribution.highlighted
+      end
 
-      contribution
-      |> Ecto.Changeset.change(highlight_count: new_count, highlighted: highlighted)
-      |> Repo.update!()
-    end)
-    |> case do
-      {:ok, contribution} ->
-        broadcast_highlight_update({:ok, contribution})
-
-      {:error, _} = err ->
-        err
-    end
+    contribution
+    |> Ecto.Changeset.change(highlight_count: new_count, highlighted: highlighted)
+    |> Repo.update!()
   end
 
   defp broadcast_highlight_update({:ok, contribution} = result) do

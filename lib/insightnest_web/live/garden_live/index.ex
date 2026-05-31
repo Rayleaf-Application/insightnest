@@ -3,16 +3,14 @@ defmodule InsightnestWeb.GardenLive.Index do
 
   on_mount {InsightnestWeb.Live.AuthHooks, :require_onboarded}
 
-  import Ecto.Query
-  alias Insightnest.{Repo, Sparks}
-  alias Insightnest.Weaves.Insight
+  alias Insightnest.{Library, Sparks}
   alias InsightnestWeb.SparkComponents
 
   @impl true
   def mount(_params, _session, socket) do
     member = socket.assigns.current_member
     sparks = Sparks.list_by_author(member.id)
-    insights = member_insights(member.id)
+    insights = Library.list_insights_for_member(member.id)
 
     {:ok,
      assign(socket,
@@ -184,17 +182,6 @@ defmodule InsightnestWeb.GardenLive.Index do
   end
 
   # ── Helpers ───────────────────────────────────────────────────────────────────
-
-  defp member_insights(member_id) do
-    Insight
-    |> where([i], i.status == "published")
-    |> Repo.all()
-    |> Enum.filter(fn insight ->
-      shares = get_in(insight.contributors, ["shares"]) || []
-      Enum.any?(shares, &(&1["member_id"] == member_id))
-    end)
-    |> Enum.sort_by(& &1.inserted_at, {:desc, DateTime})
-  end
 
   defp identity(%{wallet_address: w}) when not is_nil(w) do
     String.slice(w, 0, 6) <> "…" <> String.slice(w, -4, 4)
