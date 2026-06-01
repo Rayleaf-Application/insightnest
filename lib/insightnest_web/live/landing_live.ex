@@ -37,135 +37,316 @@ defmodule InsightnestWeb.LandingLive do
     ~H"""
     <div class="min-h-screen flex flex-col">
 
-      <%!-- Main content --%>
-      <div class="flex-1 flex flex-col items-center justify-center px-4 py-16 animate-fade-up">
+      <%!-- HERO --%>
+      <div class="flex flex-col items-center justify-center px-4 pt-20 pb-16 animate-fade-up">
+        <div class="flex flex-col items-center text-center max-w-2xl w-full">
 
-      <%!-- Logo --%>
-      <div class="flex items-center gap-3 mb-16">
-        <svg width="32" height="32" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <rect width="200" height="200" rx="44" fill="#141820"/>
-          <path d="M 36 132 C 36 68 164 68 164 132" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
-          <path d="M 54 148 C 54 92 146 92 146 148" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
-          <path d="M 76 160 C 76 116 124 116 124 160" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
-          <line x1="100" y1="56" x2="100" y2="28" stroke="#FDFAF5" stroke-width="6" stroke-linecap="round"/>
-          <path d="M 100 14 L 109 27 L 100 40 L 91 27 Z" fill="#FDFAF5"/>
-          <line x1="72" y1="42" x2="84" y2="53" stroke="#FDFAF5" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
-          <line x1="128" y1="42" x2="116" y2="53" stroke="#FDFAF5" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
-        </svg>
-        <span style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 400; line-height: 1; letter-spacing: -0.01em;">
-          <span style="font-style: italic; color: #FDFAF5;">Insight</span><span style="color: #C9913A;">Nest</span>
-        </span>
-      </div>
-
-      <%!-- Hero --%>
-      <div class="text-center max-w-lg mb-8">
-        <h1
-          class="text-5xl text-[#FDFAF5] leading-tight mb-5"
-          style="font-family: 'Playfair Display', serif;"
-        >
-          Slow knowledge,<br />
-          <span class="italic" style="color:#C9913A;">co-owned.</span>
-        </h1>
-        <p class="text-[#7A7468] text-base leading-relaxed max-w-sm mx-auto">
-          Ideas refined through collective discussion.
-          Insights that belong to the contributors who shaped them.
-        </p>
-      </div>
-
-      <%!-- Alpha badge --%>
-      <div class="mb-10">
-        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs
-                     border border-amber-800/40 bg-amber-950/30 text-amber-500">
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse inline-block"></span>
-          Closed alpha — request early access
-        </span>
-      </div>
-
-      <%!-- Form / success --%>
-      <div class="w-full max-w-xs">
-        <%= if @submitted do %>
-          <div class="text-center py-8">
-            <div
-              class="inline-flex items-center justify-center w-10 h-10 rounded-full
-                     border border-emerald-700/50 bg-emerald-950/40 text-emerald-400
-                     text-lg mb-4"
-            >
-              ✓
-            </div>
-            <p class="text-[#F5F0E8] font-medium mb-1">You're on the list.</p>
-            <p class="text-[#7A7468] text-sm">We'll reach out when your spot opens.</p>
+          <%!-- Logo --%>
+          <div class="flex items-center gap-3 mb-12">
+            <svg width="32" height="32" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <rect width="200" height="200" rx="44" fill="#141820"/>
+              <path d="M 36 132 C 36 68 164 68 164 132" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+              <path d="M 54 148 C 54 92 146 92 146 148" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+              <path d="M 76 160 C 76 116 124 116 124 160" stroke="#E8B86D" stroke-width="8.4" fill="none" stroke-linecap="round"/>
+              <line x1="100" y1="56" x2="100" y2="28" stroke="#FDFAF5" stroke-width="6" stroke-linecap="round"/>
+              <path d="M 100 14 L 109 27 L 100 40 L 91 27 Z" fill="#FDFAF5"/>
+              <line x1="72" y1="42" x2="84" y2="53" stroke="#FDFAF5" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+              <line x1="128" y1="42" x2="116" y2="53" stroke="#FDFAF5" stroke-width="5" stroke-linecap="round" opacity="0.4"/>
+            </svg>
+            <span style="font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 400; line-height: 1; letter-spacing: -0.01em;">
+              <span style="font-style: italic; color: #FDFAF5;">Insight</span><span style="color: #C9913A;">Nest</span>
+            </span>
           </div>
-        <% else %>
-          <.form for={@form} phx-submit="submit" class="space-y-2.5">
 
-            <%!-- Email --%>
-            <div>
-              <input
-                type="email"
-                name="waitlist[email]"
-                value={@form[:email].value}
-                placeholder="your@email.com"
-                autocomplete="email"
-                required
-                class="w-full bg-[#2D3142] border border-[#2D3142]/60 rounded-xl px-4 py-3
-                       text-sm text-[#FDFAF5] placeholder-[#7A7468]
-                       focus:outline-none focus:border-[#C9913A] transition-colors"
-              />
-              <p
-                :for={{msg, _} <- @form[:email].errors}
-                class="mt-1 text-xs text-red-400 px-1"
-              >
-                {msg}
+          <%!-- Alpha badge --%>
+          <div class="mb-8">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs
+                         border border-amber-800/40 bg-amber-950/30 text-amber-500">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse inline-block"></span>
+              Closed alpha — request early access
+            </span>
+          </div>
+
+          <h1
+            class="text-5xl text-[#FDFAF5] leading-tight mb-6"
+            style="font-family: 'Playfair Display', serif;"
+          >
+            Slow knowledge,<br />
+            <span class="italic" style="color:#C9913A;">co-owned.</span>
+          </h1>
+
+          <p class="text-[#7A7468] text-base leading-relaxed mb-8 max-w-lg mx-auto">
+            A structured space for deep, intentional discussion — where threads don't evaporate.
+            They crystallise into versioned, searchable knowledge artifacts, and every contributor
+            holds a real ownership stake in what they helped shape.
+          </p>
+
+          <a href="#how-it-works" class="text-xs text-[#7A7468] hover:text-[#C9913A] transition-colors tracking-wide">
+            See how it works ↓
+          </a>
+        </div>
+      </div>
+
+      <%!-- HOW IT WORKS --%>
+      <div id="how-it-works" class="border-t border-[#2D3142]/60 px-4 py-16">
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-2xl text-[#FDFAF5] mb-3" style="font-family: 'Playfair Display', serif;">
+              How it works
+            </h2>
+            <p class="text-[#7A7468] text-sm">Four stages. From a raw idea to shared, owned knowledge.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+            <div class="bg-[#2D3142]/30 border border-[#2D3142]/60 rounded-2xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="text-[10px] font-medium text-[#C9913A] bg-[#C9913A]/10 border border-[#C9913A]/20 rounded-full px-2.5 py-0.5 tracking-wider">01</span>
+                <span class="text-[#F5F0E8] text-sm font-medium" style="font-family: 'Playfair Display', serif; font-style: italic;">Spark</span>
+              </div>
+              <p class="text-[#7A7468] text-sm leading-relaxed">
+                Post an idea, opinion, or question you want to put into the world.
+                Lightweight by design — the seed, not the finished product.
               </p>
             </div>
 
-            <%!-- Name (optional) --%>
-            <div>
-              <input
-                type="text"
-                name="waitlist[name]"
-                value={@form[:name].value}
-                placeholder="Name (optional)"
-                autocomplete="name"
-                class="w-full bg-[#2D3142] border border-[#2D3142]/60 rounded-xl px-4 py-3
-                       text-sm text-[#FDFAF5] placeholder-[#7A7468]
-                       focus:outline-none focus:border-[#C9913A] transition-colors"
-              />
+            <div class="bg-[#2D3142]/30 border border-[#2D3142]/60 rounded-2xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="text-[10px] font-medium text-[#C9913A] bg-[#C9913A]/10 border border-[#C9913A]/20 rounded-full px-2.5 py-0.5 tracking-wider">02</span>
+                <span class="text-[#F5F0E8] text-sm font-medium" style="font-family: 'Playfair Display', serif; font-style: italic;">Contribute</span>
+              </div>
+              <p class="text-[#7A7468] text-sm leading-relaxed">
+                Members respond with tagged stances —
+                <span class="text-[#F5F0E8]/70 font-mono text-xs">expands</span>,
+                <span class="text-[#F5F0E8]/70 font-mono text-xs">challenges</span>,
+                <span class="text-[#F5F0E8]/70 font-mono text-xs">evidence</span>,
+                <span class="text-[#F5F0E8]/70 font-mono text-xs">question</span>.
+                A read timer ensures real engagement before the form unlocks.
+              </p>
             </div>
 
-            <%!-- Reason (optional) --%>
-            <div>
-              <textarea
-                name="waitlist[reason]"
-                placeholder="Why do you want early access? (optional)"
-                rows="3"
-                class="w-full bg-[#2D3142] border border-[#2D3142]/60 rounded-xl px-4 py-3
-                       text-sm text-[#FDFAF5] placeholder-[#7A7468]
-                       focus:outline-none focus:border-[#C9913A] transition-colors resize-none"
-              ><%= @form[:reason].value %></textarea>
+            <div class="bg-[#2D3142]/30 border border-[#2D3142]/60 rounded-2xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="text-[10px] font-medium text-[#C9913A] bg-[#C9913A]/10 border border-[#C9913A]/20 rounded-full px-2.5 py-0.5 tracking-wider">03</span>
+                <span class="text-[#F5F0E8] text-sm font-medium" style="font-family: 'Playfair Display', serif; font-style: italic;">Weave</span>
+              </div>
+              <p class="text-[#7A7468] text-sm leading-relaxed">
+                Highlighted contributions are assembled into a draft. A curator refines the framing
+                and publishes — turning open discussion into a lasting artifact.
+                Ownership shares are locked in at this moment.
+              </p>
             </div>
 
-            <button
-              type="submit"
-              class="w-full py-3 rounded-xl bg-[#C9913A] hover:bg-[#E8B86D] text-[#141820]
-                     text-sm font-medium transition-colors mt-1"
-            >
-              Request early access
-            </button>
-          </.form>
+            <div class="bg-[#2D3142]/30 border border-[#2D3142]/60 rounded-2xl p-6">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="text-[10px] font-medium text-[#C9913A] bg-[#C9913A]/10 border border-[#C9913A]/20 rounded-full px-2.5 py-0.5 tracking-wider">04</span>
+                <span class="text-[#F5F0E8] text-sm font-medium" style="font-family: 'Playfair Display', serif; font-style: italic;">Insight</span>
+              </div>
+              <p class="text-[#7A7468] text-sm leading-relaxed">
+                A versioned, content-hashed knowledge artifact published to the Library.
+                Every contributor's share is recorded — and from Phase 3,
+                minted on-chain as a fractional ERC-721 token.
+              </p>
+            </div>
 
-          <p class="text-center mt-6">
-            <a
-              href="/auth"
-              class="text-xs text-[#7A7468] hover:text-[#F5F0E8] transition-colors"
-            >
-              Already have access? Sign in →
-            </a>
-          </p>
-        <% end %>
+          </div>
+        </div>
       </div>
 
-      </div><%!-- end main content --%>
+      <%!-- OWNERSHIP --%>
+      <div class="border-t border-[#2D3142]/60 px-4 py-16">
+        <div class="max-w-2xl mx-auto text-center">
+          <h2 class="text-2xl text-[#FDFAF5] mb-3" style="font-family: 'Playfair Display', serif;">
+            Knowledge you actually own
+          </h2>
+          <p class="text-[#7A7468] text-sm leading-relaxed mb-10 max-w-md mx-auto">
+            When a discussion crystallises into an Insight, ownership shares are assigned
+            automatically — based on who initiated the idea, who shaped it, and who curated
+            the final form.
+          </p>
+
+          <div class="grid grid-cols-3 gap-4">
+            <div class="bg-[#2D3142]/20 border border-[#2D3142]/60 rounded-xl p-5">
+              <div class="text-3xl font-light text-[#C9913A] mb-2" style="font-family: 'Playfair Display', serif;">40%</div>
+              <div class="text-[#F5F0E8] text-xs font-medium mb-1">Spark author</div>
+              <div class="text-[#7A7468] text-xs leading-relaxed">Started the thread</div>
+            </div>
+            <div class="bg-[#2D3142]/20 border border-[#2D3142]/60 rounded-xl p-5">
+              <div class="text-3xl font-light text-[#C9913A] mb-2" style="font-family: 'Playfair Display', serif;">20%</div>
+              <div class="text-[#F5F0E8] text-xs font-medium mb-1">Weave curator</div>
+              <div class="text-[#7A7468] text-xs leading-relaxed">Crystallised the discussion</div>
+            </div>
+            <div class="bg-[#2D3142]/20 border border-[#2D3142]/60 rounded-xl p-5">
+              <div class="text-3xl font-light text-[#C9913A] mb-2" style="font-family: 'Playfair Display', serif;">40%</div>
+              <div class="text-[#F5F0E8] text-xs font-medium mb-1">Contributors</div>
+              <div class="text-[#7A7468] text-xs leading-relaxed">Split equally among accepted contributors</div>
+            </div>
+          </div>
+
+          <p class="text-[#7A7468] text-xs mt-6">
+            From Phase 3, shares are recorded on-chain as fractional ERC-721 tokens on Status Network.
+          </p>
+        </div>
+      </div>
+
+      <%!-- WHY INSIGHTNEST --%>
+      <div class="border-t border-[#2D3142]/60 px-4 py-16">
+        <div class="max-w-3xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-2xl text-[#FDFAF5] mb-3" style="font-family: 'Playfair Display', serif;">
+              Not another publishing tool
+            </h2>
+            <p class="text-[#7A7468] text-sm">Three things no existing platform does together.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+
+            <div class="text-center">
+              <div class="w-9 h-9 rounded-full border border-[#C9913A]/30 bg-[#C9913A]/10 flex items-center justify-center mx-auto mb-4">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9913A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="17" cy="7" r="3"/><circle cx="7" cy="17" r="3"/>
+                  <path d="M14 10L10 14"/>
+                </svg>
+              </div>
+              <h3 class="text-[#F5F0E8] text-sm font-medium mb-2">Structured co-creation</h3>
+              <p class="text-[#7A7468] text-xs leading-relaxed">
+                Discussions follow a defined pipeline — not a feed. Friction is intentional:
+                read timers, word minimums, and stance tags produce better thinking, not more of it.
+              </p>
+            </div>
+
+            <div class="text-center">
+              <div class="w-9 h-9 rounded-full border border-[#C9913A]/30 bg-[#C9913A]/10 flex items-center justify-center mx-auto mb-4">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9913A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                  <path d="M2 17l10 5 10-5"/>
+                  <path d="M2 12l10 5 10-5"/>
+                </svg>
+              </div>
+              <h3 class="text-[#F5F0E8] text-sm font-medium mb-2">Knowledge crystallisation</h3>
+              <p class="text-[#7A7468] text-xs leading-relaxed">
+                Threads don't evaporate. The Weave mechanism transforms ephemeral discussion
+                into durable, versioned, searchable knowledge — preserved in the Library.
+              </p>
+            </div>
+
+            <div class="text-center">
+              <div class="w-9 h-9 rounded-full border border-[#C9913A]/30 bg-[#C9913A]/10 flex items-center justify-center mx-auto mb-4">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C9913A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                </svg>
+              </div>
+              <h3 class="text-[#F5F0E8] text-sm font-medium mb-2">Contributor ownership</h3>
+              <p class="text-[#7A7468] text-xs leading-relaxed">
+                You don't post content for a platform. You build knowledge artifacts you co-own.
+                Ownership is verifiable, on-chain, and yours — not the platform's.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <%!-- WAITLIST --%>
+      <div id="waitlist" class="border-t border-[#2D3142]/60 px-4 py-20">
+        <div class="flex flex-col items-center">
+
+          <div class="mb-8 text-center">
+            <div class="mb-4">
+              <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs
+                           border border-amber-800/40 bg-amber-950/30 text-amber-500">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse inline-block"></span>
+                Closed alpha — limited spots
+              </span>
+            </div>
+            <h2 class="text-2xl text-[#FDFAF5]" style="font-family: 'Playfair Display', serif;">
+              Request early access
+            </h2>
+            <p class="text-[#7A7468] text-sm mt-2">We'll reach out when your spot opens.</p>
+          </div>
+
+          <div class="w-full max-w-xs">
+            <%= if @submitted do %>
+              <div class="text-center py-8">
+                <div
+                  class="inline-flex items-center justify-center w-10 h-10 rounded-full
+                         border border-emerald-700/50 bg-emerald-950/40 text-emerald-400
+                         text-lg mb-4"
+                >
+                  ✓
+                </div>
+                <p class="text-[#F5F0E8] font-medium mb-1">You're on the list.</p>
+                <p class="text-[#7A7468] text-sm">We'll reach out when your spot opens.</p>
+              </div>
+            <% else %>
+              <.form for={@form} phx-submit="submit" class="space-y-2.5">
+
+                <div>
+                  <input
+                    type="email"
+                    name="waitlist[email]"
+                    value={@form[:email].value}
+                    placeholder="your@email.com"
+                    autocomplete="email"
+                    required
+                    class="w-full bg-[#2D3142] border border-[#2D3142]/60 rounded-xl px-4 py-3
+                           text-sm text-[#FDFAF5] placeholder-[#7A7468]
+                           focus:outline-none focus:border-[#C9913A] transition-colors"
+                  />
+                  <p
+                    :for={{msg, _} <- @form[:email].errors}
+                    class="mt-1 text-xs text-red-400 px-1"
+                  >
+                    {msg}
+                  </p>
+                </div>
+
+                <div>
+                  <input
+                    type="text"
+                    name="waitlist[name]"
+                    value={@form[:name].value}
+                    placeholder="Name (optional)"
+                    autocomplete="name"
+                    class="w-full bg-[#2D3142] border border-[#2D3142]/60 rounded-xl px-4 py-3
+                           text-sm text-[#FDFAF5] placeholder-[#7A7468]
+                           focus:outline-none focus:border-[#C9913A] transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <textarea
+                    name="waitlist[reason]"
+                    placeholder="Why do you want early access? (optional)"
+                    rows="3"
+                    class="w-full bg-[#2D3142] border border-[#2D3142]/60 rounded-xl px-4 py-3
+                           text-sm text-[#FDFAF5] placeholder-[#7A7468]
+                           focus:outline-none focus:border-[#C9913A] transition-colors resize-none"
+                  ><%= @form[:reason].value %></textarea>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full py-3 rounded-xl bg-[#C9913A] hover:bg-[#E8B86D] text-[#141820]
+                         text-sm font-medium transition-colors mt-1"
+                >
+                  Request early access
+                </button>
+              </.form>
+
+              <p class="text-center mt-6">
+                <a
+                  href="/auth"
+                  class="text-xs text-[#7A7468] hover:text-[#F5F0E8] transition-colors"
+                >
+                  Already have access? Sign in →
+                </a>
+              </p>
+            <% end %>
+          </div>
+
+        </div>
+      </div>
 
       <%!-- Footer --%>
       <footer class="border-t border-[#2D3142]/60">
