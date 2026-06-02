@@ -8,7 +8,7 @@ defmodule InsightnestWeb.AdminAuthController do
   def do_login(conn, %{"key" => key}) do
     expected = Application.get_env(:insightnest, :admin_api_key, "")
 
-    if expected != "" && key == expected do
+    if expected != "" && Plug.Crypto.secure_compare(key, expected) do
       conn
       |> put_session(:admin_authenticated, true)
       |> redirect(to: "/admin")

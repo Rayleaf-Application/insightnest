@@ -8,7 +8,7 @@ config :insightnest,
 config :insightnest, Insightnest.Auth.Guardian,
   issuer: "insightnest",
   secret_key: System.get_env("GUARDIAN_SECRET_KEY") || "dev_secret_change_in_prod",
-  ttl: {7, :days}
+  ttl: {2, :days}
 
 # Platform config
 config :insightnest,

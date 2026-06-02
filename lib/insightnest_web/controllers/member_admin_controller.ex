@@ -1,6 +1,8 @@
 defmodule InsightnestWeb.MemberAdminController do
   use InsightnestWeb, :controller
 
+  require Logger
+
   alias Insightnest.Accounts
 
   def index(conn, _params) do
@@ -16,9 +18,11 @@ defmodule InsightnestWeb.MemberAdminController do
       member ->
         case Map.get(params, "founder") do
           true ->
+            Logger.info("[Admin] founder badge granted to member #{member.id}")
             do_update(conn, Accounts.grant_founder_badge(member))
 
           false ->
+            Logger.info("[Admin] founder badge revoked from member #{member.id}")
             do_update(conn, Accounts.revoke_founder_badge(member))
 
           _ ->
