@@ -42,6 +42,22 @@ defmodule InsightnestWeb.Router do
     plug InsightnestWeb.Plugs.RequireAdminKey
   end
 
+  pipeline :rate_limit_nonce do
+    plug InsightnestWeb.Plugs.RateLimit, :nonce
+  end
+
+  pipeline :rate_limit_email_request do
+    plug InsightnestWeb.Plugs.RateLimit, :email_request
+  end
+
+  pipeline :rate_limit_email_verify do
+    plug InsightnestWeb.Plugs.RateLimit, :email_verify
+  end
+
+  pipeline :rate_limit_waitlist do
+    plug InsightnestWeb.Plugs.RateLimit, :waitlist
+  end
+
   # ── Admin panel ──────────────────────────────────────────────────────────────
 
   scope "/admin", InsightnestWeb do
@@ -59,7 +75,7 @@ defmodule InsightnestWeb.Router do
   # ── Waitlist — public signup ──────────────────────────────────────────────────
 
   scope "/api/waitlist", InsightnestWeb do
-    pipe_through :api
+    pipe_through [:api, :rate_limit_waitlist]
     post "/", WaitlistController, :signup
   end
 
@@ -91,14 +107,23 @@ defmodule InsightnestWeb.Router do
   # ── Auth routes (JSON, no CSRF needed for nonce/verify) ──────────────────────
 
   scope "/auth", InsightnestWeb do
-    pipe_through :api
-
+    pipe_through [:api, :rate_limit_nonce]
     get "/nonce", AuthController, :nonce
+  end
+
+  scope "/auth/email", InsightnestWeb do
+    pipe_through [:api, :rate_limit_email_request]
+    post "/request", AuthController, :request_passcode
+  end
+
+  scope "/auth/email", InsightnestWeb do
+    pipe_through [:api, :rate_limit_email_verify]
+    post "/verify", AuthController, :verify_passcode
+  end
+
+  scope "/auth", InsightnestWeb do
+    pipe_through :api
     post "/verify", AuthController, :verify
-
-    post "/email/request", AuthController, :request_passcode
-    post "/email/verify", AuthController, :verify_passcode
-
     delete "/logout", AuthController, :logout
   end
 

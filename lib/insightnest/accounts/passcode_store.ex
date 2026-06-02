@@ -16,8 +16,11 @@ defmodule Insightnest.Accounts.PasscodeStore do
   end
 
   def put(email, code) do
+    key = normalize(email)
     expires_at = System.system_time(:second) + @ttl
-    :ets.insert(@table, {normalize(email), code, expires_at})
+    # Delete any existing code so previous codes cannot be used after a new one is issued.
+    :ets.delete(@table, key)
+    :ets.insert(@table, {key, code, expires_at})
     :ok
   end
 

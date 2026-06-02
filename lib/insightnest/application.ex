@@ -32,6 +32,7 @@ defmodule Insightnest.Application do
       Insightnest.Accounts.NonceStoreETS,
       Insightnest.Accounts.PasscodeStore,
       Insightnest.Auth.RevokedTokenStore,
+      Insightnest.RateLimiter,
       {Finch, name: Insightnest.Finch},
 
       # Phoenix Endpoint

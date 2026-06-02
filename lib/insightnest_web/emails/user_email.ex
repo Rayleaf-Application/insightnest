@@ -55,7 +55,7 @@ defmodule InsightnestWeb.UserEmail do
     new()
     |> to(email)
     |> from({"InsightNest", "hello@insightnest.xyz"})
-    |> subject("Your InsightNest sign-in code: #{code}")
+    |> subject("Your InsightNest sign-in code")
     |> text_body("""
     Your InsightNest sign-in code is:
 

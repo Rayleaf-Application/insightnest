@@ -32,7 +32,7 @@ defmodule Insightnest.Accounts.Member do
     member
     |> cast(attrs, [:email, :username])
     |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+\.[^\s]+$/,
+    |> validate_format(:email, ~r/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
       message: "must be a valid email address"
     )
     |> unique_constraint(:email)

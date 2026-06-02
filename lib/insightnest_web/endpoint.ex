@@ -8,8 +8,9 @@ defmodule InsightnestWeb.Endpoint do
     store: :cookie,
     key: "_insightnest_key",
     signing_salt: "Wr85nkk1",
-    same_site: "Lax",
-    max_age: 7 * 24 * 60 * 60
+    same_site: "Strict",
+    http_only: true,
+    max_age: 2 * 24 * 60 * 60
   ]
 
   socket "/live", Phoenix.LiveView.Socket,
@@ -50,7 +51,11 @@ defmodule InsightnestWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
-  plug CORSPlug, origin: "*", methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
+  @cors_origins if Mix.env() == :prod,
+    do: ["https://insightnest.xyz", "https://www.insightnest.xyz"],
+    else: ~r/localhost/
+
+  plug CORSPlug, origin: @cors_origins, methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
 
   plug Plug.MethodOverride
   plug Plug.Head

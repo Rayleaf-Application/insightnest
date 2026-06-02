@@ -10,8 +10,11 @@ defmodule Insightnest.Accounts.NonceStoreETS do
   end
 
   def put(address, nonce, ttl_seconds \\ 300) do
+    key = String.downcase(address)
     expires_at = System.system_time(:second) + ttl_seconds
-    :ets.insert(@table, {String.downcase(address), nonce, expires_at})
+    # Delete any existing nonce so the previous one cannot be used after a new one is issued.
+    :ets.delete(@table, key)
+    :ets.insert(@table, {key, nonce, expires_at})
     :ok
   end
 

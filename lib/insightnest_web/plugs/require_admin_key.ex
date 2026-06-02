@@ -5,9 +5,9 @@ defmodule InsightnestWeb.Plugs.RequireAdminKey do
 
   def call(conn, _opts) do
     expected = Application.get_env(:insightnest, :admin_api_key, "")
-    provided = conn |> get_req_header("x-admin-key") |> List.first()
+    provided = conn |> get_req_header("x-admin-key") |> List.first("")
 
-    if provided && provided == expected do
+    if expected != "" && Plug.Crypto.secure_compare(provided, expected) do
       conn
     else
       conn
