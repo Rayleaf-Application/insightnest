@@ -263,7 +263,9 @@ defmodule InsightnestWeb.SparkLive.Show do
 
         <%!-- Draft banner — author only --%>
         <div
-          :if={@spark.status == "draft" and @current_member && @current_member.id == @spark.author_id}
+          :if={
+            (@spark.status == "draft" and @current_member) && @current_member.id == @spark.author_id
+          }
           class="mb-5 flex items-center justify-between gap-4 px-4 py-3 rounded-xl
                  border border-amber-800/50 bg-amber-950/30"
         >

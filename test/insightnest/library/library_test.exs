@@ -78,6 +78,7 @@ defmodule Insightnest.LibraryTest do
       insight2 = create_published_insight()
       results = Library.list_insights()
       ids = Enum.map(results, & &1.id)
+
       assert Enum.find_index(ids, &(&1 == insight2.id)) <
                Enum.find_index(ids, &(&1 == insight1.id))
     end

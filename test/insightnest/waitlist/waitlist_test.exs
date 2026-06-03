@@ -60,6 +60,7 @@ defmodule Insightnest.WaitlistTest do
       {:ok, second} = Waitlist.create(%{email: unique_email()})
       entries = Waitlist.list()
       ids = Enum.map(entries, & &1.id)
+
       assert Enum.find_index(ids, &(&1 == second.id)) <
                Enum.find_index(ids, &(&1 == first.id))
     end

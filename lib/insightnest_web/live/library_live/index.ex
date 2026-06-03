@@ -17,7 +17,8 @@ defmodule InsightnestWeb.LibraryLive.Index do
        insights: insights,
        query: "",
        page_title: "Knowledge Library",
-       page_description: "Browse community-crafted Insights on InsightNest — collaborative intelligence, permanently preserved on the Codex."
+       page_description:
+         "Browse community-crafted Insights on InsightNest — collaborative intelligence, permanently preserved on the Codex."
      )}
   end
 
