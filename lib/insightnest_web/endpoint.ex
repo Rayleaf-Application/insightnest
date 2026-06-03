@@ -52,8 +52,8 @@ defmodule InsightnestWeb.Endpoint do
     json_decoder: Phoenix.json_library()
 
   @cors_origins if Mix.env() == :prod,
-    do: ["https://insightnest.xyz", "https://www.insightnest.xyz"],
-    else: ~r/localhost/
+                  do: ["https://insightnest.xyz", "https://www.insightnest.xyz"],
+                  else: ~r/localhost/
 
   plug CORSPlug, origin: @cors_origins, methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"]
 

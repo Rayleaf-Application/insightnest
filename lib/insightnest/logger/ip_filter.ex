@@ -19,10 +19,12 @@ defmodule Insightnest.Logger.IpFilter do
   end
 
   def filter(%{msg: {format, args}} = event, _extra) when is_list(args) do
-    sanitised = Enum.map(args, fn
-      arg when is_binary(arg) -> anonymise(arg)
-      arg -> arg
-    end)
+    sanitised =
+      Enum.map(args, fn
+        arg when is_binary(arg) -> anonymise(arg)
+        arg -> arg
+      end)
+
     %{event | msg: {format, sanitised}}
   end
 

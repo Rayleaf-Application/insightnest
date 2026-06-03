@@ -83,12 +83,23 @@ defmodule InsightnestWeb.AuthController do
         }
       })
     else
-      {:error, :not_found} -> auth_error(conn, "Nonce not found — request a new one")
-      {:error, :expired} -> auth_error(conn, "Nonce expired — request a new one")
-      {:error, :nonce_mismatch} -> auth_error(conn, "Nonce mismatch")
-      {:error, :invalid_signature} -> auth_error(conn, "Invalid signature")
-      {:error, :alpha_restricted} -> auth_error(conn, "Access is by invitation only during the closed alpha.")
-      {:error, reason} -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
+      {:error, :not_found} ->
+        auth_error(conn, "Nonce not found — request a new one")
+
+      {:error, :expired} ->
+        auth_error(conn, "Nonce expired — request a new one")
+
+      {:error, :nonce_mismatch} ->
+        auth_error(conn, "Nonce mismatch")
+
+      {:error, :invalid_signature} ->
+        auth_error(conn, "Invalid signature")
+
+      {:error, :alpha_restricted} ->
+        auth_error(conn, "Access is by invitation only during the closed alpha.")
+
+      {:error, reason} ->
+        auth_error(conn, "Authentication failed: #{inspect(reason)}")
     end
   end
 
@@ -171,8 +182,11 @@ defmodule InsightnestWeb.AuthController do
       :ok = PasscodeStore.put(email, code)
 
       case email |> UserEmail.passcode_email(code) |> Insightnest.Mailer.deliver() do
-        {:ok, _} -> :ok
-        {:error, reason} -> Logger.error("[Mailer] Failed to deliver passcode to #{email}: #{inspect(reason)}")
+        {:ok, _} ->
+          :ok
+
+        {:error, reason} ->
+          Logger.error("[Mailer] Failed to deliver passcode to #{email}: #{inspect(reason)}")
       end
 
       json(conn, %{ok: true})
@@ -202,10 +216,17 @@ defmodule InsightnestWeb.AuthController do
         member: %{id: member.id, email: member.email, username: member.username}
       })
     else
-      {:error, :not_found} -> auth_error(conn, "Code not found — request a new one")
-      {:error, :expired} -> auth_error(conn, "Code expired — request a new one")
-      false -> auth_error(conn, "Incorrect code")
-      {:error, reason} -> auth_error(conn, "Authentication failed: #{inspect(reason)}")
+      {:error, :not_found} ->
+        auth_error(conn, "Code not found — request a new one")
+
+      {:error, :expired} ->
+        auth_error(conn, "Code expired — request a new one")
+
+      false ->
+        auth_error(conn, "Incorrect code")
+
+      {:error, reason} ->
+        auth_error(conn, "Authentication failed: #{inspect(reason)}")
     end
   end
 

@@ -136,6 +136,7 @@ defmodule Insightnest.Accounts do
   @doc "Generates a cryptographically secure 6-digit passcode string."
   def generate_passcode do
     <<n::32>> = :crypto.strong_rand_bytes(4)
+
     rem(n, 1_000_000)
     |> Integer.to_string()
     |> String.pad_leading(6, "0")

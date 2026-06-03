@@ -109,14 +109,12 @@ defmodule InsightnestWeb.InsightComponents do
         </p>
 
         <p class="text-sm text-stone-600 leading-relaxed">
-          This Insight emerged from
-          <a
+          This Insight emerged from <a
             href={"/sparks/#{@insight.spark_id}"}
             class="text-stone-500 hover:text-stone-300 transition-colors"
           >
             a Spark by @{member_handle(@insight.spark.author)}
-          </a>, curated by
-          <span class="text-stone-500">@{member_handle(@insight.weave.curator)}</span>,
+          </a>, curated by <span class="text-stone-500">@{member_handle(@insight.weave.curator)}</span>,
           shaped over {insight_age(@insight.spark.inserted_at, @insight.inserted_at)}.
         </p>
       </div>

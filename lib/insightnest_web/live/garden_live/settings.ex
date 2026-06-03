@@ -66,7 +66,10 @@ defmodule InsightnestWeb.GardenLive.Settings do
         Settings
       </h1>
 
-      <div :if={@error} class="mb-6 px-4 py-3 rounded-lg border border-red-800/60 bg-red-950/50 text-red-300 text-sm">
+      <div
+        :if={@error}
+        class="mb-6 px-4 py-3 rounded-lg border border-red-800/60 bg-red-950/50 text-red-300 text-sm"
+      >
         {@error}
       </div>
 

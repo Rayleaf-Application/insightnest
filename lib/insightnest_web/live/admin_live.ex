@@ -490,7 +490,7 @@ defmodule InsightnestWeb.AdminLive do
               style="flex:1;background:#1c1917;border:1px solid #292524;border-radius:8px;padding:0.45rem 0.75rem;color:#e7e5e4;font-size:0.8rem;font-family:inherit;outline:none;"
             />
             <span style="font-size:0.75rem;color:#57534e;white-space:nowrap;">
-              <%= length(filter_members(@members, @member_search)) %> / <%= @member_stats.total %>
+              {length(filter_members(@members, @member_search))} / {@member_stats.total}
             </span>
           </div>
 
@@ -508,8 +508,11 @@ defmodule InsightnestWeb.AdminLive do
               <tbody>
                 <%= if Enum.empty?(filter_members(@members, @member_search)) do %>
                   <tr>
-                    <td colspan="5" style="text-align:center;padding:3rem;color:#57534e;font-size:0.85rem;">
-                      <%= if @members == [], do: "No members yet.", else: "No members match your filter." %>
+                    <td
+                      colspan="5"
+                      style="text-align:center;padding:3rem;color:#57534e;font-size:0.85rem;"
+                    >
+                      {if @members == [], do: "No members yet.", else: "No members match your filter."}
                     </td>
                   </tr>
                 <% else %>
@@ -517,13 +520,13 @@ defmodule InsightnestWeb.AdminLive do
                     <tr style="border-bottom:1px solid #1c1917;">
                       <td style="padding:0.75rem 1rem;font-family:'DM Mono',monospace;color:#e7e5e4;">
                         <%= if m.username do %>
-                          @<%= m.username %>
+                          @{m.username}
                         <% else %>
                           <span style="color:#44403c;font-size:0.72rem;">no username</span>
                         <% end %>
                       </td>
                       <td style="padding:0.75rem 1rem;font-family:'DM Mono',monospace;font-size:0.75rem;color:#57534e;">
-                        <%= truncate_address(m.wallet_address || m.email) %>
+                        {truncate_address(m.wallet_address || m.email)}
                       </td>
                       <td style="padding:0.75rem 1rem;">
                         <%= if m.founder do %>
@@ -534,7 +537,9 @@ defmodule InsightnestWeb.AdminLive do
                           <span style="font-size:0.72rem;color:#44403c;">—</span>
                         <% end %>
                       </td>
-                      <td style="padding:0.75rem 1rem;font-size:0.72rem;color:#57534e;"><%= fmt_date(m.inserted_at) %></td>
+                      <td style="padding:0.75rem 1rem;font-size:0.72rem;color:#57534e;">
+                        {fmt_date(m.inserted_at)}
+                      </td>
                       <td style="padding:0.75rem 1rem;">
                         <%= if m.founder do %>
                           <button
@@ -576,9 +581,11 @@ defmodule InsightnestWeb.AdminLive do
   defp stat_card(assigns) do
     ~H"""
     <div style="background:#1c1917;border:1px solid #292524;border-radius:12px;padding:1.25rem 1.5rem;">
-      <p style="font-size:0.72rem;font-weight:500;color:#78716c;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;"><%= @label %></p>
+      <p style="font-size:0.72rem;font-weight:500;color:#78716c;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">
+        {@label}
+      </p>
       <p style={"font-size:1.75rem;font-weight:500;letter-spacing:-0.02em;#{if @accent, do: "color:#C9913A;", else: "color:#f5f5f4;"}"}>
-        <%= @value %>
+        {@value}
       </p>
     </div>
     """
@@ -590,7 +597,9 @@ defmodule InsightnestWeb.AdminLive do
   defp growth_chart(assigns) do
     ~H"""
     <div style="background:#1c1917;border:1px solid #292524;border-radius:12px;padding:1.25rem 1.5rem;">
-      <h2 style="font-size:0.72rem;font-weight:500;color:#78716c;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem;"><%= @title %></h2>
+      <h2 style="font-size:0.72rem;font-weight:500;color:#78716c;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:1rem;">
+        {@title}
+      </h2>
       <%= if Enum.all?(@data, fn {_, n} -> n == 0 end) do %>
         <p style="font-size:0.8rem;color:#57534e;">No activity in this period.</p>
       <% else %>
@@ -598,11 +607,13 @@ defmodule InsightnestWeb.AdminLive do
         <div style="display:flex;flex-direction:column;gap:0.3rem;">
           <%= for {date, count} <- Enum.take(@data, 7) do %>
             <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;">
-              <span style="width:3.25rem;color:#57534e;flex-shrink:0;text-align:right;font-family:'DM Mono',monospace;"><%= fmt_short_date(date) %></span>
+              <span style="width:3.25rem;color:#57534e;flex-shrink:0;text-align:right;font-family:'DM Mono',monospace;">
+                {fmt_short_date(date)}
+              </span>
               <div style="flex:1;height:8px;background:#292524;border-radius:4px;overflow:hidden;">
                 <div style={"height:100%;background:#C9913A;border-radius:4px;width:#{Float.round(count / max_val * 100, 1)}%;min-width:#{if count > 0, do: "3px", else: "0"};"} />
               </div>
-              <span style="width:1.5rem;color:#78716c;flex-shrink:0;text-align:right;"><%= count %></span>
+              <span style="width:1.5rem;color:#78716c;flex-shrink:0;text-align:right;">{count}</span>
             </div>
           <% end %>
         </div>

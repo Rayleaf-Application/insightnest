@@ -188,7 +188,12 @@ defmodule InsightnestWeb.ContributionComponents do
         {@error}
       </div>
 
-      <.form for={@form} phx-submit="submit_contribution" phx-change="update_contribution_draft" class="space-y-3">
+      <.form
+        for={@form}
+        phx-submit="submit_contribution"
+        phx-change="update_contribution_draft"
+        class="space-y-3"
+      >
         <textarea
           name="contribution[body]"
           rows="4"

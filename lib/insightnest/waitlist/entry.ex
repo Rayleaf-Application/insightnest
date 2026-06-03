@@ -19,7 +19,9 @@ defmodule Insightnest.Waitlist.Entry do
     entry
     |> cast(attrs, [:email, :name, :reason])
     |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, message: "must be a valid email")
+    |> validate_format(:email, ~r/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
+      message: "must be a valid email"
+    )
     |> validate_length(:email, max: 200)
     |> validate_length(:name, max: 100)
     |> validate_length(:reason, max: 1000)

@@ -219,7 +219,12 @@ defmodule Insightnest.BDD.WeaveLifecycleTest do
 
     step "curator can update the summary", %{weave: w, insight: i, spark_author: a} do
       assert {:ok, updated} =
-               Weaves.update_draft(i, w, %{"title" => i.title, "summary" => "A refined synthesis."}, a.id)
+               Weaves.update_draft(
+                 i,
+                 w,
+                 %{"title" => i.title, "summary" => "A refined synthesis."},
+                 a.id
+               )
 
       assert updated.summary == "A refined synthesis."
     end
@@ -257,7 +262,8 @@ defmodule Insightnest.BDD.WeaveLifecycleTest do
       assert is_binary(insight.codex_cid)
     end
 
-    step "weave status becomes published after the insight is published", %{weave: w, spark_author: a} do
+    step "weave status becomes published after the insight is published",
+         %{weave: w, spark_author: a} do
       {:ok, _} = Weaves.publish_insight(w.id, a.id)
       weave = Weaves.get_weave!(w.id)
       assert weave.status == "published"

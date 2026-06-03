@@ -345,7 +345,9 @@ defmodule InsightnestWeb.SparkLive.Show do
           <%= cond do %>
             <% @spark.status == "draft" and @current_member && @current_member.id == @spark.author_id -> %>
               <div class="text-center py-4">
-                <p class="text-sm text-amber-500/80 mb-3">Publish this spark to open it for contributions.</p>
+                <p class="text-sm text-amber-500/80 mb-3">
+                  Publish this spark to open it for contributions.
+                </p>
                 <button
                   phx-click="publish_spark"
                   class="px-4 py-2 rounded-xl text-sm font-medium
