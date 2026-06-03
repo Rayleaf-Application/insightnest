@@ -13,8 +13,7 @@ defmodule InsightnestWeb.AdminLive do
      |> assign(member_search: "")
      |> assign(waitlist_search: "")
      |> assign(notice: nil)
-     |> load_data(),
-     layout: false}
+     |> load_data(), layout: false}
   end
 
   def mount(_params, _session, socket) do
@@ -227,25 +226,41 @@ defmodule InsightnestWeb.AdminLive do
     ~H"""
     <div style="background:#0c0a09;min-height:100vh;font-family:'DM Sans',system-ui,sans-serif;color:#d6d3d1;padding:2rem 1rem;">
       <div style="max-width:1000px;margin:0 auto;">
-
         <%!-- Header --%>
         <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid #292524;">
           <div>
-            <h1 style="font-size:1.25rem;font-weight:500;color:#f5f5f4;letter-spacing:-0.01em;">InsightNest — Admin</h1>
+            <h1 style="font-size:1.25rem;font-weight:500;color:#f5f5f4;letter-spacing:-0.01em;">
+              InsightNest — Admin
+            </h1>
             <p style="font-size:0.72rem;color:#57534e;margin-top:0.2rem;">Management panel</p>
           </div>
           <div style="display:flex;gap:0.5rem;align-items:center;">
             <nav style="display:flex;gap:0.25rem;">
-              <button phx-click="switch_tab" phx-value-tab="dashboard" style={nav_style(@tab == :dashboard)}>
+              <button
+                phx-click="switch_tab"
+                phx-value-tab="dashboard"
+                style={nav_style(@tab == :dashboard)}
+              >
                 Dashboard
               </button>
-              <button phx-click="switch_tab" phx-value-tab="waitlist" style={nav_style(@tab == :waitlist)}>
+              <button
+                phx-click="switch_tab"
+                phx-value-tab="waitlist"
+                style={nav_style(@tab == :waitlist)}
+              >
                 Waitlist
-                <span :if={@waitlist_stats.pending > 0} style="margin-left:0.35rem;background:#292524;color:#C9913A;border-radius:4px;padding:0.1rem 0.4rem;font-size:0.68rem;">
-                  <%= @waitlist_stats.pending %>
+                <span
+                  :if={@waitlist_stats.pending > 0}
+                  style="margin-left:0.35rem;background:#292524;color:#C9913A;border-radius:4px;padding:0.1rem 0.4rem;font-size:0.68rem;"
+                >
+                  {@waitlist_stats.pending}
                 </span>
               </button>
-              <button phx-click="switch_tab" phx-value-tab="members" style={nav_style(@tab == :members)}>
+              <button
+                phx-click="switch_tab"
+                phx-value-tab="members"
+                style={nav_style(@tab == :members)}
+              >
                 Members
               </button>
             </nav>
@@ -268,7 +283,7 @@ defmodule InsightnestWeb.AdminLive do
         <%= if @notice do %>
           <% {type, msg} = @notice %>
           <div style={"padding:0.65rem 1rem;border-radius:8px;font-size:0.8rem;margin-bottom:1rem;#{notice_style(type)}"}>
-            <%= msg %>
+            {msg}
           </div>
         <% end %>
 
@@ -298,7 +313,9 @@ defmodule InsightnestWeb.AdminLive do
                   <div>
                     <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.3rem;">
                       <span>Wallet (crypto)</span>
-                      <span style="color:#f5f5f4;font-weight:500;"><%= @member_stats.wallet_auth %> (<%= wallet_pct %>%)</span>
+                      <span style="color:#f5f5f4;font-weight:500;">
+                        {@member_stats.wallet_auth} ({wallet_pct}%)
+                      </span>
                     </div>
                     <div style="height:6px;background:#292524;border-radius:3px;overflow:hidden;">
                       <div style={"height:100%;background:#C9913A;border-radius:3px;width:#{wallet_pct}%;"} />
@@ -307,7 +324,9 @@ defmodule InsightnestWeb.AdminLive do
                   <div>
                     <div style="display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.3rem;">
                       <span>Email</span>
-                      <span style="color:#f5f5f4;font-weight:500;"><%= @member_stats.email_auth %> (<%= email_pct %>%)</span>
+                      <span style="color:#f5f5f4;font-weight:500;">
+                        {@member_stats.email_auth} ({email_pct}%)
+                      </span>
                     </div>
                     <div style="height:6px;background:#292524;border-radius:3px;overflow:hidden;">
                       <div style={"height:100%;background:#78716c;border-radius:3px;width:#{email_pct}%;"} />
@@ -326,19 +345,19 @@ defmodule InsightnestWeb.AdminLive do
                 <div style="font-size:0.8rem;display:flex;flex-direction:column;gap:0.6rem;">
                   <div style="display:flex;justify-content:space-between;">
                     <span style="color:#78716c;">Total signups</span>
-                    <span style="color:#f5f5f4;font-weight:500;"><%= @waitlist_stats.total %></span>
+                    <span style="color:#f5f5f4;font-weight:500;">{@waitlist_stats.total}</span>
                   </div>
                   <div style="display:flex;justify-content:space-between;">
                     <span style="color:#78716c;">Approved</span>
-                    <span style="color:#4ade80;font-weight:500;"><%= @waitlist_stats.approved %></span>
+                    <span style="color:#4ade80;font-weight:500;">{@waitlist_stats.approved}</span>
                   </div>
                   <div style="display:flex;justify-content:space-between;">
                     <span style="color:#78716c;">Conversion rate</span>
-                    <span style="color:#C9913A;font-weight:500;"><%= conv %>%</span>
+                    <span style="color:#C9913A;font-weight:500;">{conv}%</span>
                   </div>
                   <div style="display:flex;justify-content:space-between;">
                     <span style="color:#78716c;">New this week</span>
-                    <span style="color:#f5f5f4;font-weight:500;">+<%= @waitlist_stats.new_week %></span>
+                    <span style="color:#f5f5f4;font-weight:500;">+{@waitlist_stats.new_week}</span>
                   </div>
                 </div>
               <% else %>
@@ -362,9 +381,13 @@ defmodule InsightnestWeb.AdminLive do
                   <%= for m <- Enum.take(Enum.sort_by(@members, & &1.inserted_at, {:desc, DateTime}), 5) do %>
                     <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;">
                       <span style="font-family:'DM Mono',monospace;color:#e7e5e4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:65%;">
-                        <%= if m.username, do: "@#{m.username}", else: truncate_address(m.wallet_address || m.email) %>
+                        {if m.username,
+                          do: "@#{m.username}",
+                          else: truncate_address(m.wallet_address || m.email)}
                       </span>
-                      <span style="font-size:0.72rem;color:#57534e;flex-shrink:0;"><%= fmt_date(m.inserted_at) %></span>
+                      <span style="font-size:0.72rem;color:#57534e;flex-shrink:0;">
+                        {fmt_date(m.inserted_at)}
+                      </span>
                     </div>
                   <% end %>
                 </div>
@@ -379,7 +402,9 @@ defmodule InsightnestWeb.AdminLive do
                 <div style="display:flex;flex-direction:column;gap:0.6rem;">
                   <%= for e <- Enum.take(@waitlist, 5) do %>
                     <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;">
-                      <span style="font-family:'DM Mono',monospace;color:#e7e5e4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:65%;"><%= e.email %></span>
+                      <span style="font-family:'DM Mono',monospace;color:#e7e5e4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:65%;">
+                        {e.email}
+                      </span>
                       <span style={"font-size:0.7rem;padding:0.15rem 0.45rem;border-radius:5px;font-weight:500;#{chip_style(e.status)}"}>
                         <%= e.status %>
                       </span>
@@ -403,7 +428,7 @@ defmodule InsightnestWeb.AdminLive do
               style="flex:1;background:#1c1917;border:1px solid #292524;border-radius:8px;padding:0.45rem 0.75rem;color:#e7e5e4;font-size:0.8rem;font-family:inherit;outline:none;"
             />
             <span style="font-size:0.75rem;color:#57534e;white-space:nowrap;">
-              <%= length(filter_waitlist(@waitlist, @waitlist_search)) %> / <%= @waitlist_stats.total %>
+              {length(filter_waitlist(@waitlist, @waitlist_search))} / {@waitlist_stats.total}
             </span>
           </div>
 
@@ -422,22 +447,36 @@ defmodule InsightnestWeb.AdminLive do
               <tbody>
                 <%= if Enum.empty?(filter_waitlist(@waitlist, @waitlist_search)) do %>
                   <tr>
-                    <td colspan="6" style="text-align:center;padding:3rem;color:#57534e;font-size:0.85rem;">
-                      <%= if @waitlist == [], do: "No waitlist entries yet.", else: "No entries match your filter." %>
+                    <td
+                      colspan="6"
+                      style="text-align:center;padding:3rem;color:#57534e;font-size:0.85rem;"
+                    >
+                      {if @waitlist == [],
+                        do: "No waitlist entries yet.",
+                        else: "No entries match your filter."}
                     </td>
                   </tr>
                 <% else %>
                   <%= for e <- filter_waitlist(@waitlist, @waitlist_search) do %>
                     <tr style="border-bottom:1px solid #1c1917;">
-                      <td style="padding:0.75rem 1rem;font-family:'DM Mono',monospace;font-size:0.75rem;color:#e7e5e4;"><%= e.email %></td>
-                      <td style="padding:0.75rem 1rem;color:#d6d3d1;"><%= e.name || "—" %></td>
-                      <td style="padding:0.75rem 1rem;color:#78716c;font-size:0.75rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title={e.reason || ""}><%= e.reason || "—" %></td>
+                      <td style="padding:0.75rem 1rem;font-family:'DM Mono',monospace;font-size:0.75rem;color:#e7e5e4;">
+                        {e.email}
+                      </td>
+                      <td style="padding:0.75rem 1rem;color:#d6d3d1;">{e.name || "—"}</td>
+                      <td
+                        style="padding:0.75rem 1rem;color:#78716c;font-size:0.75rem;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                        title={e.reason || ""}
+                      >
+                        {e.reason || "—"}
+                      </td>
                       <td style="padding:0.75rem 1rem;">
                         <span style={"display:inline-flex;align-items:center;padding:0.2rem 0.55rem;border-radius:6px;font-size:0.7rem;font-weight:500;#{chip_style(e.status)}"}>
-                          <%= e.status %>
+                          {e.status}
                         </span>
                       </td>
-                      <td style="padding:0.75rem 1rem;font-size:0.72rem;color:#57534e;"><%= fmt_date(e.inserted_at) %></td>
+                      <td style="padding:0.75rem 1rem;font-size:0.72rem;color:#57534e;">
+                        {fmt_date(e.inserted_at)}
+                      </td>
                       <td style="padding:0.75rem 1rem;">
                         <div style="display:flex;gap:0.4rem;">
                           <%= if e.status != "approved" do %>
@@ -566,7 +605,6 @@ defmodule InsightnestWeb.AdminLive do
             </table>
           </div>
         </div>
-
       </div>
     </div>
     """

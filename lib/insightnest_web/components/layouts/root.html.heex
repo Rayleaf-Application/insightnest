@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
 
-    <%
-      page_title    = assigns[:page_title] || "InsightNest"
-      full_title    = page_title <> " · InsightNest"
-      description   = assigns[:page_description] || "InsightNest — a platform for collective intelligence. Community-crafted Insights, permanently preserved."
-      canonical_url = assigns[:page_url] || InsightnestWeb.Endpoint.url()
-      og_type       = assigns[:page_type] || "website"
-      og_image      = assigns[:page_image] || (InsightnestWeb.Endpoint.url() <> "/images/og-default.png")
-    %>
+    <% page_title = assigns[:page_title] || "InsightNest"
+    full_title = page_title <> " · InsightNest"
+
+    description =
+      assigns[:page_description] ||
+        "InsightNest — a platform for collective intelligence. Community-crafted Insights, permanently preserved."
+
+    canonical_url = assigns[:page_url] || InsightnestWeb.Endpoint.url()
+    og_type = assigns[:page_type] || "website"
+    og_image = assigns[:page_image] || InsightnestWeb.Endpoint.url() <> "/images/og-default.png" %>
 
     <.live_title suffix=" · InsightNest">
       {assigns[:page_title] || "InsightNest"}
