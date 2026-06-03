@@ -149,14 +149,15 @@ defmodule Insightnest.Weaves do
       content_hash = compute_hash(insight.title, insight.body, insight.spark_id, weave.id)
       slug = generate_slug(insight.title)
 
-      {:ok, cid} = Insightnest.Application.publisher().publish(%{
-        id: insight.id,
-        title: insight.title,
-        summary: insight.summary,
-        body: insight.body,
-        contributors: insight.contributors,
-        content_hash: content_hash
-      })
+      {:ok, cid} =
+        Insightnest.Application.publisher().publish(%{
+          id: insight.id,
+          title: insight.title,
+          summary: insight.summary,
+          body: insight.body,
+          contributors: insight.contributors,
+          content_hash: content_hash
+        })
 
       published_insight =
         insight
